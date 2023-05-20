@@ -4,7 +4,7 @@ namespace MinecraftJars.Core.Versions;
 
 public interface IVersion
 {
-    string Group { get; }
+    Group Group { get; }
     string GameType { get; }
     string Version { get; }
     Task<IDownload> GetDownload();

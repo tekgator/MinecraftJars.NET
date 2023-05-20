@@ -1,8 +1,11 @@
-﻿namespace MinecraftJars.Core.Versions;
+﻿using System.Text.Json.Serialization;
 
-public static class Group
+namespace MinecraftJars.Core.Versions;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Group
 {
-    public const string Server = "Server";
-    public const string Proxy = "Proxy";
-    public const string Bedrock = "Bedrock";
+    Server,
+    Proxy,
+    Bedrock
 }
