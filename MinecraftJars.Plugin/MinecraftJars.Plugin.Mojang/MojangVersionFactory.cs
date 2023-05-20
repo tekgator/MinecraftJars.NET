@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
+using MinecraftJars.Plugin.Mojang.Models;
 using MinecraftJars.Plugin.Mojang.Models.DetailApi;
 using MinecraftJars.Plugin.Mojang.Models.ManifestApi;
 using Group = MinecraftJars.Core.Versions.Group;
@@ -61,7 +62,6 @@ internal static partial class MojangVersionFactory
             Group = Group.Server,
             GameType = mojangVersion.Type == "release" ? GameType.Vanilla : GameType.VanillaSnapshot,
             Version = mojangVersion.Id,
-            Os = Os.Windows | Os.Linux | Os.MacOs,
             ReleaseTime = mojangVersion.ReleaseTime,
             DetailUrl = mojangVersion.Url
         }));

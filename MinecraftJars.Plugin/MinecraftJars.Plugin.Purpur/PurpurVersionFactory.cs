@@ -47,8 +47,7 @@ internal static class PurpurVersionFactory
             {
                 Group = Group.Server, 
                 GameType = GameType.Purpur, 
-                Version = projectVersion, 
-                Os = Os.Windows | Os.Linux | Os.MacOs
+                Version = projectVersion
             }));
 
         return versions;

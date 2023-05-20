@@ -1,6 +1,6 @@
 ﻿using MinecraftJars.Core.Downloads;
 
-namespace MinecraftJars.Plugin.Mojang;
+namespace MinecraftJars.Plugin.Mojang.Models;
 
 public class MojangDownload : IDownload
 {

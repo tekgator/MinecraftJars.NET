@@ -43,8 +43,7 @@ internal static class MohistVersionFactory
             {
                 Group = Group.Server, 
                 GameType = GameType.Mohist, 
-                Version = version, 
-                Os = Os.Windows | Os.Linux | Os.MacOs
+                Version = version 
             }));
         return versions;
     }

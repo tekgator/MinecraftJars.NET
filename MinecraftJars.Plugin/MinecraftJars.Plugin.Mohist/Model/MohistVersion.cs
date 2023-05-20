@@ -8,8 +8,6 @@ public class MohistVersion : IVersion
     public required string Group { get; init; }
     public required string GameType { get; init; }
     public required string Version { get; init; }
-    public required Os Os { get; init; }
-    public DateTime? ReleaseTime => null;
     public Task<IDownload> GetDownload()
     {
         return MohistVersionFactory.GetDownload(this);

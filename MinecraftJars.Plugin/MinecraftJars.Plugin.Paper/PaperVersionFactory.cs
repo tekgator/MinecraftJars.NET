@@ -54,8 +54,7 @@ internal static class PaperVersionFactory
                 {
                     Group = group, 
                     GameType = gameType, 
-                    Version = projectVersion, 
-                    Os = Os.Windows | Os.Linux | Os.MacOs
+                    Version = projectVersion
                 }));
         }
 

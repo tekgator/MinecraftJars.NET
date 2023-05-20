@@ -24,7 +24,7 @@ foreach (var provider in providerManager.GetProviders())
         Console.WriteLine($"\tVersion ID: {version.Version}");
         ResetConsoleColor();
 
-        var download = await version.GetDownload();
+        //var download = await version.GetDownload();
         
         foreach (var property in version.GetType().GetProperties().Where(p => p.Name != "Version"))
         {
