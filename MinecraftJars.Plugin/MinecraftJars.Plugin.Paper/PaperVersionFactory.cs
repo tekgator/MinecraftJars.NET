@@ -73,7 +73,6 @@ internal static class PaperVersionFactory
             throw new InvalidOperationException("Could not acquire download details.");
         
         var build = detail.Builds.Last();
-        version.ReleaseTime = build.Time;
             
         var downloadUri = string.Format(PaperDownloadRequestUri,
             version.GameType.ToLower(),version.Version,build.BuildId.ToString(),build.Downloads.Application.Name);
@@ -91,6 +90,7 @@ internal static class PaperVersionFactory
             Size = contentLength,
             BuildId = build.BuildId,
             Url = downloadUri,
+            ReleaseTime = build.Time,
             HashType = HashType.Sha256,
             Hash = build.Downloads.Application.Sha256
         };

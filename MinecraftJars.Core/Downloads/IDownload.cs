@@ -7,5 +7,6 @@ public interface IDownload
     int BuildId { get; }
     string Url { get; }
     HashType HashType { get; }
-    string? Hash { get; }    
+    string? Hash { get; }
+    DateTime? ReleaseTime { get; }
 }

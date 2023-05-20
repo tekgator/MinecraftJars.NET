@@ -51,8 +51,7 @@ internal static partial class MojangVersionFactory
         }
 
         using var client = GetHttpClient();
-        var manifest = await client.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken: cancellationToken) 
-                       ?? new Manifest();
+        var manifest = await client.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken) ?? new Manifest();
 
         if (options.Version is not null)
             manifest.Versions.RemoveAll(v => !v.Id.Equals(options.Version));
@@ -126,14 +125,14 @@ internal static partial class MojangVersionFactory
     public static Task<IDownload> GetDownload(MojangVersion version)
     {
         return version.GameType is GameType.Bedrock or GameType.BedrockPreview 
-            ? GetBedrockDownload(version.DetailUrl) 
-            : GetVanillaDownload(version.DetailUrl);
+            ? GetBedrockDownload(version) 
+            : GetVanillaDownload(version);
     }
     
-    private static async Task<IDownload> GetVanillaDownload(string detailUrl)
+    private static async Task<IDownload> GetVanillaDownload(MojangVersion version)
     {
         using var client = GetHttpClient();
-        var detail = await client.GetFromJsonAsync<Detail>(detailUrl);
+        var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl);
 
         if (detail is { Downloads.Server: not null })
         {
@@ -142,6 +141,7 @@ internal static partial class MojangVersionFactory
                 FileName = Path.GetFileName(new Uri(detail.Downloads.Server.Url).LocalPath),
                 Size = detail.Downloads.Server.Size,
                 Url = detail.Downloads.Server.Url,
+                ReleaseTime = version.ReleaseTime,
                 HashType = HashType.Sha1,
                 Hash = detail.Downloads.Server.Sha1
             };
@@ -150,10 +150,10 @@ internal static partial class MojangVersionFactory
         throw new InvalidOperationException("Could not acquire download details.");
     }
     
-    private static async Task<IDownload> GetBedrockDownload(string detailUrl)
+    private static async Task<IDownload> GetBedrockDownload(MojangVersion version)
     {
         using var client = GetHttpClient();
-        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, detailUrl);
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
         using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
         long contentLength = 0;
@@ -162,9 +162,9 @@ internal static partial class MojangVersionFactory
 
         return new MojangDownload
         {
-            FileName = Path.GetFileName(new Uri(detailUrl).LocalPath),
+            FileName = Path.GetFileName(new Uri(version.DetailUrl).LocalPath),
             Size = contentLength,
-            Url = detailUrl,
+            Url = version.DetailUrl,
             HashType = HashType.None,
         };
     }    

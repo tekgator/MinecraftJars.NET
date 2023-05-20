@@ -2,20 +2,19 @@
 
 namespace MinecraftJars.Plugin.Mojang.Models.DetailApi;
 
-#pragma warning disable CS8618
 internal class Detail
 {
     [JsonPropertyName("downloads")]
-    public Downloads Downloads { get; set; }
+    public Downloads Downloads { get; set; } = new();
 
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("javaVersion")]
-    public JavaVersion JavaVersion { get; set; }
+    public JavaVersion JavaVersion { get; set; } = new();
 
     [JsonPropertyName("mainClass")]
-    public string MainClass { get; set; }
+    public string? MainClass { get; set; }
 
     [JsonPropertyName("minimumLauncherVersion")]
     public int MinimumLauncherVersion { get; set; }
@@ -27,6 +26,5 @@ internal class Detail
     public DateTime Time { get; set; }
 
     [JsonPropertyName("type")]
-    public string Type { get; set; }    
+    public string? Type { get; set; }    
 }
-#pragma warning restore CS8618

@@ -70,8 +70,6 @@ internal static class PurpurVersionFactory
         if (build == null) 
             throw new InvalidOperationException("Could not acquire download details.");
         
-        version.ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(build.Timestamp).DateTime;
-            
         var downloadUri = string.Format(PurpurDownloadRequestUri, version.Version, build.BuildId);
         
         using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
@@ -91,6 +89,7 @@ internal static class PurpurVersionFactory
             Size = contentLength,
             BuildId = int.Parse(build.BuildId),
             Url = downloadUri,
+            ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(build.Timestamp).DateTime,
             HashType = HashType.Md5,
             Hash = build.Md5
         };

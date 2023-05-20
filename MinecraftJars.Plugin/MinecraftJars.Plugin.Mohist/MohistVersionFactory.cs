@@ -22,7 +22,14 @@ internal static class MohistVersionFactory
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MohistVersion>();
+        var gameTypes = new List<string>(AvailableGameTypes);
 
+        if (options.GameType is not null)
+            gameTypes.RemoveAll(t => !t.Equals(options.GameType));
+
+        if (!gameTypes.Any() || (options.Group is not null && options.Group is not Group.Server))
+            return versions;
+        
         using var client = GetHttpClient();
         var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
         
@@ -49,11 +56,9 @@ internal static class MohistVersionFactory
         var requestUriLatestBuild = string.Format(MohistLatestBuildRequestUri, version.Version);
         var latestBuild = await client.GetFromJsonAsync<Build>(requestUriLatestBuild);
 
-        if (latestBuild == null) 
+        if (latestBuild == null || string.IsNullOrWhiteSpace(latestBuild.Url)) 
             throw new InvalidOperationException("Could not acquire download details.");
         
-        version.ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(latestBuild.Timeinmillis).DateTime;
-            
         using var requestMessage = new HttpRequestMessage(HttpMethod.Get, latestBuild.Url);
         using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
@@ -71,6 +76,7 @@ internal static class MohistVersionFactory
             Size = contentLength,
             BuildId = latestBuild.Number,
             Url = latestBuild.Url,
+            ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(latestBuild.Timeinmillis).DateTime,
             HashType = HashType.Md5,
             Hash = latestBuild.Md5
         };

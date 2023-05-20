@@ -2,17 +2,16 @@
 
 namespace MinecraftJars.Plugin.Mojang.Models.ManifestApi;
 
-#pragma warning disable CS8618
 internal class Version
 {
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
+    [JsonPropertyName("id")] 
+    public string Id { get; set; } = string.Empty;
 
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string Type { get; set; } = string.Empty;
 
     [JsonPropertyName("url")]
-    public string Url { get; set; }
+    public string Url { get; set; } = string.Empty;
 
     [JsonPropertyName("time")]
     public DateTime Time { get; set; }
@@ -26,4 +25,3 @@ internal class Version
     [JsonPropertyName("complianceLevel")]
     public int? ComplianceLevel { get; set; }    
 }
-#pragma warning restore CS8618

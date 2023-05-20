@@ -9,7 +9,7 @@ public class PurpurVersion : IVersion
     public required string GameType { get; init; }
     public required string Version { get; init; }
     public required Os Os { get; init; }
-    public DateTime? ReleaseTime { get; internal set; }
+    public DateTime? ReleaseTime => null;
     public Task<IDownload> GetDownload()
     {
         return PurpurVersionFactory.GetDownload(this);

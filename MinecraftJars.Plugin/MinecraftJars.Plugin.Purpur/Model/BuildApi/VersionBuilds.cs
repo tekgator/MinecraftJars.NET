@@ -2,16 +2,14 @@
 
 namespace MinecraftJars.Plugin.Purpur.Model.BuildApi;
 
-#pragma warning disable CS8618
-public class VersionBuilds
+internal class VersionBuilds
 {
     [JsonPropertyName("builds")]
-    public Builds Builds { get; set; }
+    public Builds Builds { get; set; } = new();
 
     [JsonPropertyName("project")]
-    public string Project { get; set; }
+    public string? Project { get; set; }
 
     [JsonPropertyName("version")]
-    public string Version { get; set; }    
+    public string? Version { get; set; }    
 }
-#pragma warning restore CS8618
