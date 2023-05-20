@@ -15,4 +15,6 @@ public static class GameType
     public const string Velocity = "Velocity";
     
     public const string Purpur = "Purpur";
+    
+    public const string Mohist = "Mohist";
 }

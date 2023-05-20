@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Paper"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Purpur", "MinecraftJars.Plugin\MinecraftJars.Plugin.Purpur\MinecraftJars.Plugin.Purpur.csproj", "{2038E46B-57FA-4BDA-8BE9-8FD852DF7A2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Mohist", "MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj", "{D304031F-41FD-4B41-8767-EB9DBB34454B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{2038E46B-57FA-4BDA-8BE9-8FD852DF7A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2038E46B-57FA-4BDA-8BE9-8FD852DF7A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2038E46B-57FA-4BDA-8BE9-8FD852DF7A2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

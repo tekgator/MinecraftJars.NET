@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\MinecraftJars.Plugin\MinecraftJars.Plugin.Purpur\MinecraftJars.Plugin.Purpur.csproj" />
+      <ProjectReference Include="..\..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj" />
       <ProjectReference Include="..\..\MinecraftJars\MinecraftJars.csproj" />
     </ItemGroup>
 
