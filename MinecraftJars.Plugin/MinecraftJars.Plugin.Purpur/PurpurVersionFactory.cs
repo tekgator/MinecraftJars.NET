@@ -16,6 +16,8 @@ internal static class PurpurVersionFactory
     private const string PurpurBuildRequestUri = "https://api.purpurmc.org/v2/purpur/{0}/{1}";
     private const string PurpurDownloadRequestUri = "https://api.purpurmc.org/v2/purpur/{0}/{1}/download";
     
+    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    
     public static async Task<List<PurpurVersion>> Get(
         VersionOptions options,
         CancellationToken cancellationToken = default!)
@@ -93,7 +95,7 @@ internal static class PurpurVersionFactory
     
     private static HttpClient GetHttpClient()
     {
-        var client = new HttpClient();
+        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
 
         if (client.DefaultRequestHeaders.UserAgent.Any())
             return client;

@@ -12,10 +12,10 @@ public class PaperProvider : IProvider
     public PaperProvider(ProviderOptions? options)
     {
         ProviderOptions = options ?? new ProviderOptions();
+        PaperVersionFactory.HttpClientFactory = ProviderOptions.HttpClientFactory;
     }
     
     public ProviderOptions ProviderOptions { get; }
-    
     public string Name => Provider.Paper;
     public byte[] Logo => Properties.Resources.Paper;
     public IEnumerable<IProject> Projects => PaperProjectFactory.Projects;

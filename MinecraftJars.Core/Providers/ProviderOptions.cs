@@ -2,5 +2,5 @@
 
 public class ProviderOptions
 {
-
+    public IHttpClientFactory? HttpClientFactory { get; init; }
 }

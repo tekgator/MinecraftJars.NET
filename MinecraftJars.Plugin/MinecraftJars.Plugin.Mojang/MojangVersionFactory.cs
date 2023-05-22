@@ -19,6 +19,8 @@ internal static partial class MojangVersionFactory
     private static partial Regex MojangBedrockDownloadLink();
     private const string MojangBedrockRequestUri = "https://www.minecraft.net/download/server/bedrock";
 
+    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    
     public static async Task<List<MojangVersion>> Get(
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
@@ -168,7 +170,7 @@ internal static partial class MojangVersionFactory
     
     private static HttpClient GetHttpClient()
     {
-        var client = new HttpClient();
+        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
 
         if (client.DefaultRequestHeaders.UserAgent.Any()) 
             return client;

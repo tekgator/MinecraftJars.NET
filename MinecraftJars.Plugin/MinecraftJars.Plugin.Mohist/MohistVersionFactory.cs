@@ -13,17 +13,19 @@ internal static class MohistVersionFactory
     private const string MohistVersionRequestUri = "https://mohistmc.com/api/versions";
     private const string MohistLatestBuildRequestUri = "https://mohistmc.com/api/{0}/latest/";
     
+    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    
     public static async Task<List<MohistVersion>> Get(
-        VersionOptions options,
+        VersionOptions versionOptions,
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MohistVersion>();
         var projects = new List<MohistProject>(MohistProjectFactory.Projects);
 
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
+        if (!string.IsNullOrWhiteSpace(versionOptions.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(versionOptions.ProjectName));
 
-        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
+        if (!projects.Any() || (versionOptions.Group is not null && versionOptions.Group is not Group.Server))
             return versions;
         
         using var client = GetHttpClient();
@@ -35,8 +37,8 @@ internal static class MohistVersionFactory
             if (availVersions == null) 
                 throw new InvalidOperationException("Could not acquire game type details.");
        
-            if (options.Version is not null)
-                availVersions.RemoveAll(v => !v.Equals(options.Version));
+            if (versionOptions.Version is not null)
+                availVersions.RemoveAll(v => !v.Equals(versionOptions.Version));
             
             availVersions.Reverse();
 
@@ -84,7 +86,7 @@ internal static class MohistVersionFactory
     
     private static HttpClient GetHttpClient()
     {
-        var client = new HttpClient();
+        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
 
         if (client.DefaultRequestHeaders.UserAgent.Any())
             return client;

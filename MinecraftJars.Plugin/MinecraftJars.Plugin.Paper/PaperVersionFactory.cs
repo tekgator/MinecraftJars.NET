@@ -15,6 +15,8 @@ internal static class PaperVersionFactory
     private const string PaperBuildRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds";
     private const string PaperDownloadRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds/{2}/downloads/{3}";
 
+    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    
     public static async Task<List<PaperVersion>> Get(
         VersionOptions options,
         CancellationToken cancellationToken = default!)
@@ -88,7 +90,7 @@ internal static class PaperVersionFactory
 
     private static HttpClient GetHttpClient()
     {
-        var client = new HttpClient();
+        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
 
         if (client.DefaultRequestHeaders.UserAgent.Any())
             return client;
