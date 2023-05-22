@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Core.Versions;
+namespace MinecraftJars.Core.Projects;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Group

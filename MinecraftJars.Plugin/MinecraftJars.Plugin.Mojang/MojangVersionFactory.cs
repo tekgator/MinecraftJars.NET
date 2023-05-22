@@ -7,20 +7,12 @@ using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mojang.Models;
 using MinecraftJars.Plugin.Mojang.Models.DetailApi;
 using MinecraftJars.Plugin.Mojang.Models.ManifestApi;
-using Group = MinecraftJars.Core.Versions.Group;
+using Group = MinecraftJars.Core.Projects.Group;
 
 namespace MinecraftJars.Plugin.Mojang;
 
 internal static partial class MojangVersionFactory
 {
-    public static IEnumerable<string> AvailableGameTypes => new List<string>
-    {
-        GameType.Vanilla,
-        GameType.VanillaSnapshot,
-        GameType.Bedrock,
-        GameType.BedrockPreview
-    };
-    
     private const string MojangVanillaRequestUri = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
 
     [GeneratedRegex("(?i)https://minecraft\\.azureedge\\.net/bin-(?<platform>win|linux)(?:-)?(?<preview>preview)?/bedrock-server-(?<version>[0-9.]+).zip", RegexOptions.Compiled)]
@@ -44,28 +36,39 @@ internal static partial class MojangVersionFactory
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MojangVersion>();
-        
-        if ((options.Group is not null && options.Group is not Group.Server) ||
-            (options.GameType is not null && options.GameType is not (GameType.Vanilla or GameType.VanillaSnapshot)))
-        {
+        var projects = new List<MojangProject>(MojangProjectFactory.Projects);
+
+        projects.RemoveAll(p => p.Group != Group.Server);
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));        
+
+        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
             return versions;
-        }
-
+        
         using var client = GetHttpClient();
-        var manifest = await client.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken) ?? new Manifest();
+        var manifest = await client.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken);
 
+        if (manifest == null)
+            throw new InvalidOperationException("Could not acquire version details.");
+        
         if (options.Version is not null)
             manifest.Versions.RemoveAll(v => !v.Id.Equals(options.Version));
 
-        versions.AddRange(manifest.Versions.Select(mojangVersion => new MojangVersion
+        foreach (var project in projects.Where(p => p.Group == Group.Server))
         {
-            Group = Group.Server,
-            GameType = mojangVersion.Type == "release" ? GameType.Vanilla : GameType.VanillaSnapshot,
-            Version = mojangVersion.Id,
-            ReleaseTime = mojangVersion.ReleaseTime,
-            DetailUrl = mojangVersion.Url
-        }));
-
+            versions.AddRange(manifest.Versions
+                .Where(v => project.Name == MojangProjectFactory.Vanilla ? 
+                    v.Type.Equals("release", StringComparison.OrdinalIgnoreCase) : 
+                    !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase))
+                .Select(version => new MojangVersion
+                {
+                    Project = project, 
+                    Version = version.Id, 
+                    ReleaseTime = version.ReleaseTime, 
+                    DetailUrl = version.Url
+                }));
+        }
+        
         return versions;
     }
 
@@ -74,12 +77,14 @@ internal static partial class MojangVersionFactory
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MojangVersion>();
-        
-        if (options.Group is not null && options.Group is not Group.Bedrock ||
-            options.GameType is not null && options.GameType is not (GameType.Bedrock or GameType.BedrockPreview))
-        {
+        var projects = new List<MojangProject>(MojangProjectFactory.Projects);
+
+        projects.RemoveAll(p => p.Group != Group.Bedrock);
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));        
+
+        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Bedrock))
             return versions;
-        }
         
         using var client = GetHttpClient();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));        
@@ -90,11 +95,11 @@ internal static partial class MojangVersionFactory
         {
             var url = match.Value;
 
-            var gameType = match.Groups["preview"].Value.Length > 0 
-                ? GameType.BedrockPreview 
-                : GameType.Bedrock;
+            var project = match.Groups["preview"].Value.Length > 0 
+                ? projects.FirstOrDefault(p => p.Name.Equals(MojangProjectFactory.BedrockPreview)) 
+                : projects.FirstOrDefault(p => p.Name.Equals(MojangProjectFactory.Bedrock));
             
-            if (options.GameType is not null && options.GameType != gameType)
+            if (project is null)
                 continue;
 
             var platform =
@@ -111,9 +116,8 @@ internal static partial class MojangVersionFactory
 
             versions.Add(new MojangVersion
             {
-                Group = Group.Server,
-                GameType = gameType,
-                Version = match.Groups.Values.Where(p => p.Name == "version").Select(p => p.Value).First(),
+                Project = project,
+                Version = version,
                 Os = platform,
                 DetailUrl = url
             });
@@ -124,7 +128,7 @@ internal static partial class MojangVersionFactory
 
     public static Task<IDownload> GetDownload(MojangVersion version)
     {
-        return version.GameType is GameType.Bedrock or GameType.BedrockPreview 
+        return version.Project.Group == Group.Bedrock 
             ? GetBedrockDownload(version) 
             : GetVanillaDownload(version);
     }

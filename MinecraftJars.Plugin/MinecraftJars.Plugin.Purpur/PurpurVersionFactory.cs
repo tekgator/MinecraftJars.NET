@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Reflection;
 using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Purpur.Model;
 using MinecraftJars.Plugin.Purpur.Model.BuildApi;
@@ -10,11 +11,6 @@ namespace MinecraftJars.Plugin.Purpur;
 
 internal static class PurpurVersionFactory
 {
-    public static IEnumerable<string> AvailableGameTypes => new List<string>
-    {
-        GameType.Purpur
-    };
-    
     private const string PurpurProjectRequestUri = "https://api.purpurmc.org/v2/purpur/";
     private const string PurpurVersionBuildsRequestUri = "https://api.purpurmc.org/v2/purpur/{0}";
     private const string PurpurBuildRequestUri = "https://api.purpurmc.org/v2/purpur/{0}/{1}";
@@ -25,30 +21,31 @@ internal static class PurpurVersionFactory
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<PurpurVersion>();
-        var gameTypes = new List<string>(AvailableGameTypes);
+        var projects = new List<PurpurProject>(PurpurProjectFactory.Projects);
 
-        if (options.GameType is not null)
-            gameTypes.RemoveAll(t => !t.Equals(options.GameType));
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
 
-        if (!gameTypes.Any() || (options.Group is not null && options.Group is not Group.Server))
+        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
             return versions;
 
         using var client = GetHttpClient();
 
-        var project = await client.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
+        var projectApi = await client.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
         
-        if (project == null) 
+        if (projectApi == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
         
-        project.Versions.Reverse();
-        
-        versions.AddRange(project.Versions
-            .Select(projectVersion => new PurpurVersion
-            {
-                Group = Group.Server, 
-                GameType = GameType.Purpur, 
-                Version = projectVersion
-            }));
+        foreach (var project in projects.Where(p => p.Name.Equals(projectApi.ProjectName, StringComparison.OrdinalIgnoreCase)))
+        {
+            projectApi.Versions.Reverse();
+            versions.AddRange(projectApi.Versions
+                .Select(projectApiVersion => new PurpurVersion
+                {
+                    Project = project, 
+                    Version = projectApiVersion
+                }));
+        }
 
         return versions;
     }
@@ -75,7 +72,7 @@ internal static class PurpurVersionFactory
         using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
         long contentLength = 0;
-        var fileName = $"{version.GameType.ToLower()}-{version.Version}-{build.BuildId}.jar";
+        var fileName = $"{version.Project.Group.ToString().ToLower()}-{version.Version}-{build.BuildId}.jar";
         if (httpResponse.IsSuccessStatusCode)
         {
             contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
 
@@ -14,9 +15,10 @@ public class MohistProvider : IProvider
     }
     
     public ProviderOptions ProviderOptions { get; }
-    public string Name => Provider.Mohist;
-    public IEnumerable<string> AvailableGameTypes => MohistVersionFactory.AvailableGameTypes;
-    
+    public string Name => "MohistMC";
+    public byte[] Logo => Properties.Resources.Mohist;
+    public IEnumerable<IProject> Projects => MohistProjectFactory.Projects;
+   
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await MohistVersionFactory.Get(options ?? new VersionOptions(), cancellationToken);

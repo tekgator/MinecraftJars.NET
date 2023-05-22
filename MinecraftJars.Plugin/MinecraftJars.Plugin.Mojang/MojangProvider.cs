@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
 
@@ -14,10 +15,9 @@ public class MojangProvider : IProvider
     }
 
     public ProviderOptions ProviderOptions { get; }
-
     public string Name => Provider.Mojang;
-    
-    public IEnumerable<string> AvailableGameTypes => MojangVersionFactory.AvailableGameTypes;
+    public byte[] Logo => Properties.Resources.Mojang;
+    public IEnumerable<IProject> Projects => MojangProjectFactory.Projects;
 
     public async Task<IEnumerable<IVersion>> GetVersions(
         VersionOptions? versionOptions = null, 

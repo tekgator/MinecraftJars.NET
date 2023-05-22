@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
 
@@ -14,11 +15,10 @@ public class PurpurProvider : IProvider
     }
     
     public ProviderOptions ProviderOptions { get; }
-
     public string Name => Provider.Purpur;
+    public byte[] Logo => Properties.Resources.Purpur;
+    public IEnumerable<IProject> Projects => PurpurProjectFactory.Projects;
 
-    public IEnumerable<string> AvailableGameTypes => PurpurVersionFactory.AvailableGameTypes;
-    
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {
         return await PurpurVersionFactory.Get(options ?? new VersionOptions(), cancellationToken);

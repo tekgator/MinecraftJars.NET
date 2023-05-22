@@ -1,8 +1,10 @@
-﻿namespace MinecraftJars.Core.Versions;
+﻿using MinecraftJars.Core.Projects;
+
+namespace MinecraftJars.Core.Versions;
 
 public class VersionOptions
 {
     public Group? Group { get; set; }
-    public string? GameType { get; set; }
+    public string? ProjectName { get; set; }
     public string? Version { get; set; }
 }

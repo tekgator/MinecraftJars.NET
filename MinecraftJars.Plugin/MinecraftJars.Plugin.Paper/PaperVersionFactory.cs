@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Reflection;
 using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Paper.Model;
 using MinecraftJars.Plugin.Paper.Model.BuildApi;
@@ -10,14 +11,6 @@ namespace MinecraftJars.Plugin.Paper;
 
 internal static class PaperVersionFactory
 {
-    public static IEnumerable<string> AvailableGameTypes => new List<string>
-    {
-        GameType.Paper,
-        GameType.Folia,
-        GameType.Waterfall,
-        GameType.Velocity
-    };
-    
     private const string PaperProjectRequestUri = "https://api.papermc.io/v2/projects/{0}";
     private const string PaperBuildRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds";
     private const string PaperDownloadRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds/{2}/downloads/{3}";
@@ -27,33 +20,31 @@ internal static class PaperVersionFactory
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<PaperVersion>();
-        var gameTypes = new List<string>(AvailableGameTypes);
+        var projects = new List<PaperProject>(PaperProjectFactory.Projects);
 
-        if (options.GameType is not null)
-            gameTypes.RemoveAll(t => !t.Equals(options.GameType));
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
 
-        if (!gameTypes.Any() || (options.Group is not null && options.Group is not (Group.Server or Group.Proxy)))
+        if (!projects.Any() || (options.Group is not null && options.Group is not (Group.Server or Group.Proxy)))
             return versions;
 
         using var client = GetHttpClient();
 
-        foreach (var gameType in gameTypes)
+        foreach (var project in projects)
         {
-            var project = await client
+            var projectApi = await client
                               .GetFromJsonAsync<Project>(
-                                  string.Format(PaperProjectRequestUri, gameType.ToLower()), 
+                                  string.Format(PaperProjectRequestUri, project.Name.ToLower()), 
                                   cancellationToken: cancellationToken);
             
-            if (project == null) 
-                throw new InvalidOperationException("Could not acquire game type details.");            
-            
-            var group = gameType is GameType.Paper or GameType.Folia ? Group.Server : Group.Proxy;
-            
-            versions.AddRange(project.Versions
+            if (projectApi == null) 
+                throw new InvalidOperationException("Could not acquire game type details.");
+
+            projectApi.Versions.Reverse();
+            versions.AddRange(projectApi.Versions
                 .Select(projectVersion => new PaperVersion
                 {
-                    Group = group, 
-                    GameType = gameType, 
+                    Project = project,
                     Version = projectVersion
                 }));
         }
@@ -65,7 +56,7 @@ internal static class PaperVersionFactory
     {
         using var client = GetHttpClient();
         
-        var requestUri = string.Format(PaperBuildRequestUri, version.GameType.ToLower(), version.Version);
+        var requestUri = string.Format(PaperBuildRequestUri, version.Project.Name.ToLower(), version.Version);
         var detail = await client.GetFromJsonAsync<BuildVersions>(requestUri);
 
         if (detail == null) 
@@ -74,7 +65,7 @@ internal static class PaperVersionFactory
         var build = detail.Builds.Last();
             
         var downloadUri = string.Format(PaperDownloadRequestUri,
-            version.GameType.ToLower(),version.Version,build.BuildId.ToString(),build.Downloads.Application.Name);
+            version.Project.Name.ToLower(), version.Version, build.BuildId.ToString(), build.Downloads.Application.Name);
         
         using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
         using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);

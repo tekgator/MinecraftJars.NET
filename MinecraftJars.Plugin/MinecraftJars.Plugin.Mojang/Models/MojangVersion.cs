@@ -1,12 +1,12 @@
 ﻿using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Mojang.Models;
 
 public class MojangVersion : IVersion
 {
-    public required Group Group { get; init; }
-    public required string GameType { get; init; }
+    public required IProject Project { get; init; }
     public required string Version { get; init; }
     public Os? Os { get; init; }
     internal DateTime? ReleaseTime { get; init; }

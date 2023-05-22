@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
 
@@ -16,8 +17,8 @@ public class PaperProvider : IProvider
     public ProviderOptions ProviderOptions { get; }
     
     public string Name => Provider.Paper;
-
-    public IEnumerable<string> AvailableGameTypes => PaperVersionFactory.AvailableGameTypes;
+    public byte[] Logo => Properties.Resources.Paper;
+    public IEnumerable<IProject> Projects => PaperProjectFactory.Projects;
 
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {

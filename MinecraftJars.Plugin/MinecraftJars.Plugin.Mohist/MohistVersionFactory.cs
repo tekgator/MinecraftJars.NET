@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Reflection;
 using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mohist.Model;
 using MinecraftJars.Plugin.Mohist.Model.BuildApi;
@@ -9,11 +10,6 @@ namespace MinecraftJars.Plugin.Mohist;
 
 internal static class MohistVersionFactory
 {
-    public static IEnumerable<string> AvailableGameTypes => new List<string>
-    {
-        GameType.Mohist
-    };
-    
     private const string MohistVersionRequestUri = "https://mohistmc.com/api/versions";
     private const string MohistLatestBuildRequestUri = "https://mohistmc.com/api/{0}/latest/";
     
@@ -22,29 +18,33 @@ internal static class MohistVersionFactory
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MohistVersion>();
-        var gameTypes = new List<string>(AvailableGameTypes);
+        var projects = new List<MohistProject>(MohistProjectFactory.Projects);
 
-        if (options.GameType is not null)
-            gameTypes.RemoveAll(t => !t.Equals(options.GameType));
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
 
-        if (!gameTypes.Any() || (options.Group is not null && options.Group is not Group.Server))
+        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
             return versions;
         
         using var client = GetHttpClient();
-        var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
-        
-        if (availVersions == null) 
-            throw new InvalidOperationException("Could not acquire game type details.");
-       
-        availVersions.Reverse();
 
-        versions.AddRange(availVersions
-            .Select(version => new MohistVersion
-            {
-                Group = Group.Server, 
-                GameType = GameType.Mohist, 
-                Version = version 
-            }));
+        foreach (var project in projects)
+        {
+            var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
+        
+            if (availVersions == null) 
+                throw new InvalidOperationException("Could not acquire game type details.");
+       
+            availVersions.Reverse();
+
+            versions.AddRange(availVersions
+                .Select(version => new MohistVersion
+                {
+                    Project = project,
+                    Version = version 
+                }));
+        }
+        
         return versions;
     }
 
@@ -62,7 +62,7 @@ internal static class MohistVersionFactory
         using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
         long contentLength = 0;
-        var fileName = $"{version.GameType.ToLower()}-{version.Version}-{latestBuild.Number}.jar";
+        var fileName = $"{version.Project.Group.ToString().ToLower()}-{version.Version}-{latestBuild.Number}.jar";
         if (httpResponse.IsSuccessStatusCode)
         {
             contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;

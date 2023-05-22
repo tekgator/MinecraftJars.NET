@@ -1,11 +1,11 @@
 ﻿using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 
 namespace MinecraftJars.Core.Versions;
 
 public interface IVersion
 {
-    Group Group { get; }
-    string GameType { get; }
+    IProject Project { get; }
     string Version { get; }
     Task<IDownload> GetDownload();
 }
