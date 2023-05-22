@@ -16,7 +16,7 @@ public class PurpurProvider : IProvider
     }
     
     public ProviderOptions ProviderOptions { get; }
-    public string Name => Provider.Purpur;
+    public string Name => "Purpur";
     public byte[] Logo => Properties.Resources.Purpur;
     public IEnumerable<IProject> Projects => PurpurProjectFactory.Projects;
 

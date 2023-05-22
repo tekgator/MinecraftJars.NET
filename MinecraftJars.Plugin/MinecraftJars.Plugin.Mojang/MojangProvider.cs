@@ -16,7 +16,7 @@ public class MojangProvider : IProvider
     }
 
     public ProviderOptions ProviderOptions { get; }
-    public string Name => Provider.Mojang;
+    public string Name => "Mojang";
     public byte[] Logo => Properties.Resources.Mojang;
     public IEnumerable<IProject> Projects => MojangProjectFactory.Projects;
 
