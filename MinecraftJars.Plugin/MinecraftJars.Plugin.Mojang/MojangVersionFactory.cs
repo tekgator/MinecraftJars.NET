@@ -95,25 +95,33 @@ internal static partial class MojangVersionFactory
         foreach (var match in MojangBedrockDownloadLink().Matches(response).Cast<Match>())
         {
             var url = match.Value;
+            
+            var version = match.Groups.Values
+                .Where(p => p.Name == "version")
+                .Select(p => p.Value)
+                .FirstOrDefault();
+            
+            if (version == null)
+                continue;
+            
+            if (options.Version is not null && !options.Version.Equals(version))
+                continue;
 
             var project = match.Groups["preview"].Value.Length > 0 
                 ? projects.FirstOrDefault(p => p.Name.Equals(MojangProjectFactory.BedrockPreview)) 
                 : projects.FirstOrDefault(p => p.Name.Equals(MojangProjectFactory.Bedrock));
             
-            if (project is null)
+            if (project == null)
                 continue;
 
-            var platform =
-                match.Groups.Values.Where(p => p.Name == "platform").Select(p => p.Value).FirstOrDefault() switch
+            var platform = match.Groups.Values
+                    .Where(p => p.Name == "platform")
+                    .Select(p => p.Value)
+                    .FirstOrDefault() switch 
                 {
                     "linux" => Os.Linux,
                     _ => Os.Windows
                 };
-
-            var version = match.Groups.Values.Where(p => p.Name == "version").Select(p => p.Value).First();
-            
-            if (options.Version is not null && !options.Version.Equals(version))
-                continue;
 
             versions.Add(new MojangVersion(
                 Project: project,
