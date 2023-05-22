@@ -38,11 +38,10 @@ internal static class MohistVersionFactory
             availVersions.Reverse();
 
             versions.AddRange(availVersions
-                .Select(version => new MohistVersion
-                {
-                    Project = project,
-                    Version = version 
-                }));
+                .Select(version => new MohistVersion(
+                    Project: project,
+                    Version: version 
+                )));
         }
         
         return versions;
@@ -68,17 +67,16 @@ internal static class MohistVersionFactory
             contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
             fileName = httpResponse.Content.Headers.ContentDisposition?.FileName ?? fileName;
         }
-            
-        return new MohistDownload
-        {
-            FileName = fileName,
-            Size = contentLength,
-            BuildId = latestBuild.Number,
-            Url = latestBuild.Url,
-            ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(latestBuild.Timeinmillis).DateTime,
-            HashType = HashType.Md5,
-            Hash = latestBuild.Md5
-        };
+
+        return new MohistDownload(
+            FileName: fileName,
+            Size: contentLength,
+            BuildId: latestBuild.Number,
+            Url: latestBuild.Url,
+            ReleaseTime: DateTimeOffset.FromUnixTimeMilliseconds(latestBuild.Timeinmillis).DateTime,
+            HashType: HashType.Md5,
+            Hash: latestBuild.Md5
+        );
     }      
     
     private static HttpClient GetHttpClient()

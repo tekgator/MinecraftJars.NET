@@ -4,12 +4,9 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Paper.Model;
 
-public class PaperVersion : IVersion
+public record PaperVersion(
+    IProject Project,
+    string Version) : IVersion
 {
-    public required IProject Project { get; init; }
-    public required string Version { get; init; }
-    public Task<IDownload> GetDownload()
-    {
-        return PaperVersionFactory.GetDownload(this);
-    }
+    public Task<IDownload> GetDownload() => PaperVersionFactory.GetDownload(this);
 }

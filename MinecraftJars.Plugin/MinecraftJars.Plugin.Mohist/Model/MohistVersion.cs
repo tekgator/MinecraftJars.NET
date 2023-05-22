@@ -4,12 +4,9 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Mohist.Model;
 
-public class MohistVersion : IVersion
+public record MohistVersion(
+    IProject Project,
+    string Version) : IVersion
 {
-    public required IProject Project { get; init; }
-    public required string Version { get; init; }
-    public Task<IDownload> GetDownload()
-    {
-        return MohistVersionFactory.GetDownload(this);
-    }
+    public Task<IDownload> GetDownload() => MohistVersionFactory.GetDownload(this);
 }

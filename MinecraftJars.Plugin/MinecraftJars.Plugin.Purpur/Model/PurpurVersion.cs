@@ -4,12 +4,9 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Purpur.Model;
 
-public class PurpurVersion : IVersion
+public record PurpurVersion(
+    IProject Project,
+    string Version) : IVersion
 {
-    public required IProject Project { get; init; }
-    public required string Version { get; init; }
-    public Task<IDownload> GetDownload()
-    {
-        return PurpurVersionFactory.GetDownload(this);
-    }
+    public Task<IDownload> GetDownload() => PurpurVersionFactory.GetDownload(this);
 }

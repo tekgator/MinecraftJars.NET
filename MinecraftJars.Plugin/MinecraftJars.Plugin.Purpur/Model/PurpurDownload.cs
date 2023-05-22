@@ -2,13 +2,11 @@
 
 namespace MinecraftJars.Plugin.Purpur.Model;
 
-public class PurpurDownload : IDownload
-{
-    public required string FileName { get; init; }
-    public required long Size { get; init; }
-    public required int BuildId { get; init; }
-    public required string Url { get; init; }
-    public required DateTime? ReleaseTime { get; init; }
-    public required HashType HashType { get; init; }
-    public required string? Hash { get; init; }
-}
+public record PurpurDownload(
+    string FileName,
+    long Size,
+    int BuildId,
+    string Url,
+    DateTime? ReleaseTime,
+    HashType HashType,
+    string? Hash) : IDownload;

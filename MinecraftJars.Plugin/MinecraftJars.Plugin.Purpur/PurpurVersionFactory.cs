@@ -40,11 +40,10 @@ internal static class PurpurVersionFactory
         {
             projectApi.Versions.Reverse();
             versions.AddRange(projectApi.Versions
-                .Select(projectApiVersion => new PurpurVersion
-                {
-                    Project = project, 
-                    Version = projectApiVersion
-                }));
+                .Select(projectApiVersion => new PurpurVersion(
+                    Project: project, 
+                    Version: projectApiVersion
+                )));
         }
 
         return versions;
@@ -78,17 +77,15 @@ internal static class PurpurVersionFactory
             contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
             fileName = httpResponse.Content.Headers.ContentDisposition?.FileName ?? fileName;
         }
-            
-        return new PurpurDownload
-        {
-            FileName = fileName,
-            Size = contentLength,
-            BuildId = int.Parse(build.BuildId),
-            Url = downloadUri,
-            ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(build.Timestamp).DateTime,
-            HashType = HashType.Md5,
-            Hash = build.Md5
-        };
+
+        return new PurpurDownload(
+            FileName: fileName,
+            Size: contentLength,
+            BuildId: int.Parse(build.BuildId),
+            Url: downloadUri,
+            ReleaseTime: DateTimeOffset.FromUnixTimeMilliseconds(build.Timestamp).DateTime,
+            HashType: HashType.Md5,
+            Hash: build.Md5);
     }      
     
     private static HttpClient GetHttpClient()

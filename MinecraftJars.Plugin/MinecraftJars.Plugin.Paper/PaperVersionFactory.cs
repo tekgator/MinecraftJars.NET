@@ -42,11 +42,10 @@ internal static class PaperVersionFactory
 
             projectApi.Versions.Reverse();
             versions.AddRange(projectApi.Versions
-                .Select(projectVersion => new PaperVersion
-                {
-                    Project = project,
-                    Version = projectVersion
-                }));
+                .Select(projectVersion => new PaperVersion(
+                    Project: project,
+                    Version: projectVersion
+                )));
         }
 
         return versions;
@@ -74,16 +73,14 @@ internal static class PaperVersionFactory
         if (httpResponse.IsSuccessStatusCode)
             contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
             
-        return new PaperDownload
-        {
-            FileName = build.Downloads.Application.Name,
-            Size = contentLength,
-            BuildId = build.BuildId,
-            Url = downloadUri,
-            ReleaseTime = build.Time,
-            HashType = HashType.Sha256,
-            Hash = build.Downloads.Application.Sha256
-        };
+        return new PaperDownload(
+            FileName: build.Downloads.Application.Name,
+            Size: contentLength,
+            BuildId: build.BuildId,
+            Url: downloadUri,
+            ReleaseTime: build.Time,
+            HashType: HashType.Sha256,
+            Hash: build.Downloads.Application.Sha256);
     }    
 
     private static HttpClient GetHttpClient()

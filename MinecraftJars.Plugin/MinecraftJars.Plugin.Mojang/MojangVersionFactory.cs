@@ -60,10 +60,9 @@ internal static partial class MojangVersionFactory
                 .Where(v => project.Name == MojangProjectFactory.Vanilla ? 
                     v.Type.Equals("release", StringComparison.OrdinalIgnoreCase) : 
                     !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase))
-                .Select(version => new MojangVersion
-                {
-                    Project = project, 
-                    Version = version.Id, 
+                .Select(version => new MojangVersion(
+                    Project: project, 
+                    Version: version.Id) {
                     ReleaseTime = version.ReleaseTime, 
                     DetailUrl = version.Url
                 }));
@@ -114,11 +113,10 @@ internal static partial class MojangVersionFactory
             if (options.Version is not null && !options.Version.Equals(version))
                 continue;
 
-            versions.Add(new MojangVersion
-            {
-                Project = project,
-                Version = version,
-                Os = platform,
+            versions.Add(new MojangVersion(
+                Project: project,
+                Version: version,
+                Os: platform) {
                 DetailUrl = url
             });
         }
@@ -140,15 +138,13 @@ internal static partial class MojangVersionFactory
 
         if (detail is { Downloads.Server: not null })
         {
-            return new MojangDownload
-            {
-                FileName = Path.GetFileName(new Uri(detail.Downloads.Server.Url).LocalPath),
-                Size = detail.Downloads.Server.Size,
-                Url = detail.Downloads.Server.Url,
-                ReleaseTime = version.ReleaseTime,
-                HashType = HashType.Sha1,
-                Hash = detail.Downloads.Server.Sha1
-            };
+            return new MojangDownload(
+                FileName: Path.GetFileName(new Uri(detail.Downloads.Server.Url).LocalPath),
+                Size: detail.Downloads.Server.Size,
+                Url: detail.Downloads.Server.Url,
+                ReleaseTime: version.ReleaseTime,
+                HashType: HashType.Sha1,
+                Hash: detail.Downloads.Server.Sha1);
         }
 
         throw new InvalidOperationException("Could not acquire download details.");
@@ -164,13 +160,10 @@ internal static partial class MojangVersionFactory
         if (httpResponse.IsSuccessStatusCode)
             contentLength = httpResponse.Content.Headers.ContentLength ?? 0;
 
-        return new MojangDownload
-        {
-            FileName = Path.GetFileName(new Uri(version.DetailUrl).LocalPath),
-            Size = contentLength,
-            Url = version.DetailUrl,
-            HashType = HashType.None,
-        };
+        return new MojangDownload(
+            FileName: Path.GetFileName(new Uri(version.DetailUrl).LocalPath),
+            Size: contentLength,
+            Url: version.DetailUrl);
     }    
     
     private static HttpClient GetHttpClient()
