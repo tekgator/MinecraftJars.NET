@@ -35,6 +35,9 @@ internal static class MohistVersionFactory
             if (availVersions == null) 
                 throw new InvalidOperationException("Could not acquire game type details.");
        
+            if (options.Version is not null)
+                availVersions.RemoveAll(v => !v.Equals(options.Version));
+            
             availVersions.Reverse();
 
             versions.AddRange(availVersions

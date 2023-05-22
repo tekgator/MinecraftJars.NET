@@ -38,6 +38,9 @@ internal static class PurpurVersionFactory
         
         foreach (var project in projects.Where(p => p.Name.Equals(projectApi.ProjectName, StringComparison.OrdinalIgnoreCase)))
         {
+            if (options.Version is not null)
+                projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
+            
             projectApi.Versions.Reverse();
             versions.AddRange(projectApi.Versions
                 .Select(projectApiVersion => new PurpurVersion(

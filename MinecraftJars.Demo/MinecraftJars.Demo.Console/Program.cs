@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using MinecraftJars;
-using MinecraftJars.Core.Projects;
-using MinecraftJars.Core.Versions;
 
 var providerManager = new ProviderManager();
 

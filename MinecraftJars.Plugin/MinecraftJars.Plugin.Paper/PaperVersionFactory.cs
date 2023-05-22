@@ -40,6 +40,9 @@ internal static class PaperVersionFactory
             if (projectApi == null) 
                 throw new InvalidOperationException("Could not acquire game type details.");
 
+            if (options.Version is not null)
+                projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
+            
             projectApi.Versions.Reverse();
             versions.AddRange(projectApi.Versions
                 .Select(projectVersion => new PaperVersion(
