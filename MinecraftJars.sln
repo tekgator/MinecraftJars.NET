@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Purpur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Mohist", "MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj", "{D304031F-41FD-4B41-8767-EB9DBB34454B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Spigot", "MinecraftJars.Plugin\MinecraftJars.Plugin.Spigot\MinecraftJars.Plugin.Spigot.csproj", "{7C807B9A-3F6C-4373-91B6-F84251F5AF71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D304031F-41FD-4B41-8767-EB9DBB34454B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C807B9A-3F6C-4373-91B6-F84251F5AF71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C807B9A-3F6C-4373-91B6-F84251F5AF71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C807B9A-3F6C-4373-91B6-F84251F5AF71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C807B9A-3F6C-4373-91B6-F84251F5AF71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
