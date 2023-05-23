@@ -16,38 +16,38 @@ internal static class MohistVersionFactory
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
     public static async Task<List<MohistVersion>> Get(
-        VersionOptions versionOptions,
+        VersionOptions options,
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MohistVersion>();
         var projects = new List<MohistProject>(MohistProjectFactory.Projects);
 
-        if (!string.IsNullOrWhiteSpace(versionOptions.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(versionOptions.ProjectName));
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
 
-        if (!projects.Any() || (versionOptions.Group is not null && versionOptions.Group is not Group.Server))
+        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
+            return versions;
+        
+        var project = projects.FirstOrDefault(p => p.Name.Equals(MohistProjectFactory.Mohist));
+        if (project == null)
             return versions;
         
         using var client = GetHttpClient();
-
-        foreach (var project in projects)
-        {
-            var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
+        var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
+    
+        if (availVersions == null) 
+            throw new InvalidOperationException("Could not acquire game type details.");
+   
+        if (options.Version is not null)
+            availVersions.RemoveAll(v => !v.Equals(options.Version));
         
-            if (availVersions == null) 
-                throw new InvalidOperationException("Could not acquire game type details.");
-       
-            if (versionOptions.Version is not null)
-                availVersions.RemoveAll(v => !v.Equals(versionOptions.Version));
-            
-            availVersions.Reverse();
+        availVersions.Reverse();
 
-            versions.AddRange(availVersions
-                .Select(version => new MohistVersion(
-                    Project: project,
-                    Version: version 
-                )));
-        }
+        versions.AddRange(availVersions
+            .Select(version => new MohistVersion(
+                Project: project,
+                Version: version 
+            )));
         
         return versions;
     }
