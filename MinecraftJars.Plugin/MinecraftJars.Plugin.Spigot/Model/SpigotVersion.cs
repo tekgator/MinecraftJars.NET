@@ -8,5 +8,8 @@ public record SpigotVersion(
     IProject Project,
     string Version) : IVersion
 {
-    public Task<IDownload> GetDownload() => SpigotVersionFactory.GetDownload(this);
+    internal DateTime? ReleaseTime { get; init; }
+    internal string? DetailUrl { get; init; }
+    public Task<IDownload> GetDownload(DownloadOptions? options = null) => 
+        SpigotVersionFactory.GetDownload(options ?? new DownloadOptions(), this);
 }
