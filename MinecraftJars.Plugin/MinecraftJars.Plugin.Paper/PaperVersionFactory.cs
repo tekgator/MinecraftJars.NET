@@ -56,7 +56,7 @@ internal static class PaperVersionFactory
         return versions;
     }
     
-    public static async Task<IDownload> GetDownload(PaperVersion version)
+    public static async Task<IDownload> GetDownload(DownloadOptions options, PaperVersion version)
     {
         using var client = GetHttpClient();
         
@@ -70,14 +70,17 @@ internal static class PaperVersionFactory
             
         var downloadUri = string.Format(PaperDownloadRequestUri,
             version.Project.Name.ToLower(), version.Version, build.BuildId.ToString(), build.Downloads.Application.Name);
-        
-        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-        using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
         long contentLength = 0;
-        if (httpResponse.IsSuccessStatusCode)
-            contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
-            
+        if (options.LoadFilesize)
+        {
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+
+            if (httpResponse.IsSuccessStatusCode)
+                contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
+        }
+
         return new PaperDownload(
             FileName: build.Downloads.Application.Name,
             Size: contentLength,

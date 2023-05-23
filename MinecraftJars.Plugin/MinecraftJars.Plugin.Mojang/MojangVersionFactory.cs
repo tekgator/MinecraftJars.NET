@@ -134,14 +134,14 @@ internal static partial class MojangVersionFactory
         return versions;
     }
 
-    public static Task<IDownload> GetDownload(MojangVersion version)
+    public static Task<IDownload> GetDownload(DownloadOptions options, MojangVersion version)
     {
         return version.Project.Group == Group.Bedrock 
-            ? GetBedrockDownload(version) 
-            : GetVanillaDownload(version);
+            ? GetBedrockDownload(options, version) 
+            : GetVanillaDownload(options, version);
     }
     
-    private static async Task<IDownload> GetVanillaDownload(MojangVersion version)
+    private static async Task<IDownload> GetVanillaDownload(DownloadOptions options, MojangVersion version)
     {
         using var client = GetHttpClient();
         var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl);
@@ -160,15 +160,19 @@ internal static partial class MojangVersionFactory
         throw new InvalidOperationException("Could not acquire download details.");
     }
     
-    private static async Task<IDownload> GetBedrockDownload(MojangVersion version)
+    private static async Task<IDownload> GetBedrockDownload(DownloadOptions options, MojangVersion version)
     {
-        using var client = GetHttpClient();
-        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
-        using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
-
         long contentLength = 0;
-        if (httpResponse.IsSuccessStatusCode)
-            contentLength = httpResponse.Content.Headers.ContentLength ?? 0;
+        
+        if (options.LoadFilesize)
+        {
+            using var client = GetHttpClient();
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+
+            if (httpResponse.IsSuccessStatusCode)
+                contentLength = httpResponse.Content.Headers.ContentLength ?? 0;
+        }
 
         return new MojangDownload(
             FileName: Path.GetFileName(new Uri(version.DetailUrl).LocalPath),

@@ -54,7 +54,7 @@ internal static class PurpurVersionFactory
         return versions;
     }
     
-    public static async Task<IDownload> GetDownload(PurpurVersion version)
+    public static async Task<IDownload> GetDownload(DownloadOptions options, PurpurVersion version)
     {
         using var client = GetHttpClient();
         
@@ -71,16 +71,20 @@ internal static class PurpurVersionFactory
             throw new InvalidOperationException("Could not acquire download details.");
         
         var downloadUri = string.Format(PurpurDownloadRequestUri, version.Version, build.BuildId);
-        
-        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-        using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
         long contentLength = 0;
-        var fileName = $"{version.Project.Group.ToString().ToLower()}-{version.Version}-{build.BuildId}.jar";
-        if (httpResponse.IsSuccessStatusCode)
+        var fileName = $"{version.Project.Name}-{version.Version}-{build.BuildId}.jar";
+
+        if (options.LoadFilesize)
         {
-            contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
-            fileName = httpResponse.Content.Headers.ContentDisposition?.FileName ?? fileName;
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
+                fileName = httpResponse.Content.Headers.ContentDisposition?.FileName ?? fileName;
+            }
         }
 
         return new PurpurDownload(

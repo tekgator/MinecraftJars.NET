@@ -52,7 +52,7 @@ internal static class MohistVersionFactory
         return versions;
     }
 
-    public static async Task<IDownload> GetDownload(MohistVersion version)
+    public static async Task<IDownload> GetDownload(DownloadOptions options, MohistVersion version)
     {
         using var client = GetHttpClient();
         
@@ -61,16 +61,20 @@ internal static class MohistVersionFactory
 
         if (latestBuild == null || string.IsNullOrWhiteSpace(latestBuild.Url)) 
             throw new InvalidOperationException("Could not acquire download details.");
-        
-        using var requestMessage = new HttpRequestMessage(HttpMethod.Get, latestBuild.Url);
-        using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
 
         long contentLength = 0;
-        var fileName = $"{version.Project.Group.ToString().ToLower()}-{version.Version}-{latestBuild.Number}.jar";
-        if (httpResponse.IsSuccessStatusCode)
+        var fileName = $"{version.Project.Name}-{version.Version}-{latestBuild.Number}.jar";
+
+        if (options.LoadFilesize)
         {
-            contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
-            fileName = httpResponse.Content.Headers.ContentDisposition?.FileName ?? fileName;
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, latestBuild.Url);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
+                fileName = httpResponse.Content.Headers.ContentDisposition?.FileName ?? fileName;
+            }
         }
 
         return new MohistDownload(
