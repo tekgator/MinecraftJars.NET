@@ -134,17 +134,23 @@ internal static partial class MojangVersionFactory
         return versions;
     }
 
-    public static Task<IDownload> GetDownload(DownloadOptions options, MojangVersion version)
+    public static Task<IDownload> GetDownload(
+        DownloadOptions options, 
+        MojangVersion version, 
+        CancellationToken cancellationToken = default!)
     {
         return version.Project.Group == Group.Bedrock 
-            ? GetBedrockDownload(options, version) 
-            : GetVanillaDownload(options, version);
+            ? GetBedrockDownload(options, version, cancellationToken) 
+            : GetVanillaDownload(options, version, cancellationToken);
     }
     
-    private static async Task<IDownload> GetVanillaDownload(DownloadOptions options, MojangVersion version)
+    private static async Task<IDownload> GetVanillaDownload(
+        DownloadOptions options, 
+        MojangVersion version,
+        CancellationToken cancellationToken = default!)
     {
         using var client = GetHttpClient();
-        var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl);
+        var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken);
 
         if (detail is { Downloads.Server: not null })
         {
@@ -161,7 +167,10 @@ internal static partial class MojangVersionFactory
         throw new InvalidOperationException("Could not acquire download details.");
     }
     
-    private static async Task<IDownload> GetBedrockDownload(DownloadOptions options, MojangVersion version)
+    private static async Task<IDownload> GetBedrockDownload(
+        DownloadOptions options, 
+        MojangVersion version,
+        CancellationToken cancellationToken = default!)
     {
         long contentLength = 0;
         
@@ -169,7 +178,7 @@ internal static partial class MojangVersionFactory
         {
             using var client = GetHttpClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? 0;

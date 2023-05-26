@@ -7,5 +7,5 @@ public interface IVersion
 {
     IProject Project { get; }
     string Version { get; }
-    Task<IDownload> GetDownload(DownloadOptions? options = null);
+    Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!);
 }

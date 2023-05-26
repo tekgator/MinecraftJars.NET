@@ -8,6 +8,6 @@ public record PurpurVersion(
     IProject Project,
     string Version) : IVersion
 {
-    public Task<IDownload> GetDownload(DownloadOptions? options = null) => 
-        PurpurVersionFactory.GetDownload(options ?? new DownloadOptions(), this);
+    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+        PurpurVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }

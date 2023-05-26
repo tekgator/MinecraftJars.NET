@@ -56,12 +56,15 @@ internal static class PaperVersionFactory
         return versions;
     }
     
-    public static async Task<IDownload> GetDownload(DownloadOptions options, PaperVersion version)
+    public static async Task<IDownload> GetDownload(
+        DownloadOptions options, 
+        PaperVersion version,
+        CancellationToken cancellationToken = default!)
     {
         using var client = GetHttpClient();
         
         var requestUri = string.Format(PaperBuildRequestUri, version.Project.Name.ToLower(), version.Version);
-        var detail = await client.GetFromJsonAsync<BuildVersions>(requestUri);
+        var detail = await client.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken);
 
         if (detail == null) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -75,7 +78,7 @@ internal static class PaperVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;

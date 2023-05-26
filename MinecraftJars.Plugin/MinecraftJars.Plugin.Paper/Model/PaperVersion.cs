@@ -8,6 +8,6 @@ public record PaperVersion(
     IProject Project,
     string Version) : IVersion
 {
-    public Task<IDownload> GetDownload(DownloadOptions? options = null) => 
-        PaperVersionFactory.GetDownload(options ?? new DownloadOptions(), this);
+    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+        PaperVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }

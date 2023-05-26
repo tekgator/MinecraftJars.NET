@@ -54,18 +54,21 @@ internal static class PurpurVersionFactory
         return versions;
     }
     
-    public static async Task<IDownload> GetDownload(DownloadOptions options, PurpurVersion version)
+    public static async Task<IDownload> GetDownload(
+        DownloadOptions options, 
+        PurpurVersion version,
+        CancellationToken cancellationToken = default!)
     {
         using var client = GetHttpClient();
         
         var requestUriVersionBuilds = string.Format(PurpurVersionBuildsRequestUri, version.Version);
-        var versionBuilds = await client.GetFromJsonAsync<VersionBuilds>(requestUriVersionBuilds);
+        var versionBuilds = await client.GetFromJsonAsync<VersionBuilds>(requestUriVersionBuilds, cancellationToken);
 
         if (versionBuilds == null) 
             throw new InvalidOperationException("Could not acquire download details.");
         
         var requestUriBuild = string.Format(PurpurBuildRequestUri, version.Version, versionBuilds.Builds.Latest);
-        var build = await client.GetFromJsonAsync<Build>(requestUriBuild);
+        var build = await client.GetFromJsonAsync<Build>(requestUriBuild, cancellationToken);
         
         if (build == null) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -78,7 +81,7 @@ internal static class PurpurVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
             {

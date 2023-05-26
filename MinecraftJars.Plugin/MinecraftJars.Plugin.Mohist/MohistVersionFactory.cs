@@ -52,12 +52,15 @@ internal static class MohistVersionFactory
         return versions;
     }
 
-    public static async Task<IDownload> GetDownload(DownloadOptions options, MohistVersion version)
+    public static async Task<IDownload> GetDownload(
+        DownloadOptions options, 
+        MohistVersion version, 
+        CancellationToken cancellationToken = default!)
     {
         using var client = GetHttpClient();
         
         var requestUriLatestBuild = string.Format(MohistLatestBuildRequestUri, version.Version);
-        var latestBuild = await client.GetFromJsonAsync<Build>(requestUriLatestBuild);
+        var latestBuild = await client.GetFromJsonAsync<Build>(requestUriLatestBuild, cancellationToken);
 
         if (latestBuild == null || string.IsNullOrWhiteSpace(latestBuild.Url)) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -68,7 +71,7 @@ internal static class MohistVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, latestBuild.Url);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
             {

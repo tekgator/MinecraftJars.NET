@@ -12,6 +12,6 @@ public record MojangVersion(
     internal DateTime? ReleaseTime { get; init; }
     internal string DetailUrl { get; init; } = string.Empty;
     
-    public Task<IDownload> GetDownload(DownloadOptions? options = null) =>
-        MojangVersionFactory.GetDownload(options ?? new DownloadOptions(), this);
+    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) =>
+        MojangVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }
