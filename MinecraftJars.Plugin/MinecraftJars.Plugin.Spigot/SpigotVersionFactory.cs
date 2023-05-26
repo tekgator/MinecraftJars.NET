@@ -139,7 +139,7 @@ internal static partial class SpigotVersionFactory
         return new SpigotDownload(
             FileName: fileName,
             Size: contentLength,
-            BuildId: int.Parse(version.Version),
+            BuildId: version.Version,
             Url: version.DetailUrl!,
             ReleaseTime: version.ReleaseTime);
     }      

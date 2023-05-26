@@ -90,7 +90,7 @@ internal static class PurpurVersionFactory
         return new PurpurDownload(
             FileName: fileName,
             Size: contentLength,
-            BuildId: int.Parse(build.BuildId),
+            BuildId: build.BuildId,
             Url: downloadUri,
             ReleaseTime: DateTimeOffset.FromUnixTimeMilliseconds(build.Timestamp).DateTime,
             HashType: HashType.Md5,

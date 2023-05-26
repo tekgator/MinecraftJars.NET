@@ -80,7 +80,7 @@ internal static class MohistVersionFactory
         return new MohistDownload(
             FileName: fileName,
             Size: contentLength,
-            BuildId: latestBuild.Number,
+            BuildId: latestBuild.Number.ToString(),
             Url: latestBuild.Url,
             ReleaseTime: DateTimeOffset.FromUnixTimeMilliseconds(latestBuild.Timeinmillis).DateTime,
             HashType: HashType.Md5,

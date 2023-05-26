@@ -84,7 +84,7 @@ internal static class PaperVersionFactory
         return new PaperDownload(
             FileName: build.Downloads.Application.Name,
             Size: contentLength,
-            BuildId: build.BuildId,
+            BuildId: build.BuildId.ToString(),
             Url: downloadUri,
             ReleaseTime: build.Time,
             HashType: HashType.Sha256,

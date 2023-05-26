@@ -5,8 +5,8 @@ namespace MinecraftJars.Plugin.Mojang.Models;
 public record MojangDownload(
     string FileName,
     long Size,
+    string BuildId,
     string Url,
     HashType HashType = HashType.None,
     string? Hash = null,
-    DateTime? ReleaseTime = null,
-    int BuildId = 0) : IDownload;
+    DateTime? ReleaseTime = null) : IDownload;

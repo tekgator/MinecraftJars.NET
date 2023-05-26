@@ -5,7 +5,7 @@ namespace MinecraftJars.Plugin.Purpur.Model;
 public record PurpurDownload(
     string FileName,
     long Size,
-    int BuildId,
+    string BuildId,
     string Url,
     DateTime? ReleaseTime,
     HashType HashType,

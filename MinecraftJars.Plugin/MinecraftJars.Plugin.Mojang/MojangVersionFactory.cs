@@ -151,6 +151,7 @@ internal static partial class MojangVersionFactory
             return new MojangDownload(
                 FileName: Path.GetFileName(new Uri(detail.Downloads.Server.Url).LocalPath),
                 Size: detail.Downloads.Server.Size,
+                BuildId: version.Version,
                 Url: detail.Downloads.Server.Url,
                 ReleaseTime: version.ReleaseTime,
                 HashType: HashType.Sha1,
@@ -177,6 +178,7 @@ internal static partial class MojangVersionFactory
         return new MojangDownload(
             FileName: Path.GetFileName(new Uri(version.DetailUrl).LocalPath),
             Size: contentLength,
+            BuildId: version.Version,
             Url: version.DetailUrl);
     }    
     
