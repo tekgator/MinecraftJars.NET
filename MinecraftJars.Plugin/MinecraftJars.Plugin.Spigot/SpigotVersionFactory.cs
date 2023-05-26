@@ -1,15 +1,23 @@
-﻿using System.Net.Http.Json;
+﻿using System.Globalization;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using MinecraftJars.Core.Downloads;
-using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Spigot.Model;
 using MinecraftJars.Plugin.Spigot.Model.JenkinsApi;
+using Group = MinecraftJars.Core.Projects.Group;
 
 namespace MinecraftJars.Plugin.Spigot;
 
-internal static class SpigotVersionFactory
+internal static partial class SpigotVersionFactory
 {
+    private const string SpigotRequestUri = "https://hub.spigotmc.org/versions";
+    [GeneratedRegex("(?im)<a href=\"(?<json>(?<version>1\\.[a-z0-9.-]+).json)\">*(.+)(?<date>\\d{2}-\\w{3}-\\d{4} [0-9:]+)", RegexOptions.Compiled)]
+    private static partial Regex SpigotVersions();
+
     private const string BungeeCoordRequestUri = "https://ci.md-5.net/job/BungeeCord/api/json?tree=builds[number,url,result,inProgress,timestamp,artifacts[fileName,relativePath]]";
     private const string BungeeCoordRequestUriMaxRecordSuffix = "{{0,{0}}}";
     
@@ -19,14 +27,58 @@ internal static class SpigotVersionFactory
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
-        var taskSpigot = Task.FromResult(new List<SpigotVersion>());
-        var taskBungeeCoord = GetBungeeCoord(options, cancellationToken);
+        var taskSpigot = GetSpigot(options, cancellationToken);
+        //var taskBungeeCoord = GetBungeeCoord(options, cancellationToken);
+        var taskBungeeCoord = Task.FromResult(new List<SpigotVersion>());
 
         await Task.WhenAll(taskSpigot, taskBungeeCoord);
 
         return (await taskSpigot).Concat(await taskBungeeCoord).ToList();
     }
-    
+
+    private static async Task<List<SpigotVersion>> GetSpigot(
+        VersionOptions options,
+        CancellationToken cancellationToken = default!)
+    {
+        var versions = new List<SpigotVersion>();
+        var projects = new List<SpigotProject>(SpigotProjectFactory.Projects);
+        
+        projects.RemoveAll(p => p.Group != Group.Server);
+        if (!string.IsNullOrWhiteSpace(options.ProjectName))
+            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));        
+
+        if (!projects.Any() || options.Group is not null && options.Group is not Group.Server)
+            return versions;
+
+        var project = projects.FirstOrDefault(p => p.Name.Equals(SpigotProjectFactory.Spigot));
+        if (project == null)
+            return versions;
+        
+        var request = new HttpRequestMessage(HttpMethod.Get, SpigotRequestUri);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
+
+        using var client = GetHttpClient();
+        var response = await client.SendAsync(request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException("Could not acquire version details.");
+
+        var html = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        versions.AddRange(SpigotVersions()
+            .Matches(html)
+            .Select(match => new SpigotVersion(
+                Project: project,
+                Version: match.Groups["version"].Value)
+            {
+                DetailUrl = $"{SpigotRequestUri}/{match.Groups["json"].Value}",
+                ReleaseTime = DateTime.Parse(match.Groups["date"].Value, new CultureInfo("en-US"))
+            })            
+            .OrderByDescending(v => v.ReleaseTime));
+
+        return versions;
+    }
+
     private static async Task<List<SpigotVersion>> GetBungeeCoord(
         VersionOptions options,
         CancellationToken cancellationToken = default!)
@@ -37,7 +89,7 @@ internal static class SpigotVersionFactory
         if (!string.IsNullOrWhiteSpace(options.ProjectName))
             projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
 
-        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Proxy))
+        if (!projects.Any() || options.Group is not null && options.Group is not Group.Proxy)
             return versions;
 
         var project = projects.FirstOrDefault(p => p.Name.Equals(SpigotProjectFactory.BungeeCord));
@@ -65,7 +117,7 @@ internal static class SpigotVersionFactory
                     ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(b.Timestamp).DateTime, 
                     DetailUrl = $"{b.Url}artifact/{b.Artifacts.First().RelativePath}"
                 }));
-
+        
         return versions;
     }
     
@@ -104,4 +156,6 @@ internal static class SpigotVersionFactory
 
         return client;
     }
+
+
 }
