@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Reflection;
 using MinecraftJars.Core.Downloads;
-using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mohist.Model;
 using MinecraftJars.Plugin.Mohist.Model.BuildApi;

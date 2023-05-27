@@ -25,7 +25,7 @@ internal static partial class MojangVersionFactory
     public static Task<List<MojangVersion>> GetVersion(
         string projectName,
         VersionOptions options, 
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         return MojangProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.Group switch
         {
@@ -38,7 +38,7 @@ internal static partial class MojangVersionFactory
     private static async Task<List<MojangVersion>> GetVersionVanilla(
         string projectName,
         VersionOptions options, 
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<MojangVersion>();
         var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
@@ -71,7 +71,7 @@ internal static partial class MojangVersionFactory
     private static async Task<List<MojangVersion>> GetVersionBedrock(
         string projectName,
         VersionOptions options, 
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<MojangVersion>();
         var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));

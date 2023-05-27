@@ -40,7 +40,7 @@ internal static partial class SpigotVersionFactory
     private static async Task<List<SpigotVersion>> GetVersionSpigot(
         string projectName,
         VersionOptions options,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<SpigotVersion>();
         var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
@@ -76,7 +76,7 @@ internal static partial class SpigotVersionFactory
     private static async Task<List<SpigotVersion>> GetVersionBungeeCoord(
         string projectName,
         VersionOptions options,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<SpigotVersion>();
         var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
@@ -109,7 +109,7 @@ internal static partial class SpigotVersionFactory
     public static Task<IDownload> GetDownload(
         DownloadOptions options, 
         SpigotVersion version,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         return version.Project.Group == Group.Server 
             ? GetDownloadSpigot(options, version, cancellationToken) 
@@ -142,7 +142,7 @@ internal static partial class SpigotVersionFactory
     private static async Task<IDownload> GetDownloadBungeeCord(
         DownloadOptions options, 
         SpigotVersion version,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         long contentLength = 0;
         var fileName = $"{version.Project.Name}-{version.Version}.jar";
