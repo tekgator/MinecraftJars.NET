@@ -22,40 +22,50 @@ public class SpigotBuildTools
         _version = version;
     }
 
-    public async Task<IDownload> Build(CancellationToken cancellationToken = default!)
+    public async Task<SpigotDownload> Build(string buildId, CancellationToken cancellationToken = default!)
     {
         var tempDir = CreateTempDir();
+        var finalDir = CreateTempDir();
         try
         {
             var buildTools = await DownloadBuildTools(tempDir, cancellationToken);
-
-            await RunBuildTools(tempDir, buildTools, cancellationToken);
-
-            return new SpigotDownload(FileName: "todo",
-                Size: 0,
-                BuildId: "",
-                Url: "todo",
+            await RunBuildTools(tempDir, buildTools, finalDir, cancellationToken);
+            var filePath = Path.Combine(finalDir, Directory.GetFiles(finalDir).First());
+            
+            return new SpigotDownload(
+                FileName: Path.GetFileName(filePath),
+                Size: new FileInfo(filePath).Length,
+                BuildId: buildId,
+                Url: filePath,
                 ReleaseTime: _version.ReleaseTime);
 
         }
+        catch
+        {
+            if (Directory.Exists(finalDir))
+                DeleteDirectory(finalDir);
+
+            throw;
+        }
         finally
-        {   
+        {
             if (Directory.Exists(tempDir))
-                Directory.Delete(tempDir, true);
+                DeleteDirectory(tempDir);
         }
     }
 
-    private async Task RunBuildTools(string dir, string buildTools, CancellationToken cancellationToken)
+   
+    private async Task RunBuildTools(string dir, string buildTools, string outputDir, CancellationToken cancellationToken)
     {
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = _options.Java,
+                FileName = _options.JavaBin,
                 WorkingDirectory = dir,
-                Arguments = $"-jar {buildTools} --rev {_version.Version}",
+                Arguments = $"-jar {buildTools} --rev {_version.Version} --output-dir {outputDir}",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                UseShellExecute = false,
+                UseShellExecute = true,
                 CreateNoWindow = true,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
@@ -64,42 +74,39 @@ public class SpigotBuildTools
         };
         process.Start();
 
-        _ = Task.Run(() => ConnectOutput(process.StandardOutput));
-        _ = Task.Run(() => ConnectError(process.StandardError));
-
+        if (_options.BuildJarOutput != null)
+        {
+            _ = Task.Run(() => ConnectOutput(process.StandardOutput), cancellationToken);
+            _ = Task.Run(() => ConnectError(process.StandardError), cancellationToken);
+        }
+        
         await process.WaitForExitAsync(cancellationToken);
     }
     
     private async Task ConnectOutput(StreamReader output)
     {
-        if (_options.BuildJarOutput == null)
-            return;
-        
         while (!output.EndOfStream)
         {
             var line = await output.ReadLineAsync();
             if (string.IsNullOrWhiteSpace(line)) continue;
-            _options.BuildJarOutput(line);
+            _options.BuildJarOutput!(line);
         }
     }
     
     private async Task ConnectError(StreamReader error)
     {
-        if (_options.BuildJarOutput == null)
-            return;
-        
         while (!error.EndOfStream)
         {
             var line = await error.ReadLineAsync();
             if (string.IsNullOrWhiteSpace(line)) continue;
-            _options.BuildJarOutput(line);
+            _options.BuildJarOutput!(line);
         }
     }
     
     private async Task<string> DownloadBuildTools(string dir, CancellationToken cancellationToken)
     {
         var response = await _client.GetStreamAsync(BuildToolsRequestUri, cancellationToken);
-        var fileName = Path.Combine(dir, "BuildTools.jar");
+        var fileName = Path.Combine(dir, Path.GetFileName(new Uri(BuildToolsRequestUri).LocalPath));
         var buildTools = new FileStream(fileName, FileMode.Create);
         
         await response.CopyToAsync(buildTools, cancellationToken);
@@ -108,7 +115,7 @@ public class SpigotBuildTools
         return fileName;
     }
     
-    private string CreateTempDir()
+    private static string CreateTempDir()
     {
         string tempPath;
         do
@@ -119,5 +126,28 @@ public class SpigotBuildTools
         Directory.CreateDirectory(tempPath);
         
         return tempPath;
+    }
+    
+    private static void DeleteDirectory(string path)
+    {
+        var root = new DirectoryInfo(path);
+        var directories = new Stack<DirectoryInfo>();
+        directories.Push(root);
+        
+        while (directories.Count > 0)
+        {
+            var directory = directories.Pop();
+            directory.Attributes &= ~(FileAttributes.Archive | FileAttributes.ReadOnly | FileAttributes.Hidden);
+            foreach (var subDirectories in directory.GetDirectories())
+            {
+                directories.Push(subDirectories);
+            }
+            foreach (var files in directory.GetFiles())
+            {
+                files.Attributes &= ~(FileAttributes.Archive | FileAttributes.ReadOnly | FileAttributes.Hidden);
+                files.Delete();
+            }
+        }
+        root.Delete(true);
     }
 }

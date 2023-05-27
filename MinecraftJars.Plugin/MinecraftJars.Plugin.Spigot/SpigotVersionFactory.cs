@@ -70,7 +70,8 @@ internal static partial class SpigotVersionFactory
             .Matches(html)
             .Select(match => new SpigotVersion(
                 Project: project,
-                Version: match.Groups["version"].Value)
+                Version: match.Groups["version"].Value,
+                RequiresLocalBuild: true)
             {
                 DetailUrl = $"{SpigotRequestUri}/{match.Groups["json"].Value}",
                 ReleaseTime = DateTime.Parse(match.Groups["date"].Value, new CultureInfo("en-US"))
@@ -146,7 +147,7 @@ internal static partial class SpigotVersionFactory
         if (options.BuildJar)
         {
             var buildTool = new SpigotBuildTools(GetHttpClient(), options, version);
-            return await buildTool.Build(cancellationToken);
+            return await buildTool.Build(build.Name,cancellationToken);
         }
 
         return new SpigotDownload(

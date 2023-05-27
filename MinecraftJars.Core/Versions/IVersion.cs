@@ -7,5 +7,6 @@ public interface IVersion
 {
     IProject Project { get; }
     string Version { get; }
+    bool RequiresLocalBuild => false;
     Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!);
 }

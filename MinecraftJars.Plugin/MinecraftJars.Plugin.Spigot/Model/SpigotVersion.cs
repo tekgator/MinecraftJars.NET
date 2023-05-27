@@ -6,7 +6,8 @@ namespace MinecraftJars.Plugin.Spigot.Model;
 
 public record SpigotVersion(
     IProject Project,
-    string Version) : IVersion
+    string Version,
+    bool RequiresLocalBuild = false) : IVersion
 {
     internal DateTime? ReleaseTime { get; init; }
     internal string DetailUrl { get; init; } = string.Empty;
