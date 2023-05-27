@@ -21,9 +21,10 @@ public class MojangProvider : IProvider
     public IEnumerable<IProject> Projects => MojangProjectFactory.Projects;
 
     public async Task<IEnumerable<IVersion>> GetVersions(
+        string projectName,
         VersionOptions? versionOptions = null, 
         CancellationToken cancellationToken = default!)
     {
-        return await MojangVersionFactory.GetVersion(versionOptions ?? new VersionOptions(), cancellationToken);
+        return await MojangVersionFactory.GetVersion(projectName, versionOptions ?? new VersionOptions(), cancellationToken);
     }     
 }

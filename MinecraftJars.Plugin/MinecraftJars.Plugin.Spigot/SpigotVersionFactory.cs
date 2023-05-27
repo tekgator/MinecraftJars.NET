@@ -24,36 +24,26 @@ internal static partial class SpigotVersionFactory
     
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<SpigotVersion>> GetVersion(
+    public static Task<List<SpigotVersion>> GetVersion(
+        string projectName,
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
-        var taskSpigot = GetVersionSpigot(options, cancellationToken);
-        //var taskBungeeCoord = GetVersionBungeeCoord(options, cancellationToken);
-        var taskBungeeCoord = Task.FromResult(new List<SpigotVersion>());
-
-        await Task.WhenAll(taskSpigot, taskBungeeCoord);
-
-        return (await taskSpigot).Concat(await taskBungeeCoord).ToList();
+        return SpigotProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.Group switch
+        {
+            Group.Server => GetVersionSpigot(projectName, options, cancellationToken),
+            Group.Proxy => GetVersionBungeeCoord(projectName, options, cancellationToken),
+            _ => throw new InvalidOperationException("Could not acquire version details.")
+        };
     }
 
     private static async Task<List<SpigotVersion>> GetVersionSpigot(
+        string projectName,
         VersionOptions options,
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<SpigotVersion>();
-        var projects = new List<SpigotProject>(SpigotProjectFactory.Projects);
-        
-        projects.RemoveAll(p => p.Group != Group.Server);
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));        
-
-        if (!projects.Any() || options.Group is not null && options.Group is not Group.Server)
-            return versions;
-
-        var project = projects.FirstOrDefault(p => p.Name.Equals(SpigotProjectFactory.Spigot));
-        if (project == null)
-            return versions;
+        var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
         
         var request = new HttpRequestMessage(HttpMethod.Get, SpigotRequestUri);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
@@ -82,22 +72,13 @@ internal static partial class SpigotVersionFactory
     }
 
     private static async Task<List<SpigotVersion>> GetVersionBungeeCoord(
+        string projectName,
         VersionOptions options,
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<SpigotVersion>();
-        var projects = new List<SpigotProject>(SpigotProjectFactory.Projects);
+        var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
-
-        if (!projects.Any() || options.Group is not null && options.Group is not Group.Proxy)
-            return versions;
-
-        var project = projects.FirstOrDefault(p => p.Name.Equals(SpigotProjectFactory.BungeeCord));
-        if (project == null)
-            return versions;
-        
         using var client = GetHttpClient();
 
         var requestUrl = BungeeCoordRequestUri + (options.MaxRecords == null

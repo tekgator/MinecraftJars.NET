@@ -20,8 +20,11 @@ public class PurpurProvider : IProvider
     public byte[] Logo => Properties.Resources.Purpur;
     public IEnumerable<IProject> Projects => PurpurProjectFactory.Projects;
 
-    public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IVersion>> GetVersions(
+        string projectName,
+        VersionOptions? options = null, 
+        CancellationToken cancellationToken = default)
     {
-        return await PurpurVersionFactory.GetVersion(options ?? new VersionOptions(), cancellationToken);
+        return await PurpurVersionFactory.GetVersion(projectName, options ?? new VersionOptions(), cancellationToken);
     }
 }

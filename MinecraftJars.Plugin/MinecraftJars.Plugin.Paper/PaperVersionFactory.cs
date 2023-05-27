@@ -18,40 +18,32 @@ internal static class PaperVersionFactory
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
     public static async Task<List<PaperVersion>> GetVersion(
+        string projectName,
         VersionOptions options,
         CancellationToken cancellationToken)
     {
         var versions = new List<PaperVersion>();
-        var projects = new List<PaperProject>(PaperProjectFactory.Projects);
-
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
-
-        if (!projects.Any() || (options.Group is not null && options.Group is not (Group.Server or Group.Proxy)))
-            return versions;
+        var project = PaperProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
         using var client = GetHttpClient();
 
-        foreach (var project in projects)
-        {
-            var projectApi = await client
-                              .GetFromJsonAsync<Project>(
-                                  string.Format(PaperProjectRequestUri, project.Name.ToLower()), 
-                                  cancellationToken: cancellationToken);
-            
-            if (projectApi == null) 
-                throw new InvalidOperationException("Could not acquire game type details.");
+        var projectApi = await client
+                          .GetFromJsonAsync<Project>(
+                              string.Format(PaperProjectRequestUri, project.Name.ToLower()), 
+                              cancellationToken: cancellationToken);
+        
+        if (projectApi == null) 
+            throw new InvalidOperationException("Could not acquire game type details.");
 
-            if (options.Version is not null)
-                projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
-            
-            projectApi.Versions.Reverse();
-            versions.AddRange(projectApi.Versions
-                .Select(projectVersion => new PaperVersion(
-                    Project: project,
-                    Version: projectVersion
-                )));
-        }
+        if (!string.IsNullOrWhiteSpace(options.Version))
+            projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
+        
+        projectApi.Versions.Reverse();
+        versions.AddRange(projectApi.Versions
+            .Select(projectVersion => new PaperVersion(
+                Project: project,
+                Version: projectVersion
+            )));
 
         return versions;
     }

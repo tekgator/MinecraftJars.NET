@@ -20,8 +20,11 @@ public class MohistProvider : IProvider
     public byte[] Logo => Properties.Resources.Mohist;
     public IEnumerable<IProject> Projects => MohistProjectFactory.Projects;
    
-    public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IVersion>> GetVersions(
+        string projectName,
+        VersionOptions? options = null, 
+        CancellationToken cancellationToken = default)
     {
-        return await MohistVersionFactory.GetVersion(options ?? new VersionOptions(), cancellationToken);
+        return await MohistVersionFactory.GetVersion(projectName, options ?? new VersionOptions(), cancellationToken);
     }
 }

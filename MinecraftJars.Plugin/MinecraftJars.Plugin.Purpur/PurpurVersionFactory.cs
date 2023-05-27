@@ -19,18 +19,13 @@ internal static class PurpurVersionFactory
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
     public static async Task<List<PurpurVersion>> GetVersion(
+        string projectName,
         VersionOptions options,
         CancellationToken cancellationToken)
     {
         var versions = new List<PurpurVersion>();
-        var projects = new List<PurpurProject>(PurpurProjectFactory.Projects);
-
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
-
-        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
-            return versions;
-
+        var project = PurpurProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
+        
         using var client = GetHttpClient();
 
         var projectApi = await client.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
@@ -38,18 +33,15 @@ internal static class PurpurVersionFactory
         if (projectApi == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
         
-        foreach (var project in projects.Where(p => p.Name.Equals(projectApi.ProjectName, StringComparison.OrdinalIgnoreCase)))
-        {
-            if (options.Version is not null)
-                projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
-            
-            projectApi.Versions.Reverse();
-            versions.AddRange(projectApi.Versions
-                .Select(projectApiVersion => new PurpurVersion(
-                    Project: project, 
-                    Version: projectApiVersion
-                )));
-        }
+        if (!string.IsNullOrWhiteSpace(options.Version))
+            projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
+        
+        projectApi.Versions.Reverse();
+        versions.AddRange(projectApi.Versions
+            .Select(projectApiVersion => new PurpurVersion(
+                Project: project, 
+                Version: projectApiVersion
+            )));
 
         return versions;
     }

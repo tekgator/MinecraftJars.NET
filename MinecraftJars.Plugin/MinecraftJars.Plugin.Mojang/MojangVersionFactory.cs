@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using MinecraftJars.Core.Downloads;
@@ -21,78 +22,70 @@ internal static partial class MojangVersionFactory
 
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<MojangVersion>> GetVersion(
+    public static Task<List<MojangVersion>> GetVersion(
+        string projectName,
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
-        var taskVanilla = GetVersionVanilla(options, cancellationToken);
-        var taskBedrock = GetVersionBedrock(options, cancellationToken);
-
-        await Task.WhenAll(taskVanilla, taskBedrock);
-
-        return (await taskVanilla).Concat(await taskBedrock).ToList();
+        return MojangProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.Group switch
+        {
+            Group.Bedrock => GetVersionBedrock(projectName, options, cancellationToken),
+            Group.Server => GetVersionVanilla(projectName, options, cancellationToken),
+            _ => throw new InvalidOperationException("Could not acquire version details.")
+        };
     }
     
     private static async Task<List<MojangVersion>> GetVersionVanilla(
+        string projectName,
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MojangVersion>();
-        var projects = new List<MojangProject>(MojangProjectFactory.Projects);
+        var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        projects.RemoveAll(p => p.Group != Group.Server);
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));        
-
-        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
-            return versions;
-        
         using var client = GetHttpClient();
         var manifest = await client.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken);
 
         if (manifest == null)
             throw new InvalidOperationException("Could not acquire version details.");
         
-        if (options.Version is not null)
+        if (!string.IsNullOrWhiteSpace(options.Version))
             manifest.Versions.RemoveAll(v => !v.Id.Equals(options.Version));
 
-        foreach (var project in projects.Where(p => p.Group == Group.Server))
-        {
-            versions.AddRange(manifest.Versions
-                .Where(v => project.Name == MojangProjectFactory.Vanilla ? 
-                    v.Type.Equals("release", StringComparison.OrdinalIgnoreCase) : 
-                    !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase))
-                .Select(version => new MojangVersion(
-                    Project: project, 
-                    Version: version.Id) {
-                    ReleaseTime = version.ReleaseTime, 
-                    DetailUrl = version.Url
-                }));
-        }
+        versions.AddRange(manifest.Versions
+            .Where(v => project.Name == MojangProjectFactory.Vanilla ? 
+                v.Type.Equals("release", StringComparison.OrdinalIgnoreCase) : 
+                !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase))
+            .Select(version => new MojangVersion(
+                Project: project, 
+                Version: version.Id) {
+                ReleaseTime = version.ReleaseTime, 
+                DetailUrl = version.Url
+            }));
         
         return versions;
     }
 
     private static async Task<List<MojangVersion>> GetVersionBedrock(
+        string projectName,
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
         var versions = new List<MojangVersion>();
-        var projects = new List<MojangProject>(MojangProjectFactory.Projects);
+        var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        projects.RemoveAll(p => p.Group != Group.Bedrock);
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));        
+        var request = new HttpRequestMessage(HttpMethod.Get, MojangBedrockRequestUri);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
 
-        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Bedrock))
-            return versions;
-        
         using var client = GetHttpClient();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));        
+        var response = await client.SendAsync(request, cancellationToken);
 
-        var response = await client.GetStringAsync(MojangBedrockRequestUri, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException("Could not acquire version details.");
+
+        var html = await response.Content.ReadAsStringAsync(cancellationToken);
         
-        foreach (var match in MojangBedrockDownloadLink().Matches(response).Cast<Match>())
+        foreach (var match in MojangBedrockDownloadLink().Matches(html).Cast<Match>())
         {
             var url = match.Value;
             
@@ -104,16 +97,15 @@ internal static partial class MojangVersionFactory
             if (version == null)
                 continue;
             
-            if (options.Version is not null && !options.Version.Equals(version))
+            if (!string.IsNullOrWhiteSpace(options.Version) && !options.Version.Equals(version))
                 continue;
 
-            var project = match.Groups["preview"].Value.Length > 0 
-                ? projects.FirstOrDefault(p => p.Name.Equals(MojangProjectFactory.BedrockPreview)) 
-                : projects.FirstOrDefault(p => p.Name.Equals(MojangProjectFactory.Bedrock));
+            var isPreview = match.Groups["preview"].Value.Length > 0;
             
-            if (project == null)
+            if ((project.Name == MojangProjectFactory.Bedrock && isPreview) ||
+                (project.Name == MojangProjectFactory.BedrockPreview && !isPreview))
                 continue;
-
+            
             var platform = match.Groups.Values
                     .Where(p => p.Name == "platform")
                     .Select(p => p.Value)
@@ -139,9 +131,12 @@ internal static partial class MojangVersionFactory
         MojangVersion version, 
         CancellationToken cancellationToken)
     {
-        return version.Project.Group == Group.Bedrock 
-            ? GetDownloadBedrock(options, version, cancellationToken) 
-            : GetDownloadVanilla(options, version, cancellationToken);
+        return version.Project.Group switch
+        {
+            Group.Bedrock => GetDownloadBedrock(options, version, cancellationToken),
+            Group.Server => GetDownloadVanilla(options, version, cancellationToken),
+            _ => throw new InvalidOperationException("Could not acquire download details.")
+        };
     }
     
     private static async Task<IDownload> GetDownloadVanilla(
@@ -152,19 +147,28 @@ internal static partial class MojangVersionFactory
         using var client = GetHttpClient();
         var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken);
 
-        if (detail is { Downloads.Server: not null })
+        if (detail == null) 
+            throw new InvalidOperationException("Could not acquire download details.");
+        
+        if (detail.Downloads.Server == null)
         {
             return new MojangDownload(
-                FileName: Path.GetFileName(new Uri(detail.Downloads.Server.Url).LocalPath),
-                Size: detail.Downloads.Server.Size,
+                FileName: string.Empty,
+                Size: 0,
                 BuildId: version.Version,
-                Url: detail.Downloads.Server.Url,
+                Url: string.Empty,
                 ReleaseTime: version.ReleaseTime,
-                HashType: HashType.Sha1,
-                Hash: detail.Downloads.Server.Sha1);
+                HashType: HashType.None);
         }
 
-        throw new InvalidOperationException("Could not acquire download details.");
+        return new MojangDownload(
+            FileName: Path.GetFileName(new Uri(detail.Downloads.Server.Url).LocalPath),
+            Size: detail.Downloads.Server.Size,
+            BuildId: version.Version,
+            Url: detail.Downloads.Server.Url,
+            ReleaseTime: version.ReleaseTime,
+            HashType: HashType.Sha1,
+            Hash: detail.Downloads.Server.Sha1);     
     }
     
     private static async Task<IDownload> GetDownloadBedrock(

@@ -16,29 +16,20 @@ internal static class MohistVersionFactory
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
     public static async Task<List<MohistVersion>> GetVersion(
+        string projectName,
         VersionOptions options,
         CancellationToken cancellationToken)
     {
         var versions = new List<MohistVersion>();
-        var projects = new List<MohistProject>(MohistProjectFactory.Projects);
+        var project = MohistProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        if (!string.IsNullOrWhiteSpace(options.ProjectName))
-            projects.RemoveAll(t => !t.Name.Equals(options.ProjectName));
-
-        if (!projects.Any() || (options.Group is not null && options.Group is not Group.Server))
-            return versions;
-        
-        var project = projects.FirstOrDefault(p => p.Name.Equals(MohistProjectFactory.Mohist));
-        if (project == null)
-            return versions;
-        
         using var client = GetHttpClient();
         var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
     
         if (availVersions == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
    
-        if (options.Version is not null)
+        if (!string.IsNullOrWhiteSpace(options.Version))
             availVersions.RemoveAll(v => !v.Equals(options.Version));
         
         availVersions.Reverse();

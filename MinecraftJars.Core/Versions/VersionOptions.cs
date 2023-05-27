@@ -5,16 +5,6 @@ namespace MinecraftJars.Core.Versions;
 public class VersionOptions
 {
     /// <summary>
-    /// Filter available versions by Group 
-    /// </summary>        
-    public Group? Group { get; set; }
-
-    /// <summary>
-    /// Filter available versions for certain projects 
-    /// </summary>        
-    public string? ProjectName { get; set; }
-
-    /// <summary>
     /// Filter for a specific version 
     /// </summary>        
     public string? Version { get; set; }
