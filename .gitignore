@@ -475,3 +475,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#Dev studio files
+.idea/
+.vs/
+.vscode/
