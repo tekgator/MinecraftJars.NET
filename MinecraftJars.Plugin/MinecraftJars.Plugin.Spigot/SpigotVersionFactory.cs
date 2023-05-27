@@ -8,6 +8,7 @@ using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Spigot.Model;
 using MinecraftJars.Plugin.Spigot.Model.JenkinsApi;
+using MinecraftJars.Plugin.Spigot.Model.SpigotApi;
 using Group = MinecraftJars.Core.Projects.Group;
 
 namespace MinecraftJars.Plugin.Spigot;
@@ -120,8 +121,46 @@ internal static partial class SpigotVersionFactory
         
         return versions;
     }
+
+    public static Task<IDownload> GetDownload(
+        DownloadOptions options, 
+        SpigotVersion version,
+        CancellationToken cancellationToken = default!)
+    {
+        return version.Project.Group == Group.Server 
+            ? GetSpigotDownload(options, version, cancellationToken) 
+            : GetBungeeCordDownload(options, version, cancellationToken);
+    }
     
-    public static async Task<IDownload> GetDownload(DownloadOptions options, SpigotVersion version)
+    private static async Task<IDownload> GetSpigotDownload(
+        DownloadOptions options, 
+        SpigotVersion version,
+        CancellationToken cancellationToken = default!)
+    {
+        using var client = GetHttpClient();
+        var build = await client.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken);
+
+        if (build == null) 
+            throw new InvalidOperationException("Could not acquire download details.");
+
+        if (options.BuildJar)
+        {
+            var buildTool = new SpigotBuildTools(GetHttpClient(), options, version);
+            return await buildTool.Build(cancellationToken);
+        }
+
+        return new SpigotDownload(
+            FileName: string.Empty,
+            Size: 0,
+            BuildId: build.Name,
+            Url: string.Empty, 
+            ReleaseTime: version.ReleaseTime);
+    }
+    
+    private static async Task<IDownload> GetBungeeCordDownload(
+        DownloadOptions options, 
+        SpigotVersion version,
+        CancellationToken cancellationToken = default!)
     {
         long contentLength = 0;
         var fileName = $"{version.Project.Name}-{version.Version}.jar";
@@ -130,7 +169,7 @@ internal static partial class SpigotVersionFactory
         {
             using var client = GetHttpClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? 0;
@@ -142,7 +181,7 @@ internal static partial class SpigotVersionFactory
             BuildId: version.Version,
             Url: version.DetailUrl!,
             ReleaseTime: version.ReleaseTime);
-    }      
+    }
     
     private static HttpClient GetHttpClient()
     {
@@ -156,6 +195,4 @@ internal static partial class SpigotVersionFactory
 
         return client;
     }
-
-
 }

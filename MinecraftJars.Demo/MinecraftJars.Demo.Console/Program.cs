@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MinecraftJars;
+using MinecraftJars.Core.Downloads;
 
 var providerManager = new ProviderManager();
 
@@ -24,7 +25,7 @@ foreach (var provider in providerManager.GetProviders())
         Console.WriteLine($"\tVersion ID: {version.Version}");
         ResetConsoleColor();
 
-        var download = await version.GetDownload();
+        var download = await version.GetDownload(new DownloadOptions { BuildJarOutput = Console.WriteLine });
         
         foreach (var property in version.GetType().GetProperties().Where(p => p.Name != "Version"))
         {

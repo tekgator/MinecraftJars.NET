@@ -9,7 +9,7 @@ public record SpigotVersion(
     string Version) : IVersion
 {
     internal DateTime? ReleaseTime { get; init; }
-    internal string? DetailUrl { get; init; }
-    public Task<IDownload> GetDownload(DownloadOptions? options = null) => 
-        SpigotVersionFactory.GetDownload(options ?? new DownloadOptions(), this);
+    internal string DetailUrl { get; init; } = string.Empty;
+    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+        SpigotVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }
