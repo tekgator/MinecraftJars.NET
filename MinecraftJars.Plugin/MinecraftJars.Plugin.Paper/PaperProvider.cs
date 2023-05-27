@@ -12,7 +12,7 @@ public class PaperProvider : IProvider
     public PaperProvider(ProviderOptions? options)
     {
         ProviderOptions = options ?? new ProviderOptions();
-        PaperVersionFactory.HttpClientFactory = ProviderOptions.HttpClientFactory;
+        PaperVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
     
     public ProviderOptions ProviderOptions { get; }

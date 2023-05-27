@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Json;
-using System.Reflection;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mohist.Model;
@@ -11,8 +10,8 @@ internal static class MohistVersionFactory
 {
     private const string MohistVersionRequestUri = "https://mohistmc.com/api/versions";
     private const string MohistLatestBuildRequestUri = "https://mohistmc.com/api/{0}/latest/";
-    
-    public static IHttpClientFactory? HttpClientFactory { get; set; }
+
+    public static HttpClient HttpClient { get; set; } = default!;
     
     public static async Task<List<MohistVersion>> GetVersion(
         string projectName,
@@ -22,8 +21,7 @@ internal static class MohistVersionFactory
         var versions = new List<MohistVersion>();
         var project = MohistProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        using var client = GetHttpClient();
-        var availVersions = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
+        var availVersions = await HttpClient.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
     
         if (availVersions == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
@@ -49,10 +47,8 @@ internal static class MohistVersionFactory
         MohistVersion version, 
         CancellationToken cancellationToken)
     {
-        using var client = GetHttpClient();
-        
         var requestUriLatestBuild = string.Format(MohistLatestBuildRequestUri, version.Version);
-        var latestBuild = await client.GetFromJsonAsync<Build>(requestUriLatestBuild, cancellationToken);
+        var latestBuild = await HttpClient.GetFromJsonAsync<Build>(requestUriLatestBuild, cancellationToken);
 
         if (latestBuild == null || string.IsNullOrWhiteSpace(latestBuild.Url)) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -63,7 +59,7 @@ internal static class MohistVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, latestBuild.Url);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
             {
@@ -81,18 +77,5 @@ internal static class MohistVersionFactory
             HashType: HashType.Md5,
             Hash: latestBuild.Md5
         );
-    }      
-    
-    private static HttpClient GetHttpClient()
-    {
-        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
-
-        if (client.DefaultRequestHeaders.UserAgent.Any())
-            return client;
-
-        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        client.DefaultRequestHeaders.UserAgent.TryParseAdd(assembly.GetName().Name);
-
-        return client;
     }
 }

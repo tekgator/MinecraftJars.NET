@@ -12,7 +12,7 @@ public class MojangProvider : IProvider
     public MojangProvider(ProviderOptions? options)
     {
         ProviderOptions = options ?? new ProviderOptions();
-        MojangVersionFactory.HttpClientFactory = ProviderOptions.HttpClientFactory;
+        MojangVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
 
     public ProviderOptions ProviderOptions { get; }

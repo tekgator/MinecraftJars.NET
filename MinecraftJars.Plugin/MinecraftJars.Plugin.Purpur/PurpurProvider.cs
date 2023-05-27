@@ -12,7 +12,7 @@ public class PurpurProvider : IProvider
     public PurpurProvider(ProviderOptions? options)
     {
         ProviderOptions = options ?? new ProviderOptions();
-        PurpurVersionFactory.HttpClientFactory = ProviderOptions.HttpClientFactory;
+        PurpurVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
     
     public ProviderOptions ProviderOptions { get; }

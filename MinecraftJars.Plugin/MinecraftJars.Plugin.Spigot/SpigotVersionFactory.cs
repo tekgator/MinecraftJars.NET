@@ -2,7 +2,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net.Mime;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
@@ -22,7 +21,7 @@ internal static partial class SpigotVersionFactory
     private const string BungeeCoordRequestUri = "https://ci.md-5.net/job/BungeeCord/api/json?tree=builds[number,url,result,inProgress,timestamp,artifacts[fileName,relativePath]]";
     private const string BungeeCoordRequestUriMaxRecordSuffix = "{{0,{0}}}";
     
-    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    public static HttpClient HttpClient { get; set; } = default!;
     
     public static Task<List<SpigotVersion>> GetVersion(
         string projectName,
@@ -48,8 +47,7 @@ internal static partial class SpigotVersionFactory
         var request = new HttpRequestMessage(HttpMethod.Get, SpigotRequestUri);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
 
-        using var client = GetHttpClient();
-        var response = await client.SendAsync(request, cancellationToken);
+        var response = await HttpClient.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
             throw new InvalidOperationException("Could not acquire version details.");
@@ -81,13 +79,11 @@ internal static partial class SpigotVersionFactory
         var versions = new List<SpigotVersion>();
         var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        using var client = GetHttpClient();
-
         var requestUrl = BungeeCoordRequestUri + (options.MaxRecords.HasValue
             ? string.Format(BungeeCoordRequestUriMaxRecordSuffix, options.MaxRecords.Value)
             : string.Empty);
         
-        var job = await client.GetFromJsonAsync<Job>(requestUrl, cancellationToken);
+        var job = await HttpClient.GetFromJsonAsync<Job>(requestUrl, cancellationToken);
             
         if (job == null)
             throw new InvalidOperationException("Could not acquire version details.");
@@ -121,8 +117,7 @@ internal static partial class SpigotVersionFactory
         SpigotVersion version,
         CancellationToken cancellationToken = default!)
     {
-        using var client = GetHttpClient();
-        var build = await client.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken);
+        var build = await HttpClient.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken);
 
         if (build == null) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -135,7 +130,7 @@ internal static partial class SpigotVersionFactory
                 Url: string.Empty,
                 ReleaseTime: version.ReleaseTime);
 
-        var buildTool = new SpigotBuildTools(GetHttpClient(), options, version);
+        var buildTool = new SpigotBuildTools(HttpClient, options, version);
         return await buildTool.Build(build.Name,cancellationToken);
     }
     
@@ -149,9 +144,8 @@ internal static partial class SpigotVersionFactory
         
         if (options.LoadFilesize)
         {
-            using var client = GetHttpClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? 0;
@@ -161,20 +155,7 @@ internal static partial class SpigotVersionFactory
             FileName: fileName,
             Size: contentLength,
             BuildId: version.Version,
-            Url: version.DetailUrl!,
+            Url: version.DetailUrl,
             ReleaseTime: version.ReleaseTime);
-    }
-    
-    private static HttpClient GetHttpClient()
-    {
-        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
-
-        if (client.DefaultRequestHeaders.UserAgent.Any())
-            return client;
-
-        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        client.DefaultRequestHeaders.UserAgent.TryParseAdd(assembly.GetName().Name);
-
-        return client;
     }
 }

@@ -12,7 +12,7 @@ public class SpigotProvider : IProvider
     public SpigotProvider(ProviderOptions? options)
     {
         ProviderOptions = options ?? new ProviderOptions();
-        SpigotVersionFactory.HttpClientFactory = ProviderOptions.HttpClientFactory;
+        SpigotVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
 
     public ProviderOptions ProviderOptions { get; }

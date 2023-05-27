@@ -1,7 +1,5 @@
 ﻿using System.Net.Http.Json;
-using System.Reflection;
 using MinecraftJars.Core.Downloads;
-using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Paper.Model;
 using MinecraftJars.Plugin.Paper.Model.BuildApi;
@@ -15,7 +13,7 @@ internal static class PaperVersionFactory
     private const string PaperBuildRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds";
     private const string PaperDownloadRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds/{2}/downloads/{3}";
 
-    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    public static HttpClient HttpClient { get; set; } = default!;
     
     public static async Task<List<PaperVersion>> GetVersion(
         string projectName,
@@ -25,11 +23,8 @@ internal static class PaperVersionFactory
         var versions = new List<PaperVersion>();
         var project = PaperProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        using var client = GetHttpClient();
-
-        var projectApi = await client
-                          .GetFromJsonAsync<Project>(string
-                              .Format(PaperProjectRequestUri, project.Name.ToLower()), cancellationToken);
+        var projectApi = await HttpClient
+            .GetFromJsonAsync<Project>(string.Format(PaperProjectRequestUri, project.Name.ToLower()), cancellationToken);
         
         if (projectApi == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
@@ -54,10 +49,8 @@ internal static class PaperVersionFactory
         PaperVersion version,
         CancellationToken cancellationToken)
     {
-        using var client = GetHttpClient();
-        
         var requestUri = string.Format(PaperBuildRequestUri, version.Project.Name.ToLower(), version.Version);
-        var detail = await client.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken);
+        var detail = await HttpClient.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken);
 
         if (detail == null) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -71,7 +64,8 @@ internal static class PaperVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await HttpClient
+                .SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? contentLength;
@@ -85,18 +79,5 @@ internal static class PaperVersionFactory
             ReleaseTime: build.Time,
             HashType: HashType.Sha256,
             Hash: build.Downloads.Application.Sha256);
-    }    
-
-    private static HttpClient GetHttpClient()
-    {
-        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
-
-        if (client.DefaultRequestHeaders.UserAgent.Any())
-            return client;
-
-        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        client.DefaultRequestHeaders.UserAgent.TryParseAdd(assembly.GetName().Name);
-
-        return client;
     }
 }

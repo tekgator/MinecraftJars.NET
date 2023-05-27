@@ -1,7 +1,5 @@
 ﻿using System.Net.Http.Json;
-using System.Reflection;
 using MinecraftJars.Core.Downloads;
-using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Purpur.Model;
 using MinecraftJars.Plugin.Purpur.Model.BuildApi;
@@ -16,7 +14,7 @@ internal static class PurpurVersionFactory
     private const string PurpurBuildRequestUri = "https://api.purpurmc.org/v2/purpur/{0}/{1}";
     private const string PurpurDownloadRequestUri = "https://api.purpurmc.org/v2/purpur/{0}/{1}/download";
     
-    public static IHttpClientFactory? HttpClientFactory { get; set; }
+    public static HttpClient HttpClient { get; set; } = default!;
     
     public static async Task<List<PurpurVersion>> GetVersion(
         string projectName,
@@ -26,9 +24,7 @@ internal static class PurpurVersionFactory
         var versions = new List<PurpurVersion>();
         var project = PurpurProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
         
-        using var client = GetHttpClient();
-
-        var projectApi = await client.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
+        var projectApi = await HttpClient.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
         
         if (projectApi == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
@@ -53,16 +49,14 @@ internal static class PurpurVersionFactory
         PurpurVersion version,
         CancellationToken cancellationToken)
     {
-        using var client = GetHttpClient();
-        
         var requestUriVersionBuilds = string.Format(PurpurVersionBuildsRequestUri, version.Version);
-        var versionBuilds = await client.GetFromJsonAsync<VersionBuilds>(requestUriVersionBuilds, cancellationToken);
+        var versionBuilds = await HttpClient.GetFromJsonAsync<VersionBuilds>(requestUriVersionBuilds, cancellationToken);
 
         if (versionBuilds == null) 
             throw new InvalidOperationException("Could not acquire download details.");
         
         var requestUriBuild = string.Format(PurpurBuildRequestUri, version.Version, versionBuilds.Builds.Latest);
-        var build = await client.GetFromJsonAsync<Build>(requestUriBuild, cancellationToken);
+        var build = await HttpClient.GetFromJsonAsync<Build>(requestUriBuild, cancellationToken);
         
         if (build == null) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -75,7 +69,8 @@ internal static class PurpurVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await HttpClient
+                .SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
             {
@@ -93,17 +88,4 @@ internal static class PurpurVersionFactory
             HashType: HashType.Md5,
             Hash: build.Md5);
     }      
-    
-    private static HttpClient GetHttpClient()
-    {
-        var client = HttpClientFactory?.CreateClient() ?? new HttpClient();
-
-        if (client.DefaultRequestHeaders.UserAgent.Any())
-            return client;
-
-        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        client.DefaultRequestHeaders.UserAgent.TryParseAdd(assembly.GetName().Name);
-
-        return client;
-    }
 }

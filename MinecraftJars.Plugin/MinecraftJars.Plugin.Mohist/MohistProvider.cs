@@ -12,7 +12,7 @@ public class MohistProvider : IProvider
     public MohistProvider(ProviderOptions? options)
     {
         ProviderOptions = options ?? new ProviderOptions();
-        MohistVersionFactory.HttpClientFactory = ProviderOptions.HttpClientFactory;
+        MohistVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
     
     public ProviderOptions ProviderOptions { get; }

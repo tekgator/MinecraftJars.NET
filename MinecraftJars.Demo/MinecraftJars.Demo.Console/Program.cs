@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MinecraftJars;
+using MinecraftJars.Core.Versions;
 
 var providerManager = new ProviderManager();
 
@@ -13,7 +14,7 @@ foreach (var provider in providerManager.GetProviders())
     {
         Console.WriteLine($"\t{project}");     
         
-        foreach (var version in await provider.GetVersions(project.Name))
+        foreach (var version in await provider.GetVersions(project.Name, new VersionOptions { MaxRecords = 10}))
         {
             Console.WriteLine($"\t\t{version}");
 
