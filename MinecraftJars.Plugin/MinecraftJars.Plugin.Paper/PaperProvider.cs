@@ -22,6 +22,6 @@ public class PaperProvider : IProvider
 
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await PaperVersionFactory.Get(options ?? new VersionOptions(), cancellationToken);
+        return await PaperVersionFactory.GetVersion(options ?? new VersionOptions(), cancellationToken);
     }
 }

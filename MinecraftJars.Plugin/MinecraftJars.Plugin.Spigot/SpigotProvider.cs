@@ -22,6 +22,6 @@ public class SpigotProvider : IProvider
     
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await SpigotVersionFactory.Get(options ?? new VersionOptions(), cancellationToken);
+        return await SpigotVersionFactory.GetVersion(options ?? new VersionOptions(), cancellationToken);
     }
 }

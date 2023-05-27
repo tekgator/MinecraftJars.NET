@@ -22,6 +22,6 @@ public class MohistProvider : IProvider
    
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await MohistVersionFactory.Get(options ?? new VersionOptions(), cancellationToken);
+        return await MohistVersionFactory.GetVersion(options ?? new VersionOptions(), cancellationToken);
     }
 }

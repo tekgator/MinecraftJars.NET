@@ -24,6 +24,6 @@ public class MojangProvider : IProvider
         VersionOptions? versionOptions = null, 
         CancellationToken cancellationToken = default!)
     {
-        return await MojangVersionFactory.Get(versionOptions ?? new VersionOptions(), cancellationToken);
+        return await MojangVersionFactory.GetVersion(versionOptions ?? new VersionOptions(), cancellationToken);
     }     
 }

@@ -24,12 +24,12 @@ internal static partial class SpigotVersionFactory
     
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<SpigotVersion>> Get(
+    public static async Task<List<SpigotVersion>> GetVersion(
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
-        var taskSpigot = GetSpigot(options, cancellationToken);
-        //var taskBungeeCoord = GetBungeeCoord(options, cancellationToken);
+        var taskSpigot = GetVersionSpigot(options, cancellationToken);
+        //var taskBungeeCoord = GetVersionBungeeCoord(options, cancellationToken);
         var taskBungeeCoord = Task.FromResult(new List<SpigotVersion>());
 
         await Task.WhenAll(taskSpigot, taskBungeeCoord);
@@ -37,7 +37,7 @@ internal static partial class SpigotVersionFactory
         return (await taskSpigot).Concat(await taskBungeeCoord).ToList();
     }
 
-    private static async Task<List<SpigotVersion>> GetSpigot(
+    private static async Task<List<SpigotVersion>> GetVersionSpigot(
         VersionOptions options,
         CancellationToken cancellationToken = default!)
     {
@@ -80,7 +80,7 @@ internal static partial class SpigotVersionFactory
         return versions;
     }
 
-    private static async Task<List<SpigotVersion>> GetBungeeCoord(
+    private static async Task<List<SpigotVersion>> GetVersionBungeeCoord(
         VersionOptions options,
         CancellationToken cancellationToken = default!)
     {
@@ -128,11 +128,11 @@ internal static partial class SpigotVersionFactory
         CancellationToken cancellationToken = default!)
     {
         return version.Project.Group == Group.Server 
-            ? GetSpigotDownload(options, version, cancellationToken) 
-            : GetBungeeCordDownload(options, version, cancellationToken);
+            ? GetDownloadSpigot(options, version, cancellationToken) 
+            : GetDownloadBungeeCord(options, version, cancellationToken);
     }
     
-    private static async Task<IDownload> GetSpigotDownload(
+    private static async Task<IDownload> GetDownloadSpigot(
         DownloadOptions options, 
         SpigotVersion version,
         CancellationToken cancellationToken = default!)
@@ -157,7 +157,7 @@ internal static partial class SpigotVersionFactory
             ReleaseTime: version.ReleaseTime);
     }
     
-    private static async Task<IDownload> GetBungeeCordDownload(
+    private static async Task<IDownload> GetDownloadBungeeCord(
         DownloadOptions options, 
         SpigotVersion version,
         CancellationToken cancellationToken = default!)

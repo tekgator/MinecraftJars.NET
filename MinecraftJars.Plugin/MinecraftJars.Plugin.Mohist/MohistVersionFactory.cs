@@ -15,9 +15,9 @@ internal static class MohistVersionFactory
     
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<MohistVersion>> Get(
+    public static async Task<List<MohistVersion>> GetVersion(
         VersionOptions options,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<MohistVersion>();
         var projects = new List<MohistProject>(MohistProjectFactory.Projects);
@@ -55,7 +55,7 @@ internal static class MohistVersionFactory
     public static async Task<IDownload> GetDownload(
         DownloadOptions options, 
         MohistVersion version, 
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         using var client = GetHttpClient();
         

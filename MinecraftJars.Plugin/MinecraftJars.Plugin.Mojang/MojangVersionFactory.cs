@@ -21,19 +21,19 @@ internal static partial class MojangVersionFactory
 
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<MojangVersion>> Get(
+    public static async Task<List<MojangVersion>> GetVersion(
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
-        var taskVanilla = GetVanilla(options, cancellationToken);
-        var taskBedrock = GetBedrock(options, cancellationToken);
+        var taskVanilla = GetVersionVanilla(options, cancellationToken);
+        var taskBedrock = GetVersionBedrock(options, cancellationToken);
 
         await Task.WhenAll(taskVanilla, taskBedrock);
 
         return (await taskVanilla).Concat(await taskBedrock).ToList();
     }
     
-    private static async Task<List<MojangVersion>> GetVanilla(
+    private static async Task<List<MojangVersion>> GetVersionVanilla(
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
@@ -73,7 +73,7 @@ internal static partial class MojangVersionFactory
         return versions;
     }
 
-    private static async Task<List<MojangVersion>> GetBedrock(
+    private static async Task<List<MojangVersion>> GetVersionBedrock(
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
@@ -137,17 +137,17 @@ internal static partial class MojangVersionFactory
     public static Task<IDownload> GetDownload(
         DownloadOptions options, 
         MojangVersion version, 
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         return version.Project.Group == Group.Bedrock 
-            ? GetBedrockDownload(options, version, cancellationToken) 
-            : GetVanillaDownload(options, version, cancellationToken);
+            ? GetDownloadBedrock(options, version, cancellationToken) 
+            : GetDownloadVanilla(options, version, cancellationToken);
     }
     
-    private static async Task<IDownload> GetVanillaDownload(
+    private static async Task<IDownload> GetDownloadVanilla(
         DownloadOptions options, 
         MojangVersion version,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         using var client = GetHttpClient();
         var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken);
@@ -167,10 +167,10 @@ internal static partial class MojangVersionFactory
         throw new InvalidOperationException("Could not acquire download details.");
     }
     
-    private static async Task<IDownload> GetBedrockDownload(
+    private static async Task<IDownload> GetDownloadBedrock(
         DownloadOptions options, 
         MojangVersion version,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         long contentLength = 0;
         

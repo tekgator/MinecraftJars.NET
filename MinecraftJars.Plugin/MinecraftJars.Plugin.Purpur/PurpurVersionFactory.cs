@@ -18,9 +18,9 @@ internal static class PurpurVersionFactory
     
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<PurpurVersion>> Get(
+    public static async Task<List<PurpurVersion>> GetVersion(
         VersionOptions options,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<PurpurVersion>();
         var projects = new List<PurpurProject>(PurpurProjectFactory.Projects);
@@ -57,7 +57,7 @@ internal static class PurpurVersionFactory
     public static async Task<IDownload> GetDownload(
         DownloadOptions options, 
         PurpurVersion version,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         using var client = GetHttpClient();
         

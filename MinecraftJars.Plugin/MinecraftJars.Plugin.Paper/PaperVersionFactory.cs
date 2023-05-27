@@ -17,9 +17,9 @@ internal static class PaperVersionFactory
 
     public static IHttpClientFactory? HttpClientFactory { get; set; }
     
-    public static async Task<List<PaperVersion>> Get(
+    public static async Task<List<PaperVersion>> GetVersion(
         VersionOptions options,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         var versions = new List<PaperVersion>();
         var projects = new List<PaperProject>(PaperProjectFactory.Projects);
@@ -59,7 +59,7 @@ internal static class PaperVersionFactory
     public static async Task<IDownload> GetDownload(
         DownloadOptions options, 
         PaperVersion version,
-        CancellationToken cancellationToken = default!)
+        CancellationToken cancellationToken)
     {
         using var client = GetHttpClient();
         

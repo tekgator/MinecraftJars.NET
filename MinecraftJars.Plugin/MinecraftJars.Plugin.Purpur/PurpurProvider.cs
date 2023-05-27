@@ -22,6 +22,6 @@ public class PurpurProvider : IProvider
 
     public async Task<IEnumerable<IVersion>> GetVersions(VersionOptions? options = null, CancellationToken cancellationToken = default)
     {
-        return await PurpurVersionFactory.Get(options ?? new VersionOptions(), cancellationToken);
+        return await PurpurVersionFactory.GetVersion(options ?? new VersionOptions(), cancellationToken);
     }
 }
