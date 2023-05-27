@@ -1,37 +1,30 @@
 ﻿using System.Diagnostics;
 using MinecraftJars;
-using MinecraftJars.Core.Downloads;
 
 var providerManager = new ProviderManager();
 
 foreach (var provider in providerManager.GetProviders())
 {
     SetConsoleColor(ConsoleColor.White, ConsoleColor.Red);
-    Console.WriteLine($"\n{provider.Name}:");
+    Console.WriteLine($"{provider.Name}:");
     ResetConsoleColor();
 
-    foreach (var property in provider.GetType().GetProperties().Where(p => p.Name != "Name"))
+    foreach (var project in provider.Projects)
     {
-        Console.WriteLine($"\t{property.Name}: {property.GetValue(provider)}");
-    }    
-    
-    SetConsoleColor(ConsoleColor.Green);
-    Console.WriteLine("\n\tVersions:");
-    ResetConsoleColor();
-    
-    foreach (var version in await provider.GetVersions())
-    {
-        SetConsoleColor(ConsoleColor.Magenta);
-        Console.WriteLine($"\tVersion ID: {version.Version}");
-        ResetConsoleColor();
-
-        var download = await version.GetDownload(new DownloadOptions { BuildJarOutput = Console.WriteLine });
+        Console.WriteLine($"\t{project}");     
         
-        foreach (var property in version.GetType().GetProperties().Where(p => p.Name != "Version"))
+        foreach (var version in await provider.GetVersions(project.Name))
         {
-            Console.WriteLine($"\t\t{property.Name}: {property.GetValue(version)}");
+            Console.WriteLine($"\t\t{version}");
+
+            var download = await version.GetDownload();
+            Console.WriteLine($"\t\t\t{download}");
         }
+        
+        Console.WriteLine();
     }
+    
+    Console.WriteLine();
 }
 
 static void SetConsoleColor(ConsoleColor foregroundColor, ConsoleColor? backgroundColor = null)
