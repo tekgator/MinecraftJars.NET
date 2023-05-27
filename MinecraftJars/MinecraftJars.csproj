@@ -4,14 +4,59 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>MinecraftJars.NET</PackageId>
+        <Authors>Patrick Weiss</Authors>
+        <Product>MinecraftJars.NET</Product>
+        <Title>MinecraftJars.NET</Title>
+        <PackageProjectUrl>https://github.com/tekgator/MinecraftJars.NET</PackageProjectUrl>
+        <PackageIcon>MinecraftJarsNET-Logo-128px.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/tekgator/MinecraftJars.NET</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <Description>MinecraftJars.NET is a library to give .NET developers easy access for available Minecraft server version as well as Bedrock edition and Proxies.</Description>
+        <Copyright>@Patrick Weiss 2023</Copyright>
+        <PackageTags>minecraft;vanilla;spigot;download;paper;bungeecord;minecaft-server;velocity;plugins;provider;waterfall;bedrock;mojang;folia;mohist;purpur</PackageTags>
+        <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(SolutionDir)/CHANGELOG.md"))</PackageReleaseNotes>        
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MinecraftJars.Core\MinecraftJars.Core.csproj" />
+        <None Include="..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\CHANGELOG.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\Resources\MinecraftJarsNET-Logo-128px.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>    
+    
+    <ItemGroup>
+        <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <!-- Add package references of plugins here, otherwise Nuget dependencies will not be correct -->
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
-    </ItemGroup>
+        <ProjectReference Include="..\MinecraftJars.Core\MinecraftJars.Core.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mojang\MinecraftJars.Plugin.Mojang.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Paper\MinecraftJars.Plugin.Paper.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Purpur\MinecraftJars.Plugin.Purpur.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Spigot\MinecraftJars.Plugin.Spigot.csproj" PrivateAssets="all" />
+    </ItemGroup>    
 
 </Project>
