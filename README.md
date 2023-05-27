@@ -14,7 +14,7 @@ I try to be responsive to [Stack Overflow questions in the `minecraftjar-net` ta
 
 If I've helped you and you like some of my work, feel free to buy me a coffee ☕ (or more likely a beer 🍺)
 
-<a href='https://ko-fi.com/C0C7LO3V1' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C7LO3V1)
 
 ## Plugins
 
