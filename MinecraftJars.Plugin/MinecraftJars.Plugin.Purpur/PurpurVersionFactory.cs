@@ -43,7 +43,9 @@ internal static class PurpurVersionFactory
                 Version: projectApiVersion
             )));
 
-        return versions;
+        return options.MaxRecords.HasValue 
+            ? versions.Take(options.MaxRecords.Value).ToList() 
+            : versions;
     }
     
     public static async Task<IDownload> GetDownload(

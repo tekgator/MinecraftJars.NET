@@ -40,7 +40,9 @@ internal static class MohistVersionFactory
                 Version: version 
             )));
         
-        return versions;
+        return options.MaxRecords.HasValue 
+            ? versions.Take(options.MaxRecords.Value).ToList() 
+            : versions;
     }
 
     public static async Task<IDownload> GetDownload(

@@ -28,9 +28,8 @@ internal static class PaperVersionFactory
         using var client = GetHttpClient();
 
         var projectApi = await client
-                          .GetFromJsonAsync<Project>(
-                              string.Format(PaperProjectRequestUri, project.Name.ToLower()), 
-                              cancellationToken: cancellationToken);
+                          .GetFromJsonAsync<Project>(string
+                              .Format(PaperProjectRequestUri, project.Name.ToLower()), cancellationToken);
         
         if (projectApi == null) 
             throw new InvalidOperationException("Could not acquire game type details.");
@@ -45,7 +44,9 @@ internal static class PaperVersionFactory
                 Version: projectVersion
             )));
 
-        return versions;
+        return options.MaxRecords.HasValue 
+            ? versions.Take(options.MaxRecords.Value).ToList() 
+            : versions;
     }
     
     public static async Task<IDownload> GetDownload(

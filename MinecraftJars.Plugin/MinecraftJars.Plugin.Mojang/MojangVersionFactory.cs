@@ -63,7 +63,9 @@ internal static partial class MojangVersionFactory
                 DetailUrl = version.Url
             }));
         
-        return versions;
+        return options.MaxRecords.HasValue 
+            ? versions.Take(options.MaxRecords.Value).ToList() 
+            : versions;
     }
 
     private static async Task<List<MojangVersion>> GetVersionBedrock(
@@ -123,7 +125,9 @@ internal static partial class MojangVersionFactory
             });
         }
 
-        return versions;
+        return options.MaxRecords.HasValue 
+            ? versions.Take(options.MaxRecords.Value).ToList() 
+            : versions;
     }
 
     public static Task<IDownload> GetDownload(

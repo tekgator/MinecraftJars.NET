@@ -68,7 +68,9 @@ internal static partial class SpigotVersionFactory
             })            
             .OrderByDescending(v => v.ReleaseTime));
 
-        return versions;
+        return options.MaxRecords.HasValue 
+            ? versions.Take(options.MaxRecords.Value).ToList() 
+            : versions;
     }
 
     private static async Task<List<SpigotVersion>> GetVersionBungeeCoord(
@@ -81,9 +83,9 @@ internal static partial class SpigotVersionFactory
 
         using var client = GetHttpClient();
 
-        var requestUrl = BungeeCoordRequestUri + (options.MaxRecords == null
-            ? string.Empty
-            : string.Format(BungeeCoordRequestUriMaxRecordSuffix, options.MaxRecords));
+        var requestUrl = BungeeCoordRequestUri + (options.MaxRecords.HasValue
+            ? string.Format(BungeeCoordRequestUriMaxRecordSuffix, options.MaxRecords.Value)
+            : string.Empty);
         
         var job = await client.GetFromJsonAsync<Job>(requestUrl, cancellationToken);
             
@@ -125,18 +127,16 @@ internal static partial class SpigotVersionFactory
         if (build == null) 
             throw new InvalidOperationException("Could not acquire download details.");
 
-        if (options.BuildJar)
-        {
-            var buildTool = new SpigotBuildTools(GetHttpClient(), options, version);
-            return await buildTool.Build(build.Name,cancellationToken);
-        }
+        if (!options.BuildJar)
+            return new SpigotDownload(
+                FileName: string.Empty,
+                Size: 0,
+                BuildId: build.Name,
+                Url: string.Empty,
+                ReleaseTime: version.ReleaseTime);
 
-        return new SpigotDownload(
-            FileName: string.Empty,
-            Size: 0,
-            BuildId: build.Name,
-            Url: string.Empty, 
-            ReleaseTime: version.ReleaseTime);
+        var buildTool = new SpigotBuildTools(GetHttpClient(), options, version);
+        return await buildTool.Build(build.Name,cancellationToken);
     }
     
     private static async Task<IDownload> GetDownloadBungeeCord(
