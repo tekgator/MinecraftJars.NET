@@ -39,3 +39,6 @@ Please make sure following tools are installed:
 - Java 17 or higher 
 
 For details concerning the build process please find information on the [Spigot BuildTools Website](https://www.spigotmc.org/wiki/buildtools/) as well.
+
+The Url returned in the `IDownload` object is the local build file in a local temporary directory. 
+After moving the Jar file to its destination the user/developer is responsible to remove the temporary directory.
