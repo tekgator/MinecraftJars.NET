@@ -65,7 +65,7 @@ public class SpigotBuildTools
                 WorkingDirectory = dir,
                 Arguments = $"-jar {buildTools} --rev {_version.Version} --output-dir {outputDir}",
                 WindowStyle = ProcessWindowStyle.Hidden,
-                UseShellExecute = true,
+                UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
