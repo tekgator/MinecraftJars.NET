@@ -2,6 +2,28 @@
 MinecraftJars.NET
 ======
 
+<p>
+  <a href="https://github.com/tekgator/MinecraftJars.NET/blob/main/LICENSE" alt="License">
+    <img src="https://img.shields.io/github/license/tekgator/MinecraftJars.NET" />
+  </a>
+  <img src="https://img.shields.io/github/languages/top/tekgator/MinecraftJars.NET" />
+  <a href="https://www.nuget.org/packages/MinecraftJars.NET" alt="Nuget">
+    <img alt="Nuget" src="https://img.shields.io/nuget/dt/MinecraftJars.NET">
+  </a>
+  <a href="https://github.com/tekgator/MinecraftJars.NET/actions/workflows/build-on-push.yml" alt="BuildStatus">
+    <img src="https://img.shields.io/github/actions/workflow/status/tekgator/MinecraftJars.NET/build-on-push.yml?branch=main" />
+  </a>
+  <a href="https://github.com/tekgator/MinecraftJars.NET/releases" alt="Releases">
+    <img src="https://img.shields.io/github/v/release/tekgator/MinecraftJars.NET" />
+  </a>
+  <a href="https://github.com/tekgator/MinecraftJars.NET/releases" alt="Releases">
+    <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/tekgator/MinecraftJars.NET">
+  </a>
+  <a href="https://github.com/tekgator/MinecraftJars.NET/commit" alt="Commit">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/tekgator/MinecraftJars.NET">
+  </a>
+</p>
+
 MinecraftJars.NET is a library to give .NET developers easy access for available Minecraft server version as well as Bedrock edition and Proxies. 
 The motivation for the library is actually a server manager I'm currently working on which will allow to download the latest and greatest Minecraft server version within the manager.
 
