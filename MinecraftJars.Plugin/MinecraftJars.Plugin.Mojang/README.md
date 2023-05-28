@@ -25,3 +25,4 @@ If required the interface can be casted to it's instantiated classes.
   - For Bedrock an `Os` property is provided as the executables are compiled for Windows or Linux
 - `IDownload` to [MojangDownload](Model/MojangDownload.cs)
   - For Bedrock, no `Hash` or `ReleaseTime` is provided
+  - Older version did not provide as server therefore `Url` might be empty
