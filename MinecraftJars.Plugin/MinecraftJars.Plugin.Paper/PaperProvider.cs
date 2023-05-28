@@ -16,7 +16,7 @@ public class PaperProvider : IProvider
     }
     
     public ProviderOptions ProviderOptions { get; }
-    public string Name => "PaperMC";
+    public string Name => "Paper";
     public byte[] Logo => Properties.Resources.Paper;
     public IEnumerable<IProject> Projects => PaperProjectFactory.Projects;
 

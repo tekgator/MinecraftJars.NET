@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Plugin.Spigot.Model;
 
@@ -79,8 +80,16 @@ public class SpigotBuildTools
             _ = Task.Run(() => ConnectOutput(process.StandardOutput), cancellationToken);
             _ = Task.Run(() => ConnectError(process.StandardError), cancellationToken);
         }
-        
-        await process.WaitForExitAsync(cancellationToken);
+
+        try
+        {
+            await process.WaitForExitAsync(cancellationToken);
+        }
+        catch (TaskCanceledException)
+        {
+            process.Kill(true);
+            throw;
+        }
     }
     
     private async Task ConnectOutput(StreamReader output)
@@ -120,7 +129,7 @@ public class SpigotBuildTools
         string tempPath;
         do
         {
-            tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            tempPath = Path.Combine(Path.GetTempPath(), $"{Assembly.GetExecutingAssembly().GetName().Name}-{Guid.NewGuid().ToString()}");
         } while (Directory.Exists(tempPath));
 
         Directory.CreateDirectory(tempPath);

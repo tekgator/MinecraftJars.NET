@@ -16,7 +16,7 @@ public class MohistProvider : IProvider
     }
     
     public ProviderOptions ProviderOptions { get; }
-    public string Name => "MohistMC";
+    public string Name => "Mohist";
     public byte[] Logo => Properties.Resources.Mohist;
     public IEnumerable<IProject> Projects => MohistProjectFactory.Projects;
    

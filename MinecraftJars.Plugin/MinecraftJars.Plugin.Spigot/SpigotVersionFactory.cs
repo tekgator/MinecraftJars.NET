@@ -46,7 +46,10 @@ internal static partial class SpigotVersionFactory
         
         var request = new HttpRequestMessage(HttpMethod.Get, SpigotRequestUri);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
-
+        request.Headers.AcceptEncoding.ParseAdd("identity");
+        request.Headers.AcceptLanguage.ParseAdd("en-US, en");
+        request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
+        
         var response = await HttpClient.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -56,13 +59,14 @@ internal static partial class SpigotVersionFactory
 
         versions.AddRange(SpigotVersions()
             .Matches(html)
-            .Select(match => new SpigotVersion(
+            .Where(m => string.IsNullOrWhiteSpace(options.Version) || m.Groups["version"].Value.Equals(options.Version))
+            .Select(m => new SpigotVersion(
                 Project: project,
-                Version: match.Groups["version"].Value,
+                Version: m.Groups["version"].Value,
                 RequiresLocalBuild: true)
             {
-                DetailUrl = $"{SpigotRequestUri}/{match.Groups["json"].Value}",
-                ReleaseTime = DateTime.Parse(match.Groups["date"].Value, new CultureInfo("en-US"))
+                DetailUrl = $"{SpigotRequestUri}/{m.Groups["json"].Value}",
+                ReleaseTime = DateTime.Parse(m.Groups["date"].Value, new CultureInfo("en-US"))
             })            
             .OrderByDescending(v => v.ReleaseTime));
 
@@ -91,6 +95,7 @@ internal static partial class SpigotVersionFactory
         versions.AddRange(job.Builds
             .Where(b => !b.InProgress && 
                         b.Result.Equals("success", StringComparison.OrdinalIgnoreCase))
+            .Where(b => string.IsNullOrWhiteSpace(options.Version) || b.Number.ToString().Equals(options.Version))
             .Select(b => new SpigotVersion(
                 project, 
                 b.Number.ToString())
