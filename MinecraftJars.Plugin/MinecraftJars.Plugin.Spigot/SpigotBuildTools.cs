@@ -85,7 +85,7 @@ public class SpigotBuildTools
         {
             await process.WaitForExitAsync(cancellationToken);
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
             process.Kill(true);
             throw;
