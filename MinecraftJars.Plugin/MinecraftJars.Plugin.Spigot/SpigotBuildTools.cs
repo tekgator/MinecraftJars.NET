@@ -79,8 +79,16 @@ public class SpigotBuildTools
             _ = Task.Run(() => ConnectOutput(process.StandardOutput), cancellationToken);
             _ = Task.Run(() => ConnectError(process.StandardError), cancellationToken);
         }
-        
-        await process.WaitForExitAsync(cancellationToken);
+
+        try
+        {
+            await process.WaitForExitAsync(cancellationToken);
+        }
+        catch (TaskCanceledException ex)
+        {
+            process.Kill(true);
+            throw;
+        }
     }
     
     private async Task ConnectOutput(StreamReader output)
