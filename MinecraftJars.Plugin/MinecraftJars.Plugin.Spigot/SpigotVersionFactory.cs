@@ -46,7 +46,10 @@ internal static partial class SpigotVersionFactory
         
         var request = new HttpRequestMessage(HttpMethod.Get, SpigotRequestUri);
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Text.Html));
-
+        request.Headers.AcceptEncoding.ParseAdd("identity");
+        request.Headers.AcceptLanguage.ParseAdd("en-US, en");
+        request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
+        
         var response = await HttpClient.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
