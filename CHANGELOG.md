@@ -4,4 +4,27 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.0.0] - 2023-05-28
+### Fixed
+- In case of Task cancellation for a Spigot build make sure the whole process tree is killed
+- Website (Mojang, Spigot) did not respond because AcceptEncoding has to be provided. Always add AcceptEncoding identity
+
+### Changed
+- Normalize names of Plugins e.g. SpigotMC is now just Spigot
+- Created temp folders during Spigot build include the Plugin name for easier identification 
+
+### Added
+- First working version
+- Unit testing project added
+- Add comment for old versions not proving Url due to missing server in Mojang Plugin Readme
+- Implement version filter in Spigot version factory
+- For Website crawling (Mojang, Spigot) add AcceptLanguage en-US, en to make sure content is not changed due to change of language
+- For Website crawling (Mojang, Spigot) add CacheControl with NoCache to get latest version of the website
+
+
+## [0.1.0] - 2023-05-28
+### Added
+- First working version
+
+
 This project is MIT Licensed // Created & maintained by Patrick Weiss
