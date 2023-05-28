@@ -16,7 +16,7 @@ public class SpigotProvider : IProvider
     }
 
     public ProviderOptions ProviderOptions { get; }
-    public string Name => "SpigotMC";
+    public string Name => "Spigot";
     public byte[] Logo => Properties.Resources.Spigot;
     public IEnumerable<IProject> Projects => SpigotProjectFactory.Projects;
     
