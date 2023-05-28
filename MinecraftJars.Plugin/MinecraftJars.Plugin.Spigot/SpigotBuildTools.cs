@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Plugin.Spigot.Model;
 
@@ -128,7 +129,7 @@ public class SpigotBuildTools
         string tempPath;
         do
         {
-            tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            tempPath = Path.Combine(Path.GetTempPath(), $"{Assembly.GetExecutingAssembly().GetName().Name}-{Guid.NewGuid().ToString()}");
         } while (Directory.Exists(tempPath));
 
         Directory.CreateDirectory(tempPath);
