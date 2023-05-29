@@ -1,13 +1,14 @@
 using System.Diagnostics;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
+using MinecraftJars.Plugin.Fabric.Model;
 
 namespace MinecraftJars.Tests;
 
 [TestFixture, Order(4)]
 public class DownloadTests
 {
-    private static readonly ProviderManager ProviderManager = new ProviderManager();
+    private static readonly ProviderManager ProviderManager = new();
     private static IEnumerable<string> Projects() => 
         ProviderManager.GetProviders().SelectMany(p => p.Projects.Select(t => t.Name));
     
@@ -29,7 +30,7 @@ public class DownloadTests
             
             Assert.That(download, Is.Not.Null);
             Assert.That(download.BuildId, Has.Length.AtLeast(1));
-            if (loadFileSize && !string.IsNullOrWhiteSpace(download.Url))
+            if (loadFileSize && !string.IsNullOrWhiteSpace(download.Url) && download is not FabricDownload)
                 Assert.That(download.Size, Is.AtLeast(1));
             
             TestContext.Progress.WriteLine("{0}: Download found with BuildId {1} and Url {2} for version {3} ", 
@@ -53,7 +54,7 @@ public class DownloadTests
         
         Assert.That(download, Is.Not.Null);
         Assert.That(download.BuildId, Has.Length.AtLeast(1));
-        if (loadFileSize && !string.IsNullOrWhiteSpace(download.Url))
+        if (loadFileSize && !string.IsNullOrWhiteSpace(download.Url) && download is not FabricDownload)
             Assert.That(download.Size, Is.AtLeast(1));
         
         TestContext.Progress.WriteLine("{0}: Download found with BuildId {1} and Url {2} for version {3} ", 

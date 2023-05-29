@@ -31,9 +31,6 @@ Following provider plugins are already bundled with MinecraftJars.NET:
 ![Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang/Resources/Mojang-24px.png) [Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang):
 Vanilla, Vanilla Snapshot, Bedrock, Bedrock Preview
 
-![Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist/Resources/Mohist-24px.png) [Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist): 
-Mohist
-
 ![Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper/Resources/Paper-24px.png) [Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper): 
 Paper, Folia, Velocity, Waterfall
 
@@ -42,6 +39,12 @@ Purpur
 
 ![Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine/Resources/Pocketmine-24px.png) [Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine):
 Pocketmine
+
+![Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist/Resources/Mohist-24px.png) [Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist):
+Mohist
+
+![Fabric](MinecraftJars.Plugin/MinecraftJars.Plugin.Fabric/Resources/Fabric-24px.png) [Fabric](MinecraftJars.Plugin/MinecraftJars.Plugin.Fabric):
+Fabric, Fabric Snapshot
 
 ![Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot/Resources/Spigot-24px.png) [Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
 (**Important:** see details in Plugin Readme): Spigot, BungeeCord 

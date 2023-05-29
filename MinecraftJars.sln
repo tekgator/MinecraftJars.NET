@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Tests", "Mine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Pocketmine", "MinecraftJars.Plugin\MinecraftJars.Plugin.Pocketmine\MinecraftJars.Plugin.Pocketmine.csproj", "{D3DD5E2C-ACDB-48A8-98EC-1E7B560FC668}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Fabric", "MinecraftJars.Plugin\MinecraftJars.Plugin.Fabric\MinecraftJars.Plugin.Fabric.csproj", "{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{D3DD5E2C-ACDB-48A8-98EC-1E7B560FC668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3DD5E2C-ACDB-48A8-98EC-1E7B560FC668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3DD5E2C-ACDB-48A8-98EC-1E7B560FC668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

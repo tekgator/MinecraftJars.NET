@@ -52,6 +52,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\MinecraftJars.Core\MinecraftJars.Core.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Fabric\MinecraftJars.Plugin.Fabric.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mojang\MinecraftJars.Plugin.Mojang.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Paper\MinecraftJars.Plugin.Paper.csproj" PrivateAssets="all" />

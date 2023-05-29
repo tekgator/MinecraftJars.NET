@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MinecraftJars.Core\MinecraftJars.Core.csproj" />
+      <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Fabric\MinecraftJars.Plugin.Fabric.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mojang\MinecraftJars.Plugin.Mojang.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Paper\MinecraftJars.Plugin.Paper.csproj" />

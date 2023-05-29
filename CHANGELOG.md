@@ -2,8 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+
+## [1.2.0] - 2023-05-29
 ### Added
 - Add logos in different sizes for fixing Readme on Nuget.org
+- Add Fabric Provider Plugin
 
 ### Fixed
 - Fix logos and links in Readme
@@ -13,6 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Add Pocketmine Provider Plugin
 - Add logos to each Readme
+
 
 ## [1.0.0] - 2023-05-28
 ### Fixed

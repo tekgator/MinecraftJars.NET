@@ -1,5 +1,4 @@
 using MinecraftJars.Core.Projects;
-using MinecraftJars.Core.Providers;
 
 namespace MinecraftJars.Tests;
 
