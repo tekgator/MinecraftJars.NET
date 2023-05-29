@@ -1,5 +1,4 @@
-<img src="Resources/Paper.png" alt= “Pocketmine” width="64" height="64">
-Paper plugin for MinecraftJar.NET
+<img src="Resources/Paper.png" alt= “Paper” width="64" height="64"> Paper plugin for MinecraftJar.NET
 ======
 
 [Paper](https://papermc.io/) provider plugin for [MinecraftJar.NET](../../README.md).
