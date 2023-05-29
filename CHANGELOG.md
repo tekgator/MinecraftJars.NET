@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.2.1] - 2023-05-29
+### Fixed
+- Nuget release process
+
+
 ## [1.2.0] - 2023-05-29
 ### Added
 - Add logos in different sizes for fixing Readme on Nuget.org
