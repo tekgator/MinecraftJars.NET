@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.0] - 2023-05-29
+### Added
+- Add Pocketmine Provider Plugin
 
 ## [1.0.0] - 2023-05-28
 ### Fixed

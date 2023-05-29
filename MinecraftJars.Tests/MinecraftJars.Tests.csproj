@@ -22,6 +22,7 @@
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mohist\MinecraftJars.Plugin.Mohist.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Mojang\MinecraftJars.Plugin.Mojang.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Paper\MinecraftJars.Plugin.Paper.csproj" />
+      <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Pocketmine\MinecraftJars.Plugin.Pocketmine.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Purpur\MinecraftJars.Plugin.Purpur.csproj" />
       <ProjectReference Include="..\MinecraftJars.Plugin\MinecraftJars.Plugin.Spigot\MinecraftJars.Plugin.Spigot.csproj" />
       <ProjectReference Include="..\MinecraftJars\MinecraftJars.csproj" />
