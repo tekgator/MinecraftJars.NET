@@ -1,10 +1,10 @@
-MohistMC plugin for MinecraftJar.NET
+<img src="Resources/Mohist.png" alt= “Mohist” width="64" height="64"> Mohist plugin for MinecraftJar.NET
 ======
 
-[MohistMC](https://mohistmc.com/) provider plugin for [MinecraftJar.NET](../../README.md).
+[Mohist](https://mohistmc.com/) provider plugin for [MinecraftJar.NET](../../README.md).
 
 Provider for:
-- MohistMC
+- Mohist
 
 ## Installing
 

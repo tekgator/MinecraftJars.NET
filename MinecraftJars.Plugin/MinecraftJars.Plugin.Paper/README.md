@@ -1,7 +1,7 @@
-PaperMC plugin for MinecraftJar.NET
+<img src="Resources/Paper.png" alt= “Paper” width="64" height="64"> Paper plugin for MinecraftJar.NET
 ======
 
-[PaperMC](https://papermc.io/) provider plugin for [MinecraftJar.NET](../../README.md).
+[Paper](https://papermc.io/) provider plugin for [MinecraftJar.NET](../../README.md).
 
 Provider for:
 - Paper

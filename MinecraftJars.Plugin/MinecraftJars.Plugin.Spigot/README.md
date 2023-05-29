@@ -1,4 +1,4 @@
-Spigot plugin for MinecraftJar.NET
+<img src="Resources/Spigot.png" alt= “Spigot” width="64" height="64"> Spigot plugin for MinecraftJar.NET
 ======
 
 [Spigot](https://www.spigotmc.org/) provider plugin for [MinecraftJar.NET](../../README.md).

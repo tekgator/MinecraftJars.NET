@@ -42,24 +42,23 @@ If I've helped you and you like some of my work, feel free to buy me a coffee �
 
 Following provider plugins are already bundled with MinecraftJars.NET:
 
-- [Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang) 
-  - Vanilla
-  - Vanilla Snapshot
-  - Bedrock
-  - Bedrock Preview
-- [Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist)
-  - Mohist
-- [Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper)
-  - Paper
-  - Folia
-  - Velocity
-  - Waterfall
-- [Purpur](MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur)
-  - Purpur
-- [Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
-  - Spigot 
-    - **Important:** see details in Plugin Readme
-  - BungeeCord
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang/Resources/Mojang.png" alt= “Mojang” width="24" height="24">&nbsp;[Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang):
+Vanilla, Vanilla Snapshot, Bedrock, Bedrock Preview
+
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist/Resources/Mohist.png" alt= “Mojang” width="24" height="24">&nbsp;[Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist): 
+Mohist
+
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Paper/Resources/Paper.png" alt= “Paper” width="24" height="24">&nbsp;[Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper): 
+Paper, Folia, Velocity, Waterfall
+
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur/Resources/Purpur.png" alt= “Purpur” width="24" height="24">&nbsp;[Purpur](MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur):
+Purpur
+
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine/Resources/Pocketmine.png" alt= “Pocketmine” width="24" height="24">&nbsp;[Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine):
+Pocketmine
+
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot/Resources/Spigot.png" alt= “Spigot” width="24" height="24">&nbsp;[Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
+(**Important:** see details in Plugin Readme): Spigot, BungeeCord 
 
 ## Installing
 
