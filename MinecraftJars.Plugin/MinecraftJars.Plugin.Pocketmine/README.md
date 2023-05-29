@@ -1,5 +1,4 @@
-<img src="Resources/Pocketmine.png" alt= “Pocketmine” width="64" height="64">
-Pocketmine plugin for MinecraftJar.NET
+![Pocketmine](Resources/Pocketmine-64px.png) Pocketmine plugin for MinecraftJar.NET
 ======
 
 [Pocketmine](https://www.pocketmine.net/) provider plugin for [MinecraftJar.NET](../../README.md).

@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Add logos in different sizes for fixing Readme on Nuget.org
+
+### Fixed
+- Fix logos and links in Readme
+
 
 ## [1.1.0] - 2023-05-29
 ### Added

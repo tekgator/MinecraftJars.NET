@@ -1,4 +1,4 @@
-<img src="Resources/Mohist.png" alt= “Mohist” width="64" height="64"> Mohist plugin for MinecraftJar.NET
+![Mohist](Resources/Mohist-64px.png) Mohist plugin for MinecraftJar.NET
 ======
 
 [Mohist](https://mohistmc.com/) provider plugin for [MinecraftJar.NET](../../README.md).

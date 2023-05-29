@@ -2,27 +2,13 @@
 MinecraftJars.NET
 ======
 
-<p>
-  <a href="https://github.com/tekgator/MinecraftJars.NET/blob/main/LICENSE" alt="License">
-    <img src="https://img.shields.io/github/license/tekgator/MinecraftJars.NET" />
-  </a>
-  <img src="https://img.shields.io/github/languages/top/tekgator/MinecraftJars.NET" />
-  <a href="https://www.nuget.org/packages/MinecraftJars.NET" alt="Nuget">
-    <img alt="Nuget" src="https://img.shields.io/nuget/dt/MinecraftJars.NET">
-  </a>
-  <a href="https://github.com/tekgator/MinecraftJars.NET/actions/workflows/build-on-push.yml" alt="BuildStatus">
-    <img src="https://img.shields.io/github/actions/workflow/status/tekgator/MinecraftJars.NET/build-on-push.yml?branch=main" />
-  </a>
-  <a href="https://github.com/tekgator/MinecraftJars.NET/releases" alt="Releases">
-    <img src="https://img.shields.io/github/v/release/tekgator/MinecraftJars.NET" />
-  </a>
-  <a href="https://github.com/tekgator/MinecraftJars.NET/releases" alt="Releases">
-    <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/tekgator/MinecraftJars.NET">
-  </a>
-  <a href="https://github.com/tekgator/MinecraftJars.NET/commit" alt="Commit">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/tekgator/MinecraftJars.NET">
-  </a>
-</p>
+[![License](https://img.shields.io/github/license/tekgator/MinecraftJars.NET)](LICENSE)
+![Language](https://img.shields.io/github/languages/top/tekgator/MinecraftJars.NET)
+[![Downloads](https://img.shields.io/nuget/dt/MinecraftJars.NET)](https://www.nuget.org/packages/MinecraftJars.NET)
+[![Build](https://img.shields.io/github/actions/workflow/status/tekgator/MinecraftJars.NET/build-on-push.yml?branch=main)](https://github.com/tekgator/MinecraftJars.NET/actions/workflows/build-on-push.yml)
+[![Releases](https://img.shields.io/github/v/release/tekgator/MinecraftJars.NET)](https://github.com/tekgator/MinecraftJars.NET/releases)
+[![ReleaseDate](https://img.shields.io/github/release-date/tekgator/MinecraftJars.NET)](https://github.com/tekgator/MinecraftJars.NET/releases)
+[![CommitDate](https://img.shields.io/github/last-commit/tekgator/MinecraftJars.NET)](https://github.com/tekgator/MinecraftJars.NET/commit)
 
 MinecraftJars.NET is a library to give .NET developers easy access for available Minecraft server version as well as Bedrock edition and Proxies. 
 The motivation for the library is actually a server manager I'm currently working on which will allow to download the latest and greatest Minecraft server version within the manager.
@@ -36,28 +22,28 @@ I try to be responsive to [Stack Overflow questions in the `minecraftjar-net` ta
 
 If I've helped you and you like some of my work, feel free to buy me a coffee ☕ (or more likely a beer 🍺)
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C7LO3V1)
+[![ko-fi](Resources/support-kofi.png)](https://ko-fi.com/C0C7LO3V1)
 
 ## Plugins
 
 Following provider plugins are already bundled with MinecraftJars.NET:
 
-<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang/Resources/Mojang.png" alt= “Mojang” width="24" height="24">&nbsp;[Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang):
+![Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang/Resources/Mojang-24px.png) [Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang):
 Vanilla, Vanilla Snapshot, Bedrock, Bedrock Preview
 
-<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist/Resources/Mohist.png" alt= “Mojang” width="24" height="24">&nbsp;[Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist): 
+![Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist/Resources/Mohist-24px.png) [Mohist](MinecraftJars.Plugin/MinecraftJars.Plugin.Mohist): 
 Mohist
 
-<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Paper/Resources/Paper.png" alt= “Paper” width="24" height="24">&nbsp;[Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper): 
+![Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper/Resources/Paper-24px.png) [Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper): 
 Paper, Folia, Velocity, Waterfall
 
-<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur/Resources/Purpur.png" alt= “Purpur” width="24" height="24">&nbsp;[Purpur](MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur):
+![Purpur](MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur/Resources/Purpur-24px.png) [Purpur](MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur):
 Purpur
 
-<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine/Resources/Pocketmine.png" alt= “Pocketmine” width="24" height="24">&nbsp;[Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine):
+![Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine/Resources/Pocketmine-24px.png) [Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine):
 Pocketmine
 
-<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot/Resources/Spigot.png" alt= “Spigot” width="24" height="24">&nbsp;[Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
+![Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot/Resources/Spigot-24px.png) [Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
 (**Important:** see details in Plugin Readme): Spigot, BungeeCord 
 
 ## Installing

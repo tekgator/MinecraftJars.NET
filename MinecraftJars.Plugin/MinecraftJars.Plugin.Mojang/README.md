@@ -1,4 +1,4 @@
-<img src="Resources/Mojang.png" alt= “Mojang” width="64" height="64"> Mojang plugin for MinecraftJar.NET
+![Mojang](Resources/Mojang-64px.png) Mojang plugin for MinecraftJar.NET
 ======
 
 [Mojang](https://www.minecraft.net/) provider plugin for [MinecraftJar.NET](../../README.md).
