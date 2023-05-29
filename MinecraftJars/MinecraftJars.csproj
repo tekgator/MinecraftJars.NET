@@ -17,7 +17,7 @@
         <Description>MinecraftJars.NET is a library to give .NET developers easy access for available Minecraft server version as well as Bedrock edition and Proxies.</Description>
         <Copyright>@Patrick Weiss 2023</Copyright>
         <PackageTags>minecraft;vanilla;spigot;download;paper;bungeecord;minecaft-server;velocity;plugins;provider;waterfall;bedrock;mojang;folia;mohist;purpur</PackageTags>
-        <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(SolutionDir)/CHANGELOG.md"))</PackageReleaseNotes>        
+        <PackageReleaseNotes>$([System.IO.File]::ReadAllText("../CHANGELOG.md"))</PackageReleaseNotes>        
     </PropertyGroup>
 
     <ItemGroup>
