@@ -31,22 +31,10 @@ jobs:
 
       - name: "Get version"
         id: version
-        run: |
-          TAG=${{github.ref_name}}
-          echo "VERSION=${TAG#v}" >> $GITHUB_ENV
-
-#      - name: "Get version"
-#        id: version
-#        uses: battila7/get-version-action@v2
+        uses: battila7/get-version-action@v2
 
       - name: "Pack project"
-        run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
 
 #      - name: "Push package"
 #        run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg --api-key ${{ secrets.NUGET_AUTH_TOKEN }} --source ${{ env.NUGET_SOURCE_URL }}
-
-#      - name: "Attach Nuget to release"
-#        uses: AButler/upload-release-assets@v2.0
-#        with:
-#          files: '${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg'
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
