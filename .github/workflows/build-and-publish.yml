@@ -6,9 +6,10 @@ on:
       - "v*"
 
 env:
-  SOLUTION_PATH: MinecraftJars.sln
+  PROJECT_PATH: MinecraftJars/MinecraftJars.csproj
   PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
   NUGET_SOURCE_URL: "https://api.nuget.org/v3/index.json"
+  NUGET_NAME: MinecraftJars.NET.*.nupkg  
 
 jobs:
   build:
@@ -24,23 +25,23 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: "Restore packages"
-        run: dotnet restore ${{ env.SOLUTION_PATH }}
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
       - name: "Build project"
-        run: dotnet build ${{ env.SOLUTION_PATH }} --no-restore --configuration Release
+        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
       - name: "Get version"
         id: version
         uses: battila7/get-version-action@v2
 
       - name: "Pack project"
-        run: dotnet pack ${{ env.SOLUTION_PATH }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
 
       - name: "Push package"
-        run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg --api-key ${{ secrets.NUGET_AUTH_TOKEN }} --source ${{ env.NUGET_SOURCE_URL }}
+        run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIR }}/{{ env.NUGET_NAME }} --api-key ${{ secrets.NUGET_AUTH_TOKEN }} --source ${{ env.NUGET_SOURCE_URL }}
 
-      - name: "Attach Nuget to release"
-        uses: AButler/upload-release-assets@v2.0
-        with:
-          files: '${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: "Attach Nuget to release"
+#        uses: AButler/upload-release-assets@v2.0
+#        with:
+#          files: '${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg'
+#          repo-token: ${{ secrets.GITHUB_TOKEN }}
