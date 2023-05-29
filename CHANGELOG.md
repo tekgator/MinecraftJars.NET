@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fix logos and links in Readme
 
+### Changed
+- Renamed Mohist project from MohistMC to Mohist
+
 
 ## [1.1.0] - 2023-05-29
 ### Added
