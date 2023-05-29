@@ -54,6 +54,9 @@ Paper, Folia, Velocity, Waterfall
 <img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur/Resources/Purpur.png" alt= “Purpur” width="24" height="24">&nbsp;[Purpur](MinecraftJars.Plugin/MinecraftJars.Plugin.Purpur):
 Purpur
 
+<img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine/Resources/Pocketmine.png" alt= “Pocketmine” width="24" height="24">&nbsp;[Pocketmine](MinecraftJars.Plugin/MinecraftJars.Plugin.Pocketmine):
+Pocketmine
+
 <img src="MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot/Resources/Spigot.png" alt= “Spigot” width="24" height="24">&nbsp;[Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
 (**Important:** see details in Plugin Readme): Spigot, BungeeCord 
 
