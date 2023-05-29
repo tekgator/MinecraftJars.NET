@@ -5,7 +5,7 @@ namespace MinecraftJars.Plugin.Mohist;
 
 internal static class MohistProjectFactory
 {
-    public const string Mohist = "MohistMC"; 
+    public const string Mohist = "Mohist"; 
     
     public static readonly IEnumerable<MohistProject> Projects = new List<MohistProject>
     {
