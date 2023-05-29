@@ -1,3 +1,4 @@
+<img src="Resources/Purpur.png" alt= “Pocketmine” width="64" height="64">
 Purpur plugin for MinecraftJar.NET
 ======
 

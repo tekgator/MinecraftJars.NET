@@ -1,3 +1,4 @@
+<img src="Resources/Spigot.png" alt= “Pocketmine” width="64" height="64">
 Spigot plugin for MinecraftJar.NET
 ======
 

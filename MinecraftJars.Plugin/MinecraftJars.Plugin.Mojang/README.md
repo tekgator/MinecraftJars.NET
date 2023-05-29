@@ -1,3 +1,4 @@
+<img src="Resources/Mojang.png" alt= “Pocketmine” width="64" height="64">
 Mojang plugin for MinecraftJar.NET
 ======
 
