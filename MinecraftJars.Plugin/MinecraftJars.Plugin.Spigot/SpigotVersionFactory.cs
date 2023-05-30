@@ -41,7 +41,6 @@ internal static partial class SpigotVersionFactory
         VersionOptions options,
         CancellationToken cancellationToken)
     {
-        var versions = new List<SpigotVersion>();
         var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
         
         var request = new HttpRequestMessage(HttpMethod.Get, SpigotRequestUri);
@@ -57,18 +56,21 @@ internal static partial class SpigotVersionFactory
 
         var html = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        versions.AddRange(SpigotVersions()
-            .Matches(html)
-            .Where(m => string.IsNullOrWhiteSpace(options.Version) || m.Groups["version"].Value.Equals(options.Version))
-            .Select(m => new SpigotVersion(
+        var versions = (from match in SpigotVersions().Matches(html)
+            let version = match.Groups["version"].Value
+            let jsonFile = match.Groups["json"].Value
+            let releaseTime = DateTime.Parse(match.Groups["date"].Value, new CultureInfo("en-US"))
+            where !string.IsNullOrWhiteSpace(version) &&
+                  (string.IsNullOrWhiteSpace(options.Version) || options.Version.Equals(version))
+            orderby releaseTime descending
+            select new SpigotVersion(
                 Project: project,
-                Version: m.Groups["version"].Value,
+                Version: version,
                 RequiresLocalBuild: true)
             {
-                DetailUrl = $"{SpigotRequestUri}/{m.Groups["json"].Value}",
-                ReleaseTime = DateTime.Parse(m.Groups["date"].Value, new CultureInfo("en-US"))
-            })            
-            .OrderByDescending(v => v.ReleaseTime));
+                DetailUrl = $"{SpigotRequestUri}/{jsonFile}",
+                ReleaseTime = releaseTime
+            }).ToList();
 
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
@@ -80,7 +82,6 @@ internal static partial class SpigotVersionFactory
         VersionOptions options,
         CancellationToken cancellationToken)
     {
-        var versions = new List<SpigotVersion>();
         var project = SpigotProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
         var requestUrl = BungeeCoordRequestUri + (options.MaxRecords.HasValue
@@ -92,17 +93,19 @@ internal static partial class SpigotVersionFactory
         if (job == null)
             throw new InvalidOperationException("Could not acquire version details.");
 
-        versions.AddRange(job.Builds
-            .Where(b => !b.InProgress && 
-                        b.Result.Equals("success", StringComparison.OrdinalIgnoreCase))
-            .Where(b => string.IsNullOrWhiteSpace(options.Version) || b.Number.ToString().Equals(options.Version))
-            .Select(b => new SpigotVersion(
-                project, 
-                b.Number.ToString())
-                {
-                    ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(b.Timestamp).DateTime, 
-                    DetailUrl = $"{b.Url}artifact/{b.Artifacts.First().RelativePath}"
-                }));
+        var versions = (from build in job.Builds
+            where !build.InProgress && 
+                  build.Result.Equals("success", StringComparison.OrdinalIgnoreCase)
+            let version = build.Number.ToString()
+            let artifact = build.Artifacts.First()
+            where string.IsNullOrWhiteSpace(options.Version) || options.Version.Equals(build.Number.ToString())
+            select new SpigotVersion(
+                Project: project,
+                Version: version)
+            {
+                ReleaseTime = DateTimeOffset.FromUnixTimeMilliseconds(build.Timestamp).DateTime,
+                DetailUrl = $"{build.Url}artifact/{artifact.RelativePath}"
+            }).ToList();
         
         return versions;
     }

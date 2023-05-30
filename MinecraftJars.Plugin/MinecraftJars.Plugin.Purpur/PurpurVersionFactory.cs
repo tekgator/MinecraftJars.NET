@@ -2,8 +2,7 @@
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Purpur.Model;
-using MinecraftJars.Plugin.Purpur.Model.BuildApi;
-using MinecraftJars.Plugin.Purpur.Model.ProjectApi;
+using MinecraftJars.Plugin.Purpur.Model.PurpurApi;
 
 namespace MinecraftJars.Plugin.Purpur;
 
@@ -21,7 +20,6 @@ internal static class PurpurVersionFactory
         VersionOptions options,
         CancellationToken cancellationToken)
     {
-        var versions = new List<PurpurVersion>();
         var project = PurpurProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
         
         var projectApi = await HttpClient.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
@@ -33,11 +31,12 @@ internal static class PurpurVersionFactory
             projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
         
         projectApi.Versions.Reverse();
-        versions.AddRange(projectApi.Versions
+
+        var versions = projectApi.Versions
             .Select(projectApiVersion => new PurpurVersion(
                 Project: project, 
-                Version: projectApiVersion
-            )));
+                Version: projectApiVersion)
+            ).ToList();
 
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 

@@ -16,6 +16,11 @@ public interface IVersion
     string Version { get; }
 
     /// <summary>
+    /// Indicates whether this version experimental 
+    /// </summary>      
+    bool IsSnapShot { get; }
+    
+    /// <summary>
     /// Indicates TRUE in case the plugin needs to build the JAR file instead of providing download information
     /// </summary>        
     bool RequiresLocalBuild => false;

@@ -6,7 +6,8 @@ namespace MinecraftJars.Plugin.Mohist.Model;
 
 public record MohistVersion(
     IProject Project,
-    string Version) : IVersion
+    string Version,
+    bool IsSnapShot = false) : IVersion
 {
     public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
         MohistVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);

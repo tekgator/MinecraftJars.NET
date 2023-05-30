@@ -6,7 +6,8 @@ namespace MinecraftJars.Plugin.Paper.Model;
 
 public record PaperVersion(
     IProject Project,
-    string Version) : IVersion
+    string Version,
+    bool IsSnapShot = false) : IVersion
 {
     public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
         PaperVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);

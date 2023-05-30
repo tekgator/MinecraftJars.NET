@@ -5,9 +5,7 @@
 
 Provider for:
 - Vanilla
-- Vanilla Preview
 - Bedrock
-- Bedrock Preview
 
 ## Installing
 

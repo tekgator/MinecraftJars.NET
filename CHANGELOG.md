@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.2.2] - 2023-05-30
+### Added
+- Added version option to include snapshots during load, by default this is false
+- Added indicator to show that the current version is a snapshot / preview / experimental / beta / alpha build
+
+### Changed
+- Restructure and simplify API directories
+
+### Removed
+- Separation of Snapshot ans Standard versions for Mojang, Fabric and Pocketmine plugin, this is handled now via the IsSnapshot indicator on IVersion
+
 
 ## [1.2.1] - 2023-05-29
 ### Fixed

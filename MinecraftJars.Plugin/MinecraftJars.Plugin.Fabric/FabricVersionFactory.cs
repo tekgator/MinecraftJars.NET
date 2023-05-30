@@ -29,21 +29,15 @@ internal static class FabricVersionFactory
    
         if (!string.IsNullOrWhiteSpace(options.Version))
             versionsApi.Games.RemoveAll(v => !v.Version.Equals(options.Version));
-        
-        switch (project.Name)
-        {
-            case FabricProjectFactory.Fabric:
-                versionsApi.Games.RemoveAll(v => !v.Stable);
-                break;
-            case FabricProjectFactory.FabricSnapshot:
-                versionsApi.Games.RemoveAll(v => v.Stable);
-                break;
-        }
+
+        if (!options.IncludeSnapshotBuilds)
+            versionsApi.Games.RemoveAll(v => !v.Stable);
 
         var versions = versionsApi.Games
             .Select(game => new FabricVersion(
                 Project: project, 
-                Version: game.Version)
+                Version: game.Version,
+                IsSnapShot: !game.Stable)
                 {
                     InstallerVersion = versionsApi.Installers.First().Version
                 }).ToList();

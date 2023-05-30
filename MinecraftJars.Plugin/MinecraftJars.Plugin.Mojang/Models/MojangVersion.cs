@@ -7,6 +7,7 @@ namespace MinecraftJars.Plugin.Mojang.Models;
 public record MojangVersion(
     IProject Project,
     string Version,
+    bool IsSnapShot,
     Os? Os = null) : IVersion
 {
     internal DateTime? ReleaseTime { get; init; }
