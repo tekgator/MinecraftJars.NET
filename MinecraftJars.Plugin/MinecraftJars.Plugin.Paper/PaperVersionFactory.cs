@@ -2,8 +2,7 @@
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Paper.Model;
-using MinecraftJars.Plugin.Paper.Model.BuildApi;
-using MinecraftJars.Plugin.Paper.Model.ProjectApi;
+using MinecraftJars.Plugin.Paper.Model.PaperApi;
 
 namespace MinecraftJars.Plugin.Paper;
 

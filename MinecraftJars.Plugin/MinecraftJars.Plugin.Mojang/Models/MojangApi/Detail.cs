@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Plugin.Mojang.Models.DetailApi;
+namespace MinecraftJars.Plugin.Mojang.Models.MojangApi;
 
 internal class Detail
 {

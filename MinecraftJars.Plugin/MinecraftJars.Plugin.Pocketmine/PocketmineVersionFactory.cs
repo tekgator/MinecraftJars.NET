@@ -35,18 +35,21 @@ internal static class PocketmineVersionFactory
         }
         releaseApi.RemoveAll(r => !r.Assets.Any());
 
-        var versions = releaseApi
-            .Select(release => new { release, asset = release.Assets.First() })
-            .Select(t => new PocketmineVersion(
+        var versions = (from release in releaseApi 
+            let asset = release.Assets.First() 
+            let isSnapShot = release.TagName.Contains("beta", StringComparison.OrdinalIgnoreCase)
+            where options.IncludeSnapshotBuilds || !isSnapShot
+            select new PocketmineVersion(
                 Project: project, 
-                Version: t.release.TagName)
+                Version: release.TagName, 
+                IsSnapShot: isSnapShot)
             {
                 Download = new PocketmineDownload(
-                    FileName: t.asset.Name, 
-                    Size: t.asset.Size,
-                    BuildId: t.release.Id.ToString(), 
-                    Url: t.asset.BrowserDownloadUrl,
-                    ReleaseTime: new[] { t.asset.CreatedAt, t.asset.UpdatedAt }.Max())
+                    FileName: asset.Name, 
+                    Size: asset.Size, 
+                    BuildId: release.Id.ToString(), 
+                    Url: asset.BrowserDownloadUrl, 
+                    ReleaseTime: new[] { asset.CreatedAt, asset.UpdatedAt }.Max())
             }).ToList();
 
         return options.MaxRecords.HasValue 

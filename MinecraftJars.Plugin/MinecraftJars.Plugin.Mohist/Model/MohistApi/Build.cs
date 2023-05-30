@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Plugin.Mohist.Model.BuildApi;
+namespace MinecraftJars.Plugin.Mohist.Model.MohistApi;
 
 internal class Build
 {

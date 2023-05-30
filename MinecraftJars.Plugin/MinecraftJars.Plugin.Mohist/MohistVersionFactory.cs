@@ -2,7 +2,7 @@
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mohist.Model;
-using MinecraftJars.Plugin.Mohist.Model.BuildApi;
+using MinecraftJars.Plugin.Mohist.Model.MohistApi;
 
 namespace MinecraftJars.Plugin.Mohist;
 
@@ -18,7 +18,6 @@ internal static class MohistVersionFactory
         VersionOptions options,
         CancellationToken cancellationToken)
     {
-        var versions = new List<MohistVersion>();
         var project = MohistProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
         var availVersions = await HttpClient.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
@@ -31,12 +30,12 @@ internal static class MohistVersionFactory
         
         availVersions.Reverse();
 
-        versions.AddRange(availVersions
-            .Select(version => new MohistVersion(
-                Project: project,
-                Version: version 
-            )));
-        
+        var versions = availVersions
+            .Select(availVersion => new MohistVersion(
+                Project: project, 
+                Version: availVersion)
+            ).ToList();
+
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;

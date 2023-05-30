@@ -5,8 +5,7 @@ using System.Text.RegularExpressions;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mojang.Models;
-using MinecraftJars.Plugin.Mojang.Models.DetailApi;
-using MinecraftJars.Plugin.Mojang.Models.ManifestApi;
+using MinecraftJars.Plugin.Mojang.Models.MojangApi;
 using Group = MinecraftJars.Core.Projects.Group;
 
 namespace MinecraftJars.Plugin.Mojang;
@@ -39,7 +38,7 @@ internal static partial class MojangVersionFactory
         VersionOptions options, 
         CancellationToken cancellationToken)
     {
-        var versions = new List<MojangVersion>();
+        
         var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
         var manifest = await HttpClient.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken);
@@ -50,16 +49,18 @@ internal static partial class MojangVersionFactory
         if (!string.IsNullOrWhiteSpace(options.Version))
             manifest.Versions.RemoveAll(v => !v.Id.Equals(options.Version));
 
-        versions.AddRange(manifest.Versions
-            .Where(v => project.Name == MojangProjectFactory.Vanilla ? 
-                v.Type.Equals("release", StringComparison.OrdinalIgnoreCase) : 
-                !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase))
-            .Select(version => new MojangVersion(
+        if (!options.IncludeSnapshotBuilds)
+            manifest.Versions
+                .RemoveAll(v => !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase));
+        
+        var versions = manifest.Versions
+            .Select(v => new MojangVersion(
                 Project: project, 
-                Version: version.Id) {
-                ReleaseTime = version.ReleaseTime, 
-                DetailUrl = version.Url
-            }));
+                Version: v.Id,
+                IsSnapShot: !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase)) {
+                ReleaseTime = v.ReleaseTime, 
+                DetailUrl = v.Url
+            }).ToList();
         
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
@@ -71,7 +72,6 @@ internal static partial class MojangVersionFactory
         VersionOptions options, 
         CancellationToken cancellationToken)
     {
-        var versions = new List<MojangVersion>();
         var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
         var request = new HttpRequestMessage(HttpMethod.Get, MojangBedrockRequestUri);
@@ -86,44 +86,22 @@ internal static partial class MojangVersionFactory
             throw new InvalidOperationException("Could not acquire version details.");
 
         var html = await response.Content.ReadAsStringAsync(cancellationToken);
-        
-        foreach (var match in MojangBedrockDownloadLink().Matches(html).Cast<Match>())
-        {
-            var url = match.Value;
-            
-            var version = match.Groups.Values
-                .Where(p => p.Name == "version")
-                .Select(p => p.Value)
-                .FirstOrDefault();
-            
-            if (version == null)
-                continue;
-            
-            if (!string.IsNullOrWhiteSpace(options.Version) && !options.Version.Equals(version))
-                continue;
 
-            var isPreview = match.Groups["preview"].Value.Length > 0;
-            
-            if ((project.Name == MojangProjectFactory.Bedrock && isPreview) ||
-                (project.Name == MojangProjectFactory.BedrockPreview && !isPreview))
-                continue;
-            
-            var platform = match.Groups.Values
-                    .Where(p => p.Name == "platform")
-                    .Select(p => p.Value)
-                    .FirstOrDefault() switch 
-                {
-                    "linux" => Os.Linux,
-                    _ => Os.Windows
-                };
-
-            versions.Add(new MojangVersion(
-                Project: project,
-                Version: version,
-                Os: platform) {
+        var versions = (from match in MojangBedrockDownloadLink().Matches(html)
+            let url = match.Value
+            let version = match.Groups["version"].Value
+            let isPreview = !string.IsNullOrWhiteSpace(match.Groups["preview"].Value)
+            let platform = match.Groups["platform"].Value.Equals("linux", StringComparison.OrdinalIgnoreCase) ? Os.Linux : Os.Windows
+            where !string.IsNullOrWhiteSpace(version) && (string.IsNullOrWhiteSpace(options.Version) || options.Version.Equals(version))
+            where options.IncludeSnapshotBuilds || !isPreview
+            select new MojangVersion(
+                Project: project, 
+                Version: version, 
+                IsSnapShot: isPreview, 
+                Os: platform)
+            {
                 DetailUrl = url
-            });
-        }
+            }).ToList();
 
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 

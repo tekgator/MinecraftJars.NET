@@ -29,7 +29,7 @@ If I've helped you and you like some of my work, feel free to buy me a coffee â˜
 Following provider plugins are already bundled with MinecraftJars.NET:
 
 ![Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang/Resources/Mojang-24px.png) [Mojang](MinecraftJars.Plugin/MinecraftJars.Plugin.Mojang):
-Vanilla, Vanilla Snapshot, Bedrock, Bedrock Preview
+Vanilla, Bedrock
 
 ![Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper/Resources/Paper-24px.png) [Paper](MinecraftJars.Plugin/MinecraftJars.Plugin.Paper): 
 Paper, Folia, Velocity, Waterfall
@@ -44,7 +44,7 @@ Pocketmine
 Mohist
 
 ![Fabric](MinecraftJars.Plugin/MinecraftJars.Plugin.Fabric/Resources/Fabric-24px.png) [Fabric](MinecraftJars.Plugin/MinecraftJars.Plugin.Fabric):
-Fabric, Fabric Snapshot
+Fabric
 
 ![Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot/Resources/Spigot-24px.png) [Spigot](MinecraftJars.Plugin/MinecraftJars.Plugin.Spigot)
 (**Important:** see details in Plugin Readme): Spigot, BungeeCord 

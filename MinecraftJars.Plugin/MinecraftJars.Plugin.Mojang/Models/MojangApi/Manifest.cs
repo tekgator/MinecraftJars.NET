@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Plugin.Mojang.Models.ManifestApi;
+namespace MinecraftJars.Plugin.Mojang.Models.MojangApi;
 
 internal class Manifest
 {

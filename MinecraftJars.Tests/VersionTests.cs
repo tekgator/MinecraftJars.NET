@@ -59,4 +59,39 @@ public class VersionTests
         TestContext.Progress.WriteLine("{0}: Specific version {1} found", 
             nameof(GetVersions_SpecificVersion), version.Version);
     }  
+    
+    [TestCase("Vanilla")]
+    [TestCase("Bedrock")]
+    [TestCase("Pocketmine")]
+    [Order(4)]
+    public async Task GetVersions_ContainsSnapshot(string projectName)
+    {
+        var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var provider = ProviderManager.GetProvider(project);
+
+        var versions =
+            (await provider.GetVersions(project.Name, new VersionOptions { IncludeSnapshotBuilds = true })).ToList();
+
+        Assert.That(versions.Any(v => v.IsSnapShot), Is.True);
+        
+        TestContext.Progress.WriteLine("{0}: {1} snapshot version found",
+            nameof(GetVersions_ContainsSnapshot), versions.Count(v => v.IsSnapShot));
+    }
+    
+    [TestCase("Vanilla")]
+    [TestCase("Bedrock")]
+    [TestCase("Pocketmine")]
+    [Order(5)]
+    public async Task GetVersions_ContainsNoSnapshot(string projectName)
+    {
+        var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var provider = ProviderManager.GetProvider(project);
+
+        var versions =
+            (await provider.GetVersions(project.Name, new VersionOptions { IncludeSnapshotBuilds = false })).ToList();
+
+        Assert.That(versions.Any(v => v.IsSnapShot), Is.False);
+        
+        TestContext.Progress.WriteLine("{0}: No snapshot version found", nameof(GetVersions_ContainsNoSnapshot));
+    }    
 }

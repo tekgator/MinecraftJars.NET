@@ -6,7 +6,8 @@ namespace MinecraftJars.Plugin.Fabric.Model;
 
 public record FabricVersion(
     IProject Project,
-    string Version) : IVersion
+    string Version,
+    bool IsSnapShot) : IVersion
 {
     internal string InstallerVersion { get; init; } = string.Empty;
     

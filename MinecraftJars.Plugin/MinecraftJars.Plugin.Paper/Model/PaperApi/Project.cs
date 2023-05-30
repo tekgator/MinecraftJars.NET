@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Plugin.Paper.Model.ProjectApi;
+namespace MinecraftJars.Plugin.Paper.Model.PaperApi;
 
 internal class Project
 {

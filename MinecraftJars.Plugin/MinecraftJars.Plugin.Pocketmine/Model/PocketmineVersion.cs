@@ -6,7 +6,8 @@ namespace MinecraftJars.Plugin.Pocketmine.Model;
 
 public record PocketmineVersion(
     IProject Project,
-    string Version) : IVersion
+    string Version,
+    bool IsSnapShot) : IVersion
 {
     internal PocketmineDownload Download { get; init; } = default!;
     
