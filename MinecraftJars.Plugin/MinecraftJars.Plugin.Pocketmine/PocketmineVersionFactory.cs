@@ -37,10 +37,12 @@ internal static class PocketmineVersionFactory
 
         var versions = (from release in releaseApi 
             let asset = release.Assets.First() 
+            let isSnapShot = release.TagName.Contains("beta", StringComparison.OrdinalIgnoreCase)
+            where options.IncludeSnapshotBuilds || !isSnapShot
             select new PocketmineVersion(
                 Project: project, 
                 Version: release.TagName, 
-                IsSnapShot: release.TagName.Contains("beta", StringComparison.OrdinalIgnoreCase))
+                IsSnapShot: isSnapShot)
             {
                 Download = new PocketmineDownload(
                     FileName: asset.Name, 
