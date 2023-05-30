@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Plugin.Purpur.Model.ProjectApi;
+namespace MinecraftJars.Plugin.Purpur.Model.PurpurApi;
 
 internal class Project
 {

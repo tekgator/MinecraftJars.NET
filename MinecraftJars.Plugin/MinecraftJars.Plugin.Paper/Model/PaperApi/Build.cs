@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MinecraftJars.Plugin.Paper.Model.BuildApi;
+namespace MinecraftJars.Plugin.Paper.Model.PaperApi;
 
 public class Build
 {
