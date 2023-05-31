@@ -14,8 +14,7 @@ public class VersionTests
     public async Task GetVersions_Success(string projectName)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-        var versions = (await provider.GetVersions(project.Name)).ToList();
+        var versions = (await project.GetVersions()).ToList();
 
         Assert.That(versions, Is.Not.Empty);
         Assert.That(versions.All(v => v.Project.Name.Equals(project.Name)), Is.True);
@@ -30,10 +29,11 @@ public class VersionTests
         [Values(5, 10)] int maxRecords)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-
-        var versions =
-            (await provider.GetVersions(project.Name, new VersionOptions { MaxRecords = maxRecords })).ToList();
+        var versions = (await project.GetVersions(new VersionOptions
+        {
+            MaxRecords = maxRecords
+        })).ToList();
+        
         Assert.That(versions, Has.Count.AtMost(maxRecords));
         
         TestContext.Progress.WriteLine("{0}: {1} versions found for {2} with max. limit {3}", 
@@ -44,12 +44,11 @@ public class VersionTests
     public async Task GetVersions_SpecificVersion(string projectName)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-
-        var version = (await provider.GetVersions(project.Name)).First();
-
-        var versions =
-            (await provider.GetVersions(project.Name, new VersionOptions { Version = version.Version })).ToList();
+        var version = (await project.GetVersions()).First();
+        var versions = (await project.GetVersions(new VersionOptions
+        {
+            Version = version.Version
+        })).ToList();
 
         var count = version is MojangVersion { Os: not null } ? 2 : 1; 
 
@@ -67,10 +66,11 @@ public class VersionTests
     public async Task GetVersions_ContainsSnapshot(string projectName)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
 
-        var versions =
-            (await provider.GetVersions(project.Name, new VersionOptions { IncludeSnapshotBuilds = true })).ToList();
+        var versions = (await project.GetVersions(new VersionOptions
+        {
+            IncludeSnapshotBuilds = true
+        })).ToList();
 
         Assert.That(versions.Any(v => v.IsSnapShot), Is.True);
         
@@ -85,10 +85,10 @@ public class VersionTests
     public async Task GetVersions_ContainsNoSnapshot(string projectName)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-
-        var versions =
-            (await provider.GetVersions(project.Name, new VersionOptions { IncludeSnapshotBuilds = false })).ToList();
+        var versions = (await project.GetVersions(new VersionOptions
+        {
+            IncludeSnapshotBuilds = false
+        })).ToList();
 
         Assert.That(versions.Any(v => v.IsSnapShot), Is.False);
         

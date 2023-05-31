@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+
+## [1.2.3] - 2023-05-31
+### Changed
+- GetVersion on IProvider now returns all versions for all projects
+
+### Added
+- GetVersion on IProject returns all versions for that project
+
+
 ## [1.2.2] - 2023-05-30
 ### Added
 - Add version option to include snapshots during load, by default this is false

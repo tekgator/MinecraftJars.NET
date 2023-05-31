@@ -26,10 +26,9 @@ public interface IProvider
     IEnumerable<IProject> Projects { get; }
 
     /// <summary>
-    /// Get available versions for a project from the provider 
+    /// Get available versions for all projects from the provider 
     /// </summary>    
     public Task<IEnumerable<IVersion>> GetVersions(
-        string projectName,
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default!);
 }

@@ -83,7 +83,7 @@ foreach (var provider in providerManager.GetProviders())
     {
         Console.WriteLine($"\t{project}");     
         
-        foreach (var version in await provider.GetVersions(project.Name, new VersionOptions { MaxRecords = 10 }))
+        foreach (var version in await project.GetVersions(new VersionOptions { MaxRecords = 10 }))
         {
             Console.WriteLine($"\t\t{version}");
 

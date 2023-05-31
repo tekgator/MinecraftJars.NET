@@ -21,10 +21,17 @@ public class PaperProvider : IProvider
     public IEnumerable<IProject> Projects => PaperProjectFactory.Projects;
 
     public async Task<IEnumerable<IVersion>> GetVersions(
-        string projectName,
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
-        return await PaperVersionFactory.GetVersion(projectName, options ?? new VersionOptions(), cancellationToken);
+        var versionOptions = options ?? new VersionOptions();
+        var versions = new List<IVersion>();
+
+        foreach (var project in Projects)
+        {
+            versions.AddRange(await project.GetVersions(versionOptions, cancellationToken));
+        }
+
+        return versions;
     }
 }

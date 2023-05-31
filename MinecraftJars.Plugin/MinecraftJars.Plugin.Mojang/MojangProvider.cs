@@ -21,10 +21,17 @@ public class MojangProvider : IProvider
     public IEnumerable<IProject> Projects => MojangProjectFactory.Projects;
 
     public async Task<IEnumerable<IVersion>> GetVersions(
-        string projectName,
-        VersionOptions? versionOptions = null, 
-        CancellationToken cancellationToken = default!)
+        VersionOptions? options = null, 
+        CancellationToken cancellationToken = default)
     {
-        return await MojangVersionFactory.GetVersion(projectName, versionOptions ?? new VersionOptions(), cancellationToken);
+        var versionOptions = options ?? new VersionOptions();
+        var versions = new List<IVersion>();
+
+        foreach (var project in Projects)
+        {
+            versions.AddRange(await project.GetVersions(versionOptions, cancellationToken));
+        }
+
+        return versions;
     }     
 }

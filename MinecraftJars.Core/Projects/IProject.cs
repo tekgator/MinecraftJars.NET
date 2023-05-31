@@ -1,4 +1,6 @@
-﻿namespace MinecraftJars.Core.Projects;
+﻿using MinecraftJars.Core.Versions;
+
+namespace MinecraftJars.Core.Projects;
 
 public interface IProject
 {
@@ -26,4 +28,11 @@ public interface IProject
     /// PNG logo of the project 
     /// </summary>    
     byte[] Logo { get; }
+    
+    /// <summary>
+    /// Get available versions for the project from the provider 
+    /// </summary>    
+    public Task<IEnumerable<IVersion>> GetVersions(
+        VersionOptions? options = null, 
+        CancellationToken cancellationToken = default!);     
 }

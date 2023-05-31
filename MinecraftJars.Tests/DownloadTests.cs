@@ -19,9 +19,8 @@ public class DownloadTests
         [Values(true, false)] bool loadFileSize)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
         
-        foreach (var version in await provider.GetVersions(project.Name))
+        foreach (var version in await project.GetVersions())
         {
             TestContext.Progress.WriteLine("{0}: Retrieving download for version {1}", 
                 nameof(GetDownloads_Success), version.Version);
@@ -44,8 +43,7 @@ public class DownloadTests
         [Values(true, false)] bool loadFileSize)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-        var version = (await provider.GetVersions(project.Name, new VersionOptions { MaxRecords = 1 })).First();
+        var version = (await project.GetVersions(new VersionOptions { MaxRecords = 1 })).First();
         
         TestContext.Progress.WriteLine("{0}: Retrieving download for version {1}", 
             nameof(GetDownloads_LatestVersion), version.Version);
@@ -66,8 +64,7 @@ public class DownloadTests
     public async Task BuildSpigot_Success(string projectName)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-        var version = (await provider.GetVersions(project.Name, new VersionOptions { MaxRecords = 1 })).First();
+        var version = (await project.GetVersions(new VersionOptions { MaxRecords = 1 })).First();
         
         TestContext.Progress.WriteLine("{0}: Start building {1} version {2}", 
             nameof(BuildSpigot_Success), projectName, version.Version);
@@ -102,8 +99,7 @@ public class DownloadTests
     public async Task BuildSpigot_Cancel(string projectName)
     {
         var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
-        var provider = ProviderManager.GetProvider(project);
-        var version = (await provider.GetVersions(project.Name, new VersionOptions { MaxRecords = 1 })).First();
+        var version = (await project.GetVersions(new VersionOptions { MaxRecords = 1 })).First();
         
         TestContext.Progress.WriteLine("{0}: Start building {1} version {2}", 
             nameof(BuildSpigot_Success), projectName, version.Version);
