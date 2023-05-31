@@ -5,12 +5,12 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Fabric.Model;
 
 public record FabricVersion(
-    IProject Project,
+    IMinecraftProject Project,
     string Version,
-    bool IsSnapShot) : IVersion
+    bool IsSnapShot) : IMinecraftVersion
 {
     internal string InstallerVersion { get; init; } = string.Empty;
     
-    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+    public Task<IMinecraftDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
         FabricVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }

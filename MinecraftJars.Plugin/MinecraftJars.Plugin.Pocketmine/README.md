@@ -15,7 +15,7 @@ The plugin is already bundled with the core library [MinecraftJar.NET](../../REA
 The plugin has no specialities compared to the core interfaces.
 If required the interface can be casted to it's instantiated classes.
 
-- `IProvider` to [PocketmineProvider](PocketmineProvider.cs)
-- `IProject` to [PocketmineProject](Model/PocketmineProject.cs)
-- `IVersion` to [PocketmineVersion](Model/PocketmineVersion.cs)
-- `IDownload` to [PocketmineDownload](Model/PocketmineDownload.cs)
+- `IMinecraftProvider` to [PocketmineProvider](PocketmineProvider.cs)
+- `IMinecraftProject` to [PocketmineProject](Model/PocketmineProject.cs)
+- `IMinecraftVersion` to [PocketmineVersion](Model/PocketmineVersion.cs)
+- `IMinecraftDownload` to [PocketmineDownload](Model/PocketmineDownload.cs)

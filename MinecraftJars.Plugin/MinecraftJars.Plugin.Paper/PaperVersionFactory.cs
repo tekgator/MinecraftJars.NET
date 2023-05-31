@@ -19,39 +19,38 @@ internal static class PaperVersionFactory
         VersionOptions options,
         CancellationToken cancellationToken)
     {
-        var versions = new List<PaperVersion>();
         var project = PaperProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
         var projectApi = await HttpClient
-            .GetFromJsonAsync<Project>(string.Format(PaperProjectRequestUri, project.Name.ToLower()), cancellationToken);
-        
-        if (projectApi == null) 
-            throw new InvalidOperationException("Could not acquire game type details.");
-
-        if (!string.IsNullOrWhiteSpace(options.Version))
-            projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
+            .GetFromJsonAsync<Project>(string.Format(PaperProjectRequestUri, project.Name.ToLower()), cancellationToken) ??
+            throw new InvalidOperationException("Could not acquire version details.");                         
         
         projectApi.Versions.Reverse();
-        versions.AddRange(projectApi.Versions
-            .Select(projectVersion => new PaperVersion(
-                Project: project,
-                Version: projectVersion
-            )));
 
+        var versions = (from version in projectApi.Versions
+            where string.IsNullOrWhiteSpace(options.Version) || version.Equals(options.Version)
+            let isSnapshot = version.Contains("pre", StringComparison.OrdinalIgnoreCase) ||
+                             version.Contains("snapshot", StringComparison.OrdinalIgnoreCase)
+            where options.IncludeSnapshotBuilds || !isSnapshot                             
+            select new PaperVersion(
+                Project: project,
+                Version: version,
+                IsSnapShot: isSnapshot
+
+            )).ToList();
+                
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;
     }
     
-    public static async Task<IDownload> GetDownload(
+    public static async Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         PaperVersion version,
         CancellationToken cancellationToken)
     {
         var requestUri = string.Format(PaperBuildRequestUri, version.Project.Name.ToLower(), version.Version);
-        var detail = await HttpClient.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken);
-
-        if (detail == null) 
+        var detail = await HttpClient.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
         
         var build = detail.Builds.Last();

@@ -2,7 +2,7 @@
 
 namespace MinecraftJars.Core.Projects;
 
-public interface IProject
+public interface IMinecraftProject
 {
     /// <summary>
     /// Group of the project e.g. Server, Bedrock or Proxy 
@@ -32,7 +32,7 @@ public interface IProject
     /// <summary>
     /// Get available versions for the project from the provider 
     /// </summary>    
-    public Task<IEnumerable<IVersion>> GetVersions(
+    Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default!);     
 }

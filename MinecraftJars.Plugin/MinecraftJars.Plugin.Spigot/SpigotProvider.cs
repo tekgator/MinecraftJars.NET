@@ -5,8 +5,8 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Spigot;
 
-[Export(typeof(IProvider))]
-public class SpigotProvider : IProvider
+[Export(typeof(IMinecraftProvider))]
+public class SpigotProvider : IMinecraftProvider
 {
     [ImportingConstructor]
     public SpigotProvider(ProviderOptions? options)
@@ -18,14 +18,14 @@ public class SpigotProvider : IProvider
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Spigot";
     public byte[] Logo => Properties.Resources.Spigot;
-    public IEnumerable<IProject> Projects => SpigotProjectFactory.Projects;
+    public IEnumerable<IMinecraftProject> Projects => SpigotProjectFactory.Projects;
     
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
         var versionOptions = options ?? new VersionOptions();
-        var versions = new List<IVersion>();
+        var versions = new List<IMinecraftVersion>();
 
         foreach (var project in Projects)
         {

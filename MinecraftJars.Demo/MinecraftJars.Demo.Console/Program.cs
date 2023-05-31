@@ -2,7 +2,7 @@
 using MinecraftJars;
 using MinecraftJars.Core.Versions;
 
-var providerManager = new ProviderManager();
+var providerManager = new MinecraftJarManager();
 
 foreach (var provider in providerManager.GetProviders())
 {

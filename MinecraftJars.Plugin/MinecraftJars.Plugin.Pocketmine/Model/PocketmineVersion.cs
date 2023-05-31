@@ -5,12 +5,12 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Pocketmine.Model;
 
 public record PocketmineVersion(
-    IProject Project,
+    IMinecraftProject Project,
     string Version,
-    bool IsSnapShot) : IVersion
+    bool IsSnapShot) : IMinecraftVersion
 {
     internal PocketmineDownload Download { get; init; } = default!;
     
-    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+    public Task<IMinecraftDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
         PocketmineVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }

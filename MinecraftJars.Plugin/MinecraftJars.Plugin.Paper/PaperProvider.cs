@@ -5,8 +5,8 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Paper;
 
-[Export(typeof(IProvider))]
-public class PaperProvider : IProvider
+[Export(typeof(IMinecraftProvider))]
+public class PaperProvider : IMinecraftProvider
 {
     [ImportingConstructor]
     public PaperProvider(ProviderOptions? options)
@@ -18,14 +18,14 @@ public class PaperProvider : IProvider
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Paper";
     public byte[] Logo => Properties.Resources.Paper;
-    public IEnumerable<IProject> Projects => PaperProjectFactory.Projects;
+    public IEnumerable<IMinecraftProject> Projects => PaperProjectFactory.Projects;
 
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
         var versionOptions = options ?? new VersionOptions();
-        var versions = new List<IVersion>();
+        var versions = new List<IMinecraftVersion>();
 
         foreach (var project in Projects)
         {

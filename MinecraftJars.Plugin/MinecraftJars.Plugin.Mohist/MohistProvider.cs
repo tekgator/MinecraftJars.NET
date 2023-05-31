@@ -5,8 +5,8 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Mohist;
 
-[Export(typeof(IProvider))]
-public class MohistProvider : IProvider
+[Export(typeof(IMinecraftProvider))]
+public class MohistProvider : IMinecraftProvider
 {
     [ImportingConstructor]
     public MohistProvider(ProviderOptions? options)
@@ -18,14 +18,14 @@ public class MohistProvider : IProvider
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Mohist";
     public byte[] Logo => Properties.Resources.Mohist;
-    public IEnumerable<IProject> Projects => MohistProjectFactory.Projects;
+    public IEnumerable<IMinecraftProject> Projects => MohistProjectFactory.Projects;
    
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
         var versionOptions = options ?? new VersionOptions();
-        var versions = new List<IVersion>();
+        var versions = new List<IMinecraftVersion>();
 
         foreach (var project in Projects)
         {

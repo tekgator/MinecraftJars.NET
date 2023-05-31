@@ -5,8 +5,8 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Purpur;
 
-[Export(typeof(IProvider))]
-public class PurpurProvider : IProvider
+[Export(typeof(IMinecraftProvider))]
+public class PurpurProvider : IMinecraftProvider
 {
     [ImportingConstructor]
     public PurpurProvider(ProviderOptions? options)
@@ -18,14 +18,14 @@ public class PurpurProvider : IProvider
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Purpur";
     public byte[] Logo => Properties.Resources.Purpur;
-    public IEnumerable<IProject> Projects => PurpurProjectFactory.Projects;
+    public IEnumerable<IMinecraftProject> Projects => PurpurProjectFactory.Projects;
 
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
         var versionOptions = options ?? new VersionOptions();
-        var versions = new List<IVersion>();
+        var versions = new List<IMinecraftVersion>();
 
         foreach (var project in Projects)
         {

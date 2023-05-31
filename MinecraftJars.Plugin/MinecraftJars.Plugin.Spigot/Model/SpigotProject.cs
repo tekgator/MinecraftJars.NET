@@ -8,9 +8,9 @@ public record SpigotProject(
     string Name,
     string Description,
     string Url,
-    byte[] Logo) : IProject
+    byte[] Logo) : IMinecraftProject
 {
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null,
         CancellationToken cancellationToken = default!)
     {

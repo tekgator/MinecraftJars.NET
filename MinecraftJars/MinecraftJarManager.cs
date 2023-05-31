@@ -6,15 +6,15 @@ using MinecraftJars.Core.Providers;
 
 namespace MinecraftJars;
 
-public class ProviderManager
+public class MinecraftJarManager
 {
-    [ImportMany(typeof(IProvider))]
-    private IEnumerable<IProvider> _providers;
+    [ImportMany(typeof(IMinecraftProvider))]
+    private IEnumerable<IMinecraftProvider> _providers;
 
     [Export]
     private ProviderOptions ProviderOptions { get; }
     
-    public ProviderManager(ProviderOptions? options = null)
+    public MinecraftJarManager(ProviderOptions? options = null)
     {
         ProviderOptions = options ?? new ProviderOptions();
         
@@ -25,13 +25,13 @@ public class ProviderManager
         var container = new CompositionContainer(catalog);
         container.ComposeParts(this);
 
-        _providers ??= Enumerable.Empty<IProvider>();
+        _providers ??= Enumerable.Empty<IMinecraftProvider>();
     }
     
     /// <summary>
     /// Return a list of all providers (plugins)
     /// </summary>    
-    public IEnumerable<IProvider> GetProviders()
+    public IEnumerable<IMinecraftProvider> GetProviders()
     {
         return _providers;
     }
@@ -39,9 +39,9 @@ public class ProviderManager
     /// <summary>
     /// Return a list of all providers offering a certain project group
     /// </summary>    
-    public IEnumerable<IProvider> GetProviders(Group group)
+    public IEnumerable<IMinecraftProvider> GetProviders(Group group)
     {
-        var providers = new List<IProvider>();
+        var providers = new List<IMinecraftProvider>();
 
         providers.AddRange(GetProviders()
             .Where(p => p.Projects.Any(t => t.Group == group)));
@@ -52,7 +52,7 @@ public class ProviderManager
     /// <summary>
     /// Return a specific provider
     /// </summary>    
-    public IProvider GetProvider(string provider)
+    public IMinecraftProvider GetProvider(string provider)
     {
         return _providers
             .Single(p => p.Name.Equals(provider));
@@ -61,7 +61,7 @@ public class ProviderManager
     /// <summary>
     /// Return the provider for the provided Project
     /// </summary>    
-    public IProvider GetProvider(IProject project)
+    public IMinecraftProvider GetProvider(IMinecraftProject project)
     {
         return _providers
             .Single(p => p.Projects.Contains(project));
@@ -70,7 +70,7 @@ public class ProviderManager
     /// <summary>
     /// Return a list of all projects (e.g. Vanilla, Spigot, etc.)
     /// </summary>       
-    public IEnumerable<IProject> GetProjects()
+    public IEnumerable<IMinecraftProject> GetProjects()
     {
         return GetProviders()
             .SelectMany(p => p.Projects);
@@ -79,7 +79,7 @@ public class ProviderManager
     /// <summary>
     /// Return a list of all projects for a certain type (e.g. all proxies)
     /// </summary>       
-    public IEnumerable<IProject> GetProjects(Group group)
+    public IEnumerable<IMinecraftProject> GetProjects(Group group)
     {
         return GetProviders()
             .SelectMany(p => p.Projects.Where(t => t.Group == group));

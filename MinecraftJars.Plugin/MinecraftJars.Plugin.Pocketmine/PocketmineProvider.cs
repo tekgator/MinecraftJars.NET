@@ -5,8 +5,8 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Pocketmine;
 
-[Export(typeof(IProvider))]
-public class PocketmineProvider : IProvider
+[Export(typeof(IMinecraftProvider))]
+public class PocketmineProvider : IMinecraftProvider
 {
     [ImportingConstructor]
     public PocketmineProvider(ProviderOptions? options)
@@ -19,14 +19,14 @@ public class PocketmineProvider : IProvider
     
     public string Name => "Pocketmine";
     public byte[] Logo => Properties.Resources.Pocketmine;
-    public IEnumerable<IProject> Projects => PocketmineProjectFactory.Projects;
+    public IEnumerable<IMinecraftProject> Projects => PocketmineProjectFactory.Projects;
 
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
         var versionOptions = options ?? new VersionOptions();
-        var versions = new List<IVersion>();
+        var versions = new List<IMinecraftVersion>();
 
         foreach (var project in Projects)
         {

@@ -58,14 +58,17 @@ internal static partial class SpigotVersionFactory
 
         var versions = (from match in SpigotVersions().Matches(html)
             let version = match.Groups["version"].Value
+            where string.IsNullOrWhiteSpace(options.Version) || version.Equals(options.Version)
+            let isSnapshot = version.Contains("-pre", StringComparison.OrdinalIgnoreCase) || 
+                             version.Contains("-rc", StringComparison.OrdinalIgnoreCase)
+            where options.IncludeSnapshotBuilds || !isSnapshot
             let jsonFile = match.Groups["json"].Value
             let releaseTime = DateTime.Parse(match.Groups["date"].Value, new CultureInfo("en-US"))
-            where !string.IsNullOrWhiteSpace(version) &&
-                  (string.IsNullOrWhiteSpace(options.Version) || options.Version.Equals(version))
             orderby releaseTime descending
             select new SpigotVersion(
                 Project: project,
                 Version: version,
+                IsSnapShot: isSnapshot,
                 RequiresLocalBuild: true)
             {
                 DetailUrl = $"{SpigotRequestUri}/{jsonFile}",
@@ -88,17 +91,14 @@ internal static partial class SpigotVersionFactory
             ? string.Format(BungeeCoordRequestUriMaxRecordSuffix, options.MaxRecords.Value)
             : string.Empty);
         
-        var job = await HttpClient.GetFromJsonAsync<Job>(requestUrl, cancellationToken);
-            
-        if (job == null)
+        var job = await HttpClient.GetFromJsonAsync<Job>(requestUrl, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");
-
+                  
         var versions = (from build in job.Builds
-            where !build.InProgress && 
-                  build.Result.Equals("success", StringComparison.OrdinalIgnoreCase)
+            where !build.InProgress && build.Result.Equals("success", StringComparison.OrdinalIgnoreCase)
             let version = build.Number.ToString()
+            where string.IsNullOrWhiteSpace(options.Version) || version.Equals(options.Version)
             let artifact = build.Artifacts.First()
-            where string.IsNullOrWhiteSpace(options.Version) || options.Version.Equals(build.Number.ToString())
             select new SpigotVersion(
                 Project: project,
                 Version: version)
@@ -110,7 +110,7 @@ internal static partial class SpigotVersionFactory
         return versions;
     }
 
-    public static Task<IDownload> GetDownload(
+    public static Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         SpigotVersion version,
         CancellationToken cancellationToken)
@@ -120,14 +120,12 @@ internal static partial class SpigotVersionFactory
             : GetDownloadBungeeCord(options, version, cancellationToken);
     }
     
-    private static async Task<IDownload> GetDownloadSpigot(
+    private static async Task<IMinecraftDownload> GetDownloadSpigot(
         DownloadOptions options, 
         SpigotVersion version,
         CancellationToken cancellationToken = default!)
     {
-        var build = await HttpClient.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken);
-
-        if (build == null) 
+        var build = await HttpClient.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
 
         if (!options.BuildJar)
@@ -142,7 +140,7 @@ internal static partial class SpigotVersionFactory
         return await buildTool.Build(build.Name,cancellationToken);
     }
     
-    private static async Task<IDownload> GetDownloadBungeeCord(
+    private static async Task<IMinecraftDownload> GetDownloadBungeeCord(
         DownloadOptions options, 
         SpigotVersion version,
         CancellationToken cancellationToken)

@@ -9,4 +9,4 @@ public record MohistDownload(
     string Url,
     DateTime? ReleaseTime,
     HashType HashType,
-    string? Hash) : IDownload;
+    string? Hash) : IMinecraftDownload;

@@ -5,10 +5,10 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Purpur.Model;
 
 public record PurpurVersion(
-    IProject Project,
+    IMinecraftProject Project,
     string Version,
-    bool IsSnapShot = false) : IVersion
+    bool IsSnapShot = false) : IMinecraftVersion
 {
-    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+    public Task<IMinecraftDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
         PurpurVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }

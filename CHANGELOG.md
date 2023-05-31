@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.3.0] - 2023-06-01
+### Added
+- Paper plugin flag pre and snapshot builds as IsSnapshot
+- Pocketmine flag alpha builds as IsSnapshot
+- Spigot plugin flag pre and snapshot builds as IsSnapshot
+
+### Changed
+- Renamed IProvider to IMinecraftProvider
+- Renamed IProject to IMinecraftProject
+- Renamed IVersion to IMinecraftVersion
+- Renamed IDownload to IMinecraftDownload
+- Rename ProviderManager to MinecraftProviderManager
+- Change LINQ method calls to query format
+
+
 ## [1.2.3] - 2023-05-31
 ### Changed
 - GetVersion on IProvider now returns all versions for all projects

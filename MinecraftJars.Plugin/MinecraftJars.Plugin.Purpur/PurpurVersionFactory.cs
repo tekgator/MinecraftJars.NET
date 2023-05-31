@@ -22,42 +22,33 @@ internal static class PurpurVersionFactory
     {
         var project = PurpurProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
         
-        var projectApi = await HttpClient.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken);
-        
-        if (projectApi == null) 
-            throw new InvalidOperationException("Could not acquire game type details.");
-        
-        if (!string.IsNullOrWhiteSpace(options.Version))
-            projectApi.Versions.RemoveAll(v => !v.Equals(options.Version));
+        var projectApi = await HttpClient.GetFromJsonAsync<Project>(PurpurProjectRequestUri, cancellationToken) ??
+            throw new InvalidOperationException("Could not acquire version details.");
         
         projectApi.Versions.Reverse();
-
-        var versions = projectApi.Versions
-            .Select(projectApiVersion => new PurpurVersion(
-                Project: project, 
-                Version: projectApiVersion)
+        var versions = (from version in projectApi.Versions
+                where string.IsNullOrWhiteSpace(options.Version) || version.Equals(options.Version)
+                select new PurpurVersion(
+                    Project: project,
+                    Version: version)
             ).ToList();
-
+        
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;
     }
     
-    public static async Task<IDownload> GetDownload(
+    public static async Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         PurpurVersion version,
         CancellationToken cancellationToken)
     {
         var requestUriVersionBuilds = string.Format(PurpurVersionBuildsRequestUri, version.Version);
-        var versionBuilds = await HttpClient.GetFromJsonAsync<VersionBuilds>(requestUriVersionBuilds, cancellationToken);
-
-        if (versionBuilds == null) 
+        var versionBuilds = await HttpClient.GetFromJsonAsync<VersionBuilds>(requestUriVersionBuilds, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
         
         var requestUriBuild = string.Format(PurpurBuildRequestUri, version.Version, versionBuilds.Builds.Latest);
-        var build = await HttpClient.GetFromJsonAsync<Build>(requestUriBuild, cancellationToken);
-        
-        if (build == null) 
+        var build = await HttpClient.GetFromJsonAsync<Build>(requestUriBuild, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
         
         var downloadUri = string.Format(PurpurDownloadRequestUri, version.Version, build.BuildId);

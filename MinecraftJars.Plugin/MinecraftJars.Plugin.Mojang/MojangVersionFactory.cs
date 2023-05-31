@@ -38,30 +38,24 @@ internal static partial class MojangVersionFactory
         VersionOptions options, 
         CancellationToken cancellationToken)
     {
-        
         var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        var manifest = await HttpClient.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken);
-
-        if (manifest == null)
+        var manifest = await HttpClient.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");
         
-        if (!string.IsNullOrWhiteSpace(options.Version))
-            manifest.Versions.RemoveAll(v => !v.Id.Equals(options.Version));
-
-        if (!options.IncludeSnapshotBuilds)
-            manifest.Versions
-                .RemoveAll(v => !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase));
-        
-        var versions = manifest.Versions
-            .Select(v => new MojangVersion(
-                Project: project, 
-                Version: v.Id,
-                IsSnapShot: !v.Type.Equals("release", StringComparison.OrdinalIgnoreCase)) {
-                ReleaseTime = v.ReleaseTime, 
-                DetailUrl = v.Url
-            }).ToList();
-        
+        var versions = (from version in manifest.Versions
+            let isSnapshot = !version.Type.Equals("release", StringComparison.OrdinalIgnoreCase)
+            where string.IsNullOrWhiteSpace(options.Version) || version.Id.Equals(options.Version)
+            where options.IncludeSnapshotBuilds || !isSnapshot
+            select new MojangVersion(
+                Project: project,
+                Version: version.Id,
+                IsSnapShot: isSnapshot)
+                {
+                    ReleaseTime = version.ReleaseTime,
+                    DetailUrl = version.Url
+                }).ToList();
+       
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;
@@ -88,12 +82,12 @@ internal static partial class MojangVersionFactory
         var html = await response.Content.ReadAsStringAsync(cancellationToken);
 
         var versions = (from match in MojangBedrockDownloadLink().Matches(html)
-            let url = match.Value
             let version = match.Groups["version"].Value
+            where string.IsNullOrWhiteSpace(options.Version) || version.Equals(options.Version)            
             let isPreview = !string.IsNullOrWhiteSpace(match.Groups["preview"].Value)
-            let platform = match.Groups["platform"].Value.Equals("linux", StringComparison.OrdinalIgnoreCase) ? Os.Linux : Os.Windows
-            where !string.IsNullOrWhiteSpace(version) && (string.IsNullOrWhiteSpace(options.Version) || options.Version.Equals(version))
             where options.IncludeSnapshotBuilds || !isPreview
+            let url = match.Value
+            let platform = match.Groups["platform"].Value.Equals("linux", StringComparison.OrdinalIgnoreCase) ? Os.Linux : Os.Windows
             select new MojangVersion(
                 Project: project, 
                 Version: version, 
@@ -108,7 +102,7 @@ internal static partial class MojangVersionFactory
             : versions;
     }
 
-    public static Task<IDownload> GetDownload(
+    public static Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         MojangVersion version, 
         CancellationToken cancellationToken)
@@ -121,14 +115,12 @@ internal static partial class MojangVersionFactory
         };
     }
     
-    private static async Task<IDownload> GetDownloadVanilla(
+    private static async Task<IMinecraftDownload> GetDownloadVanilla(
         DownloadOptions options, 
         MojangVersion version,
         CancellationToken cancellationToken)
     {
-        var detail = await HttpClient.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken);
-
-        if (detail == null) 
+        var detail = await HttpClient.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
         
         if (detail.Downloads.Server == null)
@@ -152,7 +144,7 @@ internal static partial class MojangVersionFactory
             Hash: detail.Downloads.Server.Sha1);     
     }
     
-    private static async Task<IDownload> GetDownloadBedrock(
+    private static async Task<IMinecraftDownload> GetDownloadBedrock(
         DownloadOptions options, 
         MojangVersion version,
         CancellationToken cancellationToken)

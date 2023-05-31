@@ -15,7 +15,7 @@ The plugin is already bundled with the core library [MinecraftJar.NET](../../REA
 The plugin has no specialities compared to the core interfaces.
 If required the interface can be casted to it's instantiated classes.
 
-- `IProvider` to [PurpurProvider](PurpurProvider.cs)
-- `IProject` to [PurpurProject](Model/PurpurProject.cs)
-- `IVersion` to [PurpurVersion](Model/PurpurVersion.cs)
-- `IDownload` to [PurpurDownload](Model/PurpurDownload.cs)
+- `IMinecraftProvider` to [PurpurProvider](PurpurProvider.cs)
+- `IMinecraftProject` to [PurpurProject](Model/PurpurProject.cs)
+- `IMinecraftVersion` to [PurpurVersion](Model/PurpurVersion.cs)
+- `IMinecraftDownload` to [PurpurDownload](Model/PurpurDownload.cs)

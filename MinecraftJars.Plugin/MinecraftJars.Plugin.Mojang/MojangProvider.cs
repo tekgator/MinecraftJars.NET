@@ -5,8 +5,8 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Plugin.Mojang;
 
-[Export(typeof(IProvider))]
-public class MojangProvider : IProvider
+[Export(typeof(IMinecraftProvider))]
+public class MojangProvider : IMinecraftProvider
 {
     [ImportingConstructor]
     public MojangProvider(ProviderOptions? options)
@@ -18,14 +18,14 @@ public class MojangProvider : IProvider
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Mojang";
     public byte[] Logo => Properties.Resources.Mojang;
-    public IEnumerable<IProject> Projects => MojangProjectFactory.Projects;
+    public IEnumerable<IMinecraftProject> Projects => MojangProjectFactory.Projects;
 
-    public async Task<IEnumerable<IVersion>> GetVersions(
+    public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default)
     {
         var versionOptions = options ?? new VersionOptions();
-        var versions = new List<IVersion>();
+        var versions = new List<IMinecraftVersion>();
 
         foreach (var project in Projects)
         {

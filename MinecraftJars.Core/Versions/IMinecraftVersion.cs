@@ -3,12 +3,12 @@ using MinecraftJars.Core.Projects;
 
 namespace MinecraftJars.Core.Versions;
 
-public interface IVersion
+public interface IMinecraftVersion
 {
     /// <summary>
     /// Project information about the version 
     /// </summary>        
-    IProject Project { get; }
+    IMinecraftProject Project { get; }
 
     /// <summary>
     /// Version name e.g. 1.19.4 
@@ -30,5 +30,5 @@ public interface IVersion
     /// Note: In case this method is building the actual JAR the user is responsible to move/delete the temp.
     /// directory including the built JAR file 
     /// </summary>    
-    Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!);
+    Task<IMinecraftDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!);
 }

@@ -66,16 +66,16 @@ Multiple options are available to install within your project:
 
 ## Usage
 
-MinecraftJars.NET comes with a `ProviderManager` class which has to be instantiated, optionally `ProviderOptions` can be supplied. 
-Each Plugin provides an interface instance for the provider `IProvider` as well an interface instance for `IEnumerable<IProject>` with it's versions `IEnumerable<IVersion>`.
-Since getting the actual download link mostly involves another API query it is accessible via the `IVersion.GetDownload()` method.
+MinecraftJars.NET comes with a `MinecraftJarManager` class which has to be instantiated, optionally `ProviderOptions` can be supplied. 
+Each Plugin provides an interface instance for the provider `IMinecraftProvider` as well an interface instance for `IEnumerable<IMinecraftProject>` with it's versions `IEnumerable<IMinecraftVersion>`.
+Since getting the actual download link mostly involves another API query it is accessible via the `IMinecraftVersion.GetDownload()` method.
 
 ```CSharp
 using MinecraftJars;
 
-var providerManager = new ProviderManager();
+var jarManager = new MinecraftJarManager();
 
-foreach (var provider in providerManager.GetProviders())
+foreach (var provider in jarManager.GetProviders())
 {
     Console.WriteLine($"{provider}");
 
@@ -102,17 +102,17 @@ foreach (var provider in providerManager.GetProviders())
 
 ### What provider / project / version information is the library providing?
 
-To make a long story short have a look at the [`IProvider`](MinecraftJars.Core/Providers/IProvider.cs), [`IProject`](MinecraftJars.Core/Projects/IProject.cs), [`IVersion`](MinecraftJars.Core/Versions/IVersion.cs) and the [`IDownload`](MinecraftJars.Core/Downloads/IDownload.cs) interface to see what values are returned by default. 
+To make a long story short have a look at the [`IMinecraftProvider`](MinecraftJars.Core/Providers/IMinecraftProvider.cs), [`IMinecraftProject`](MinecraftJars.Core/Projects/IMinecraftProject.cs), [`IMinecraftVersion`](MinecraftJars.Core/Versions/IMinecraftVersion.cs) and the [`IMinecraftDownload`](MinecraftJars.Core/Downloads/IMinecraftDownload.cs) interface to see what values are returned by default. 
 Each plugin could provide more information, which can be found in the README.md of the corresponding plugin.
 
-As an example with the Vanilla Minecraft experience following values are expected:
- - `IProvider` = Paper
-   - `IEnumerable<IProject>` = Paper, Folia, Velocity, Waterfall
-     - `IEnumerable<IVersion>` for Paper = 1.19.4, 1.19.3, 1.19.2, etc.
-       - `IDownload` = Build 123  
+As an example with the Paper Minecraft experience following values can be expected:
+ - `IMinecraftProvider` = Paper
+   - `IEnumerable<IMinecraftProject>` = Paper, Folia, Velocity, Waterfall
+     - `IEnumerable<IMinecraftVersion>` for Paper = 1.19.4, 1.19.3, 1.19.2, etc.
+       - `IMinecraftDownload` = Build 123  
 
 **Please note:** 
-- If a version has multiple builds only the latest successful build will be returned via `IVersion.GetDownload()` method.
+- If a version has multiple builds only the latest successful build will be returned via `IMinecraftVersion.GetDownload()` method.
 - Not all providers will fill all properties in each interface instance. Further information are provided in the README.md of each plugin.
 
 

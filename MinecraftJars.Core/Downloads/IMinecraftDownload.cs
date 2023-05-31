@@ -1,6 +1,6 @@
 ﻿namespace MinecraftJars.Core.Downloads;
 
-public interface IDownload
+public interface IMinecraftDownload
 {
     /// <summary>
     /// Filename of the download e.g. server-version.jar. Name could be used for the downloaded file 

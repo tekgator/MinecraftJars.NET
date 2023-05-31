@@ -5,10 +5,10 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Paper.Model;
 
 public record PaperVersion(
-    IProject Project,
+    IMinecraftProject Project,
     string Version,
-    bool IsSnapShot = false) : IVersion
+    bool IsSnapShot) : IMinecraftVersion
 {
-    public Task<IDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
+    public Task<IMinecraftDownload> GetDownload(DownloadOptions? options = null, CancellationToken cancellationToken = default!) => 
         PaperVersionFactory.GetDownload(options ?? new DownloadOptions(), this, cancellationToken);
 }

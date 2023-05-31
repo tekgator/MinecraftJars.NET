@@ -16,13 +16,13 @@ The plugin is already bundled with the core library [MinecraftJar.NET](../../REA
 The plugin has a few minor specialities compared to the core interfaces.
 If required the interface can be casted to it's instantiated classes.
 
-- `IProvider` to [SpigotProvider](SpigotProvider.cs)
-- `IProject` to [SpigotProject](Model/SpigotProject.cs)
-- `IVersion` to [SpigotVersion](Model/SpigotVersion.cs)
+- `IMinecraftProvider` to [SpigotProvider](SpigotProvider.cs)
+- `IMinecraftProject` to [SpigotProject](Model/SpigotProject.cs)
+- `IMinecraftVersion` to [SpigotVersion](Model/SpigotVersion.cs)
   - For Spigot `RequiresLocalBuild` is always true, see notes below
   - For BungeeCord `Version` is the BuildId as BungeeCord isn't based on versions
   - For Spigot the `ReleaseTime` (for older versions?) doesn't seem to be accurate resulting in an unsorted version list
-- `IDownload` to [SpigotDownload](Model/SpigotDownload.cs)
+- `IMinecraftDownload` to [SpigotDownload](Model/SpigotDownload.cs)
   - For all groups, no `Hash` is provided
   - For Spigot the `ReleaseTime` (for older versions?) doesn't seem to be accurate
   - For Spigot the `Url` is a local built file

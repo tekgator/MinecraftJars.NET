@@ -9,4 +9,4 @@ public record FabricDownload(
     string Url,
     DateTime? ReleaseTime = null,
     HashType HashType = HashType.None,
-    string? Hash = null) : IDownload;
+    string? Hash = null) : IMinecraftDownload;

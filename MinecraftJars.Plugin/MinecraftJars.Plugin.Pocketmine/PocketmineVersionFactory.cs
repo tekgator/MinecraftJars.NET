@@ -19,14 +19,9 @@ internal static class PocketmineVersionFactory
     {
         var project = PocketmineProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
         
-        var releaseApi = await HttpClient.GetFromJsonAsync<List<Release>>(PocketmineReleaseRequestUri, cancellationToken);
-        
-        if (releaseApi == null) 
-            throw new InvalidOperationException("Could not acquire game type details.");
+        var releaseApi = await HttpClient.GetFromJsonAsync<List<Release>>(PocketmineReleaseRequestUri, cancellationToken) ??
+            throw new InvalidOperationException("Could not acquire version details.");        
 
-        if (!string.IsNullOrWhiteSpace(options.Version))
-            releaseApi.RemoveAll(v => !v.TagName.Equals(options.Version));
-            
         foreach (var release in releaseApi)
         {
             release.Assets.RemoveAll(a =>
@@ -36,9 +31,11 @@ internal static class PocketmineVersionFactory
         releaseApi.RemoveAll(r => !r.Assets.Any());
 
         var versions = (from release in releaseApi 
-            let asset = release.Assets.First() 
-            let isSnapShot = release.TagName.Contains("beta", StringComparison.OrdinalIgnoreCase)
+            where string.IsNullOrWhiteSpace(options.Version) || release.TagName.Equals(options.Version)
+            let isSnapShot = release.TagName.Contains("beta", StringComparison.OrdinalIgnoreCase) ||
+                             release.TagName.Contains("alpha", StringComparison.OrdinalIgnoreCase)
             where options.IncludeSnapshotBuilds || !isSnapShot
+            let asset = release.Assets.First()
             select new PocketmineVersion(
                 Project: project, 
                 Version: release.TagName, 
@@ -57,11 +54,11 @@ internal static class PocketmineVersionFactory
             : versions;
     }
     
-    public static Task<IDownload> GetDownload(
+    public static Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         PocketmineVersion version,
         CancellationToken cancellationToken)
     {
-        return Task.FromResult((IDownload) version.Download);
+        return Task.FromResult((IMinecraftDownload) version.Download);
     }      
 }

@@ -20,28 +20,24 @@ internal static class MohistVersionFactory
     {
         var project = MohistProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        var availVersions = await HttpClient.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken);        
+        var versionApi = await HttpClient.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken) ??
+            throw new InvalidOperationException("Could not acquire version details.");
     
-        if (availVersions == null) 
-            throw new InvalidOperationException("Could not acquire game type details.");
-   
-        if (!string.IsNullOrWhiteSpace(options.Version))
-            availVersions.RemoveAll(v => !v.Equals(options.Version));
-        
-        availVersions.Reverse();
+        versionApi.Reverse();
 
-        var versions = availVersions
-            .Select(availVersion => new MohistVersion(
-                Project: project, 
-                Version: availVersion)
+        var versions = (from version in versionApi
+            where string.IsNullOrWhiteSpace(options.Version) || version.Equals(options.Version)
+            select new MohistVersion(
+                Project: project,
+                Version: version)
             ).ToList();
-
+        
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;
     }
 
-    public static async Task<IDownload> GetDownload(
+    public static async Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         MohistVersion version, 
         CancellationToken cancellationToken)

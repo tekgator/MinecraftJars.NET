@@ -9,4 +9,4 @@ public record MojangDownload(
     string Url,
     HashType HashType = HashType.None,
     string? Hash = null,
-    DateTime? ReleaseTime = null) : IDownload;
+    DateTime? ReleaseTime = null) : IMinecraftDownload;

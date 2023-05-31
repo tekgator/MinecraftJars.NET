@@ -18,7 +18,7 @@ The plugin is already bundled with the core library [MinecraftJar.NET](../../REA
 The plugin has no specialities compared to the core interfaces.
 If required the interface can be casted to it's instantiated classes.
 
-- `IProvider` to [PaperProvider](PaperProvider.cs)
-- `IProject` to [PaperProject](Model/PaperProject.cs)
-- `IVersion` to [PaperVersion](Model/PaperVersion.cs)
-- `IDownload` to [PaperDownload](Model/PaperDownload.cs)
+- `IMinecraftProvider` to [PaperProvider](PaperProvider.cs)
+- `IMinecraftProject` to [PaperProject](Model/PaperProject.cs)
+- `IMinecraftVersion` to [PaperVersion](Model/PaperVersion.cs)
+- `IMinecraftDownload` to [PaperDownload](Model/PaperDownload.cs)

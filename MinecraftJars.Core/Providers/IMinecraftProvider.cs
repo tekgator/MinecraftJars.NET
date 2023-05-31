@@ -3,7 +3,7 @@ using MinecraftJars.Core.Versions;
 
 namespace MinecraftJars.Core.Providers;
 
-public interface IProvider
+public interface IMinecraftProvider
 {
     /// <summary>
     /// The options the provider manager has been provided with 
@@ -23,12 +23,12 @@ public interface IProvider
     /// <summary>
     /// Available projects of the provider 
     /// </summary>    
-    IEnumerable<IProject> Projects { get; }
+    IEnumerable<IMinecraftProject> Projects { get; }
 
     /// <summary>
     /// Get available versions for all projects from the provider 
     /// </summary>    
-    public Task<IEnumerable<IVersion>> GetVersions(
+    Task<IEnumerable<IMinecraftVersion>> GetVersions(
         VersionOptions? options = null, 
         CancellationToken cancellationToken = default!);
 }

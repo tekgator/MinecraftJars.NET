@@ -22,32 +22,27 @@ internal static class FabricVersionFactory
     {
         var project = FabricProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        var versionsApi = await HttpClient.GetFromJsonAsync<Versions>(FabricVersionsRequestUri, cancellationToken);        
-    
-        if (versionsApi == null) 
+        var versionsApi = await HttpClient.GetFromJsonAsync<Versions>(FabricVersionsRequestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire game type details.");
-   
-        if (!string.IsNullOrWhiteSpace(options.Version))
-            versionsApi.Games.RemoveAll(v => !v.Version.Equals(options.Version));
-
-        if (!options.IncludeSnapshotBuilds)
-            versionsApi.Games.RemoveAll(v => !v.Stable);
-
-        var versions = versionsApi.Games
-            .Select(game => new FabricVersion(
-                Project: project, 
+    
+        var versions = (from game in versionsApi.Games
+            where string.IsNullOrWhiteSpace(options.Version) || game.Version.Equals(options.Version)
+            where options.IncludeSnapshotBuilds || !game.Stable
+            let installer = versionsApi.Installers.First().Version
+            select new FabricVersion(
+                Project: project,
                 Version: game.Version,
                 IsSnapShot: !game.Stable)
-                {
-                    InstallerVersion = versionsApi.Installers.First().Version
-                }).ToList();
-
+            {
+                InstallerVersion = versionsApi.Installers.First().Version
+            }).ToList();
+        
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;
     }
 
-    public static async Task<IDownload> GetDownload(
+    public static async Task<IMinecraftDownload> GetDownload(
         DownloadOptions options, 
         FabricVersion version, 
         CancellationToken cancellationToken)

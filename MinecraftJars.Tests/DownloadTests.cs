@@ -8,9 +8,9 @@ namespace MinecraftJars.Tests;
 [TestFixture, Order(4)]
 public class DownloadTests
 {
-    private static readonly ProviderManager ProviderManager = new();
+    private static readonly MinecraftJarManager JarManager = new();
     private static IEnumerable<string> Projects() => 
-        ProviderManager.GetProviders().SelectMany(p => p.Projects.Select(t => t.Name));
+        JarManager.GetProviders().SelectMany(p => p.Projects.Select(t => t.Name));
     
     [Test, Order(1)]
     [Ignore("Very time consuming should only be utilised when necessary")]
@@ -18,7 +18,7 @@ public class DownloadTests
         [ValueSource(nameof(Projects))] string projectName,        
         [Values(true, false)] bool loadFileSize)
     {
-        var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
         
         foreach (var version in await project.GetVersions())
         {
@@ -42,7 +42,7 @@ public class DownloadTests
         [ValueSource(nameof(Projects))] string projectName,        
         [Values(true, false)] bool loadFileSize)
     {
-        var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
         var version = (await project.GetVersions(new VersionOptions { MaxRecords = 1 })).First();
         
         TestContext.Progress.WriteLine("{0}: Retrieving download for version {1}", 
@@ -63,7 +63,7 @@ public class DownloadTests
     [Ignore("Very time consuming should only be utilised when necessary. Git and Java must be installed")]
     public async Task BuildSpigot_Success(string projectName)
     {
-        var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
         var version = (await project.GetVersions(new VersionOptions { MaxRecords = 1 })).First();
         
         TestContext.Progress.WriteLine("{0}: Start building {1} version {2}", 
@@ -98,7 +98,7 @@ public class DownloadTests
     [Ignore("Very time consuming should only be utilised when necessary. Git and Java must be installed")]
     public async Task BuildSpigot_Cancel(string projectName)
     {
-        var project = ProviderManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
         var version = (await project.GetVersions(new VersionOptions { MaxRecords = 1 })).First();
         
         TestContext.Progress.WriteLine("{0}: Start building {1} version {2}", 

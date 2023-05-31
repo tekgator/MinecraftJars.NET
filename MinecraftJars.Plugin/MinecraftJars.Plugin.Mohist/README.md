@@ -15,7 +15,7 @@ The plugin is already bundled with the core library [MinecraftJar.NET](../../REA
 The plugin has no specialities compared to the core interfaces.
 If required the interface can be casted to it's instantiated classes.
 
-- `IProvider` to [MohistProvider](MohistProvider.cs)
-- `IProject` to [MohistProject](Model/MohistProject.cs)
-- `IVersion` to [MohistVersion](Model/MohistVersion.cs)
-- `IDownload` to [MohistDownload](Model/MohistDownload.cs)
+- `IMinecraftProvider` to [MohistProvider](MohistProvider.cs)
+- `IMinecraftProject` to [MohistProject](Model/MohistProject.cs)
+- `IMinecraftVersion` to [MohistVersion](Model/MohistVersion.cs)
+- `IMinecraftDownload` to [MohistDownload](Model/MohistDownload.cs)

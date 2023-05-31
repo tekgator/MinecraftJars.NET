@@ -9,4 +9,4 @@ public record PocketmineDownload(
     string Url,
     DateTime? ReleaseTime,
     HashType HashType = HashType.None,
-    string? Hash = null) : IDownload;
+    string? Hash = null) : IMinecraftDownload;
