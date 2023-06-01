@@ -61,6 +61,7 @@ public class VersionTests
     
     [TestCase("Vanilla")]
     [TestCase("Bedrock")]
+    [TestCase("Fabric")]
     [TestCase("Pocketmine")]
     [TestCase("Spigot")]
     [TestCase("Paper")]
@@ -83,6 +84,7 @@ public class VersionTests
     
     [TestCase("Vanilla")]
     [TestCase("Bedrock")]
+    [TestCase("Fabric")]
     [TestCase("Pocketmine")]
     [TestCase("Spigot")]
     [TestCase("Paper")]
