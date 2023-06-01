@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 
@@ -14,9 +15,13 @@ public class MinecraftJarManager
     [Export]
     private ProviderOptions ProviderOptions { get; }
     
+    [Export]
+    private PluginHttpClientFactory HttpClientFactory { get; }
+    
     public MinecraftJarManager(ProviderOptions? options = null)
     {
         ProviderOptions = options ?? new ProviderOptions();
+        HttpClientFactory = new PluginHttpClientFactory(ProviderOptions.HttpClientFactory);
         
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".";
         var catalog = new AggregateCatalog();

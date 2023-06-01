@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mojang.Models;
@@ -18,7 +19,7 @@ internal static partial class MojangVersionFactory
     private static partial Regex MojangBedrockDownloadLink();
     private const string MojangBedrockRequestUri = "https://www.minecraft.net/download/server/bedrock";
 
-    public static HttpClient HttpClient { get; set; } = default!;
+    public static PluginHttpClientFactory HttpClientFactory { get; set; } = default!;
     
     public static Task<List<MojangVersion>> GetVersion(
         string projectName,
@@ -39,8 +40,8 @@ internal static partial class MojangVersionFactory
         CancellationToken cancellationToken)
     {
         var project = MojangProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
-
-        var manifest = await HttpClient.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken) ??
+        var client = HttpClientFactory.GetClient();
+        var manifest = await client.GetFromJsonAsync<Manifest>(MojangVanillaRequestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");
         
         var versions = (from version in manifest.Versions
@@ -74,7 +75,8 @@ internal static partial class MojangVersionFactory
         request.Headers.AcceptLanguage.ParseAdd("en-US, en");
         request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
 
-        var response = await HttpClient.SendAsync(request, cancellationToken);
+        var client = HttpClientFactory.GetClient();        
+        var response = await client.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
             throw new InvalidOperationException("Could not acquire version details.");
@@ -120,7 +122,8 @@ internal static partial class MojangVersionFactory
         MojangVersion version,
         CancellationToken cancellationToken)
     {
-        var detail = await HttpClient.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken) ??
+        var client = HttpClientFactory.GetClient();
+        var detail = await client.GetFromJsonAsync<Detail>(version.DetailUrl, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
         
         if (detail.Downloads.Server == null)
@@ -153,8 +156,9 @@ internal static partial class MojangVersionFactory
         
         if (options.LoadFilesize)
         {
+            var client = HttpClientFactory.GetClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
-            using var httpResponse = await HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? 0;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
@@ -9,12 +10,14 @@ namespace MinecraftJars.Plugin.Paper;
 public class PaperProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public PaperProvider(ProviderOptions? options)
+    public PaperProvider(
+        PluginHttpClientFactory httpClientFactory, 
+        ProviderOptions? options)
     {
+        PaperVersionFactory.HttpClientFactory = httpClientFactory;
         ProviderOptions = options ?? new ProviderOptions();
-        PaperVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
-    
+
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Paper";
     public byte[] Logo => Properties.Resources.Paper;

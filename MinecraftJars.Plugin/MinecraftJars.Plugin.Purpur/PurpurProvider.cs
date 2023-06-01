@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
@@ -9,10 +10,12 @@ namespace MinecraftJars.Plugin.Purpur;
 public class PurpurProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public PurpurProvider(ProviderOptions? options)
+    public PurpurProvider(
+        PluginHttpClientFactory httpClientFactory, 
+        ProviderOptions? options)
     {
+        PurpurVersionFactory.HttpClientFactory = httpClientFactory;
         ProviderOptions = options ?? new ProviderOptions();
-        PurpurVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
     
     public ProviderOptions ProviderOptions { get; }

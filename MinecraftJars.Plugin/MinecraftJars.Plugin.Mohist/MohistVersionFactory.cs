@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mohist.Model;
@@ -11,7 +12,7 @@ internal static class MohistVersionFactory
     private const string MohistVersionRequestUri = "https://mohistmc.com/api/versions";
     private const string MohistLatestBuildRequestUri = "https://mohistmc.com/api/{0}/latest/";
 
-    public static HttpClient HttpClient { get; set; } = default!;
+    public static PluginHttpClientFactory HttpClientFactory { get; set; } = default!;
     
     public static async Task<List<MohistVersion>> GetVersion(
         string projectName,
@@ -20,7 +21,8 @@ internal static class MohistVersionFactory
     {
         var project = MohistProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        var versionApi = await HttpClient.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken) ??
+        var client = HttpClientFactory.GetClient();
+        var versionApi = await client.GetFromJsonAsync<List<string>>(MohistVersionRequestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");
     
         versionApi.Reverse();
@@ -42,8 +44,9 @@ internal static class MohistVersionFactory
         MohistVersion version, 
         CancellationToken cancellationToken)
     {
+        var client = HttpClientFactory.GetClient();
         var requestUriLatestBuild = string.Format(MohistLatestBuildRequestUri, version.Version);
-        var latestBuild = await HttpClient.GetFromJsonAsync<Build>(requestUriLatestBuild, cancellationToken);
+        var latestBuild = await client.GetFromJsonAsync<Build>(requestUriLatestBuild, cancellationToken);
 
         if (latestBuild == null || string.IsNullOrWhiteSpace(latestBuild.Url)) 
             throw new InvalidOperationException("Could not acquire download details.");
@@ -54,7 +57,7 @@ internal static class MohistVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, latestBuild.Url);
-            using var httpResponse = await HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
             {

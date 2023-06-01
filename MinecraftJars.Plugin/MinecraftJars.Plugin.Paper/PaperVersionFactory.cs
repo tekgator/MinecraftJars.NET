@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Paper.Model;
@@ -12,7 +13,7 @@ internal static class PaperVersionFactory
     private const string PaperBuildRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds";
     private const string PaperDownloadRequestUri = "https://api.papermc.io/v2/projects/{0}/versions/{1}/builds/{2}/downloads/{3}";
 
-    public static HttpClient HttpClient { get; set; } = default!;
+    public static PluginHttpClientFactory HttpClientFactory { get; set; } = default!;
     
     public static async Task<List<PaperVersion>> GetVersion(
         string projectName,
@@ -21,7 +22,8 @@ internal static class PaperVersionFactory
     {
         var project = PaperProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        var projectApi = await HttpClient
+        var client = HttpClientFactory.GetClient();        
+        var projectApi = await client
             .GetFromJsonAsync<Project>(string.Format(PaperProjectRequestUri, project.Name.ToLower()), cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");                         
         
@@ -49,8 +51,9 @@ internal static class PaperVersionFactory
         PaperVersion version,
         CancellationToken cancellationToken)
     {
+        var client = HttpClientFactory.GetClient();
         var requestUri = string.Format(PaperBuildRequestUri, version.Project.Name.ToLower(), version.Version);
-        var detail = await HttpClient.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken) ??
+        var detail = await client.GetFromJsonAsync<BuildVersions>(requestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
         
         var build = detail.Builds.Last();
@@ -62,7 +65,7 @@ internal static class PaperVersionFactory
         if (options.LoadFilesize)
         {
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, downloadUri);
-            using var httpResponse = await HttpClient
+            using var httpResponse = await client
                 .SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)

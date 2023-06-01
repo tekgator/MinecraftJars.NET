@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
@@ -9,14 +10,15 @@ namespace MinecraftJars.Plugin.Pocketmine;
 public class PocketmineProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public PocketmineProvider(ProviderOptions? options)
+    public PocketmineProvider(
+        PluginHttpClientFactory httpClientFactory, 
+        ProviderOptions? options)
     {
+        PocketmineVersionFactory.HttpClientFactory = httpClientFactory;
         ProviderOptions = options ?? new ProviderOptions();
-        PocketmineVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
     
     public ProviderOptions ProviderOptions { get; }
-    
     public string Name => "Pocketmine";
     public byte[] Logo => Properties.Resources.Pocketmine;
     public IEnumerable<IMinecraftProject> Projects => PocketmineProjectFactory.Projects;

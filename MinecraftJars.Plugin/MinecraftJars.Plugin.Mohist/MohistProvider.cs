@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
@@ -9,12 +10,14 @@ namespace MinecraftJars.Plugin.Mohist;
 public class MohistProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public MohistProvider(ProviderOptions? options)
+    public MohistProvider(
+        PluginHttpClientFactory httpClientFactory, 
+        ProviderOptions? options)
     {
+        MohistVersionFactory.HttpClientFactory = httpClientFactory;
         ProviderOptions = options ?? new ProviderOptions();
-        MohistVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
-    
+
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Mohist";
     public byte[] Logo => Properties.Resources.Mohist;

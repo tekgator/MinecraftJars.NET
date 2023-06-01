@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Pocketmine.Model;
@@ -10,7 +11,7 @@ internal static class PocketmineVersionFactory
 {
     private const string PocketmineReleaseRequestUri = "https://api.github.com/repos/pmmp/PocketMine-MP/releases";
     
-    public static HttpClient HttpClient { get; set; } = default!;
+    public static PluginHttpClientFactory HttpClientFactory { get; set; } = default!;
     
     public static async Task<List<PocketmineVersion>> GetVersion(
         string projectName,
@@ -18,8 +19,9 @@ internal static class PocketmineVersionFactory
         CancellationToken cancellationToken)
     {
         var project = PocketmineProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
-        
-        var releaseApi = await HttpClient.GetFromJsonAsync<List<Release>>(PocketmineReleaseRequestUri, cancellationToken) ??
+
+        var client = HttpClientFactory.GetClient();
+        var releaseApi = await client.GetFromJsonAsync<List<Release>>(PocketmineReleaseRequestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");        
 
         foreach (var release in releaseApi)

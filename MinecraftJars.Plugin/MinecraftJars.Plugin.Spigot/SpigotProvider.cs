@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
@@ -9,12 +10,14 @@ namespace MinecraftJars.Plugin.Spigot;
 public class SpigotProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public SpigotProvider(ProviderOptions? options)
+    public SpigotProvider(
+        PluginHttpClientFactory httpClientFactory, 
+        ProviderOptions? options)
     {
+        SpigotVersionFactory.HttpClientFactory = httpClientFactory;
         ProviderOptions = options ?? new ProviderOptions();
-        SpigotVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
-
+    
     public ProviderOptions ProviderOptions { get; }
     public string Name => "Spigot";
     public byte[] Logo => Properties.Resources.Spigot;

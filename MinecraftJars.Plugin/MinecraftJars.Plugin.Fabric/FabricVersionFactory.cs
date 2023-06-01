@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Fabric.Model;
@@ -13,7 +14,7 @@ internal static class FabricVersionFactory
     private const string FabricLoaderRequestUri = FabricBaseRequestUri + "/versions/loader/{0}";
     private const string FabricDownloadRequestUri = FabricBaseRequestUri + "/versions/loader/{0}/{1}/{2}/server/jar";    
     
-    public static HttpClient HttpClient { get; set; } = default!;
+    public static PluginHttpClientFactory HttpClientFactory { get; set; } = default!;
     
     public static async Task<List<FabricVersion>> GetVersion(
         string projectName,
@@ -22,7 +23,8 @@ internal static class FabricVersionFactory
     {
         var project = FabricProjectFactory.Projects.Single(p => p.Name.Equals(projectName));
 
-        var versionsApi = await HttpClient.GetFromJsonAsync<Versions>(FabricVersionsRequestUri, cancellationToken) ??
+        var client = HttpClientFactory.GetClient();
+        var versionsApi = await client.GetFromJsonAsync<Versions>(FabricVersionsRequestUri, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire game type details.");
     
         var versions = (from game in versionsApi.Games
@@ -48,7 +50,8 @@ internal static class FabricVersionFactory
         CancellationToken cancellationToken)
     {
         var requestUriCompatibleLoaders = string.Format(FabricLoaderRequestUri, version.Version);
-        var compatibleLoaders = await HttpClient
+        var client = HttpClientFactory.GetClient();
+        var compatibleLoaders = await client
             .GetFromJsonAsync<List<CompatibleLoader>>(requestUriCompatibleLoaders, cancellationToken);
 
         if (compatibleLoaders == null || !compatibleLoaders.Any()) 

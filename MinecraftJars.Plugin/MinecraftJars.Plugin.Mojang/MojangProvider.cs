@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Providers;
 using MinecraftJars.Core.Versions;
@@ -9,10 +10,12 @@ namespace MinecraftJars.Plugin.Mojang;
 public class MojangProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public MojangProvider(ProviderOptions? options)
+    public MojangProvider(
+        PluginHttpClientFactory httpClientFactory, 
+        ProviderOptions? options)
     {
+        MojangVersionFactory.HttpClientFactory = httpClientFactory;
         ProviderOptions = options ?? new ProviderOptions();
-        MojangVersionFactory.HttpClient = ProviderOptions.GetHttpClient();
     }
 
     public ProviderOptions ProviderOptions { get; }

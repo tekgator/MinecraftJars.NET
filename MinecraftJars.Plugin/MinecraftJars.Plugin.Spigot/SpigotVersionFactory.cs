@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
+using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Spigot.Model;
@@ -21,7 +22,7 @@ internal static partial class SpigotVersionFactory
     private const string BungeeCoordRequestUri = "https://ci.md-5.net/job/BungeeCord/api/json?tree=builds[number,url,result,inProgress,timestamp,artifacts[fileName,relativePath]]";
     private const string BungeeCoordRequestUriMaxRecordSuffix = "{{0,{0}}}";
     
-    public static HttpClient HttpClient { get; set; } = default!;
+    public static PluginHttpClientFactory HttpClientFactory { get; set; } = default!;
     
     public static Task<List<SpigotVersion>> GetVersion(
         string projectName,
@@ -48,8 +49,9 @@ internal static partial class SpigotVersionFactory
         request.Headers.AcceptEncoding.ParseAdd("identity");
         request.Headers.AcceptLanguage.ParseAdd("en-US, en");
         request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
-        
-        var response = await HttpClient.SendAsync(request, cancellationToken);
+
+        var client = HttpClientFactory.GetClient();
+        var response = await client.SendAsync(request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
             throw new InvalidOperationException("Could not acquire version details.");
@@ -91,7 +93,8 @@ internal static partial class SpigotVersionFactory
             ? string.Format(BungeeCoordRequestUriMaxRecordSuffix, options.MaxRecords.Value)
             : string.Empty);
         
-        var job = await HttpClient.GetFromJsonAsync<Job>(requestUrl, cancellationToken) ??
+        var client = HttpClientFactory.GetClient();
+        var job = await client.GetFromJsonAsync<Job>(requestUrl, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire version details.");
                   
         var versions = (from build in job.Builds
@@ -125,7 +128,8 @@ internal static partial class SpigotVersionFactory
         SpigotVersion version,
         CancellationToken cancellationToken = default!)
     {
-        var build = await HttpClient.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken) ??
+        var client = HttpClientFactory.GetClient();
+        var build = await client.GetFromJsonAsync<SpigotBuild>(version.DetailUrl, cancellationToken) ??
             throw new InvalidOperationException("Could not acquire download details.");
 
         if (!options.BuildJar)
@@ -136,7 +140,7 @@ internal static partial class SpigotVersionFactory
                 Url: string.Empty,
                 ReleaseTime: version.ReleaseTime);
 
-        var buildTool = new SpigotBuildTools(HttpClient, options, version);
+        var buildTool = new SpigotBuildTools(client, options, version);
         return await buildTool.Build(build.Name,cancellationToken);
     }
     
@@ -150,8 +154,9 @@ internal static partial class SpigotVersionFactory
         
         if (options.LoadFilesize)
         {
+            var client = HttpClientFactory.GetClient();
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, version.DetailUrl);
-            using var httpResponse = await HttpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var httpResponse = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             if (httpResponse.IsSuccessStatusCode)
                 contentLength = httpResponse.Content.Headers.ContentLength ?? 0;

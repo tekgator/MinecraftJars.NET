@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.3.1] - 2023-06-01
+
+### Fixed
+- All plugin share the same (static) HttpClient now if HttpClientFactory is not provided, preventing Socket exhaustion
+
+
 ## [1.3.0] - 2023-06-01
 ### Added
 - Paper plugin flag pre and snapshot builds as IsSnapshot
