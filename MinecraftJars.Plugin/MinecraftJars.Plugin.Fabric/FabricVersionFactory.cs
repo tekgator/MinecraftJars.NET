@@ -29,7 +29,7 @@ internal static class FabricVersionFactory
     
         var versions = (from game in versionsApi.Games
             where string.IsNullOrWhiteSpace(options.Version) || game.Version.Equals(options.Version)
-            where options.IncludeSnapshotBuilds || !game.Stable
+            where options.IncludeSnapshotBuilds || game.Stable
             let installer = versionsApi.Installers.First().Version
             select new FabricVersion(
                 Project: project,

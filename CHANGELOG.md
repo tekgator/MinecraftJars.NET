@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.3.2] - 2023-06-01
+
+### Fixed
+- Fabric version snapshot test missing
+
+### Fixed
+- Fabric returned only snapshots with the new IsSnapshot flag
+
+
 ## [1.3.1] - 2023-06-01
 
 ### Fixed
