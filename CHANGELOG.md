@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [1.4.0] - 2023-06-03
+## [1.4.1] - 2023-06-03
 
 ### Changed
 - Renamed MinecraftJarManager to MinecraftJar
