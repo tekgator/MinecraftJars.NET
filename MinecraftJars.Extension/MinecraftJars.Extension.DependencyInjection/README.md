@@ -16,3 +16,20 @@ Multiple options are available to install within your project:
    ```cmd
    dotnet add package MinecraftJars.NET.Extensions.DependencyInjection
    ```
+
+## Usage
+
+As simple as
+
+```CSharp
+
+// Registering DI
+services.AddMinecraftJar();
+
+// Injecting e.g. via service provider
+var minecraftJar = serviceProvider.GetRequiredService<IMinecraftJar>()
+
+// Usage
+var providers = minecraftJar.GetProviders();
+
+```
