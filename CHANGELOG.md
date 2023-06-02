@@ -3,10 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.4.0] - 2023-06-01
+
+### Changed
+- Renamed MinecraftJarManager to MinecraftJar
+
+### Added
+- IMinecraftJar interface
+- Extension for dependency injection
+- Test case for dependency injection
+- Automatic deployment of dependency injection injection to nuget.org
+
 
 ## [1.3.2] - 2023-06-01
 
-### Fixed
+### Added
 - Fabric version snapshot test missing
 
 ### Fixed

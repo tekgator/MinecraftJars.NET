@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Pocket
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Plugin.Fabric", "MinecraftJars.Plugin\MinecraftJars.Plugin.Fabric\MinecraftJars.Plugin.Fabric.csproj", "{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftJars.Extension.DependencyInjection", "MinecraftJars.Extension\MinecraftJars.Extension.DependencyInjection\MinecraftJars.Extension.DependencyInjection.csproj", "{A9F4324F-BABF-4EE1-9856-B169368BA9EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,9 @@ Global
 		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{032DAEF4-810E-44B4-A8E0-4A0039B1D42E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9F4324F-BABF-4EE1-9856-B169368BA9EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9F4324F-BABF-4EE1-9856-B169368BA9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9F4324F-BABF-4EE1-9856-B169368BA9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9F4324F-BABF-4EE1-9856-B169368BA9EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
