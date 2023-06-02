@@ -7,6 +7,7 @@ on:
 
 env:
   PROJECT_PATH: MinecraftJars/MinecraftJars.csproj
+  PROJECT_PATH_EXTENSION: MinecraftJars/MinecraftJars.csproj
   PACKAGE_OUTPUT_DIR: ${{ github.workspace }}/output
   NUGET_SOURCE_URL: "https://api.nuget.org/v3/index.json"
 
@@ -24,17 +25,23 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: "Restore packages"
-        run: dotnet restore ${{ env.PROJECT_PATH }}
+        run: |
+          dotnet restore ${{ env.PROJECT_PATH }}
+          dotnet restore ${{ env.PROJECT_PATH_EXTENSION }}
 
       - name: "Build project"
-        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+        run: | 
+          dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+          dotnet build ${{ env.PROJECT_PATH_EXTENSION }} --no-restore --configuration Release
 
       - name: "Get version"
         id: version
         uses: battila7/get-version-action@v2
 
       - name: "Pack project"
-        run: dotnet pack ${{ env.PROJECT_PATH }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+        run: |
+          dotnet pack ${{ env.PROJECT_PATH }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
+          dotnet pack ${{ env.PROJECT_PATH_EXTENSION }} --no-restore --configuration Release --p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output ${{ env.PACKAGE_OUTPUT_DIR }}
 
       - name: "Push package"
         run: dotnet nuget push ${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg --api-key ${{ secrets.NUGET_AUTH_TOKEN }} --source ${{ env.NUGET_SOURCE_URL }}

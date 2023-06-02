@@ -2,9 +2,9 @@
 using MinecraftJars;
 using MinecraftJars.Core.Versions;
 
-var providerManager = new MinecraftJarManager();
+var minecraftJar = new MinecraftJar();
 
-foreach (var provider in providerManager.GetProviders())
+foreach (var provider in minecraftJar.GetProviders())
 {
     SetConsoleColor(ConsoleColor.White, ConsoleColor.Red);
     Console.WriteLine($"{provider.Name}:");

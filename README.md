@@ -66,16 +66,16 @@ Multiple options are available to install within your project:
 
 ## Usage
 
-MinecraftJars.NET comes with a `MinecraftJarManager` class which has to be instantiated, optionally `ProviderOptions` can be supplied. 
+MinecraftJars.NET comes with a `MinecraftJar` class which has to be instantiated, optionally `ProviderOptions` can be supplied. 
 Each Plugin provides an interface instance for the provider `IMinecraftProvider` as well an interface instance for `IEnumerable<IMinecraftProject>` with it's versions `IEnumerable<IMinecraftVersion>`.
 Since getting the actual download link mostly involves another API query it is accessible via the `IMinecraftVersion.GetDownload()` method.
 
 ```CSharp
 using MinecraftJars;
 
-var jarManager = new MinecraftJarManager();
+var minecraftJar = new MinecraftJar();
 
-foreach (var provider in jarManager.GetProviders())
+foreach (var provider in minecraftJar.GetProviders())
 {
     Console.WriteLine($"{provider}");
 
@@ -114,6 +114,12 @@ As an example with the Paper Minecraft experience following values can be expect
 **Please note:** 
 - If a version has multiple builds only the latest successful build will be returned via `IMinecraftVersion.GetDownload()` method.
 - Not all providers will fill all properties in each interface instance. Further information are provided in the README.md of each plugin.
+
+
+## Dependency Injection
+
+An extensions package is available for [Dependency Injection](MinecraftJars.Extension/MinecraftJars.Extension.DependencyInjection). 
+Look up the project but it is as easy as installing it and adding MinecraftJar.NET to the DI. 
 
 
 ## Demo application
