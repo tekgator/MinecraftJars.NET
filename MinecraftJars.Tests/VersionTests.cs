@@ -6,14 +6,14 @@ namespace MinecraftJars.Tests;
 [TestFixture, Order(3)]
 public class VersionTests
 {
-    private static readonly MinecraftJarManager JarManager = new MinecraftJarManager();
+    private static readonly MinecraftJar MinecraftJar = new();
     private static IEnumerable<string> Projects() => 
-        JarManager.GetProviders().SelectMany(p => p.Projects.Select(t => t.Name));
+        MinecraftJar.GetProviders().SelectMany(p => p.Projects.Select(t => t.Name));
     
     [TestCaseSource(nameof(Projects)), Order(1)]
     public async Task GetVersions_Success(string projectName)
     {
-        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
         var versions = (await project.GetVersions()).ToList();
 
         Assert.That(versions, Is.Not.Empty);
@@ -28,7 +28,7 @@ public class VersionTests
         [ValueSource(nameof(Projects))] string projectName, 
         [Values(5, 10)] int maxRecords)
     {
-        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
         var versions = (await project.GetVersions(new VersionOptions
         {
             MaxRecords = maxRecords
@@ -43,7 +43,7 @@ public class VersionTests
     [TestCaseSource(nameof(Projects)), Order(3)]
     public async Task GetVersions_SpecificVersion(string projectName)
     {
-        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
         var version = (await project.GetVersions()).First();
         var versions = (await project.GetVersions(new VersionOptions
         {
@@ -69,7 +69,7 @@ public class VersionTests
     [Order(4)]
     public async Task GetVersions_ContainsSnapshot(string projectName)
     {
-        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
 
         var versions = (await project.GetVersions(new VersionOptions
         {
@@ -92,7 +92,7 @@ public class VersionTests
     [Order(5)]
     public async Task GetVersions_ContainsNoSnapshot(string projectName)
     {
-        var project = JarManager.GetProjects().Single(p => p.Name.Equals(projectName));
+        var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
         var versions = (await project.GetVersions(new VersionOptions
         {
             IncludeSnapshotBuilds = false

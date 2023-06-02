@@ -7,7 +7,7 @@ using MinecraftJars.Core.Providers;
 
 namespace MinecraftJars;
 
-public class MinecraftJarManager
+public class MinecraftJar : IMinecraftJar
 {
     [ImportMany(typeof(IMinecraftProvider))]
     private IEnumerable<IMinecraftProvider> _providers;
@@ -18,7 +18,7 @@ public class MinecraftJarManager
     [Export]
     private PluginHttpClientFactory HttpClientFactory { get; }
     
-    public MinecraftJarManager(ProviderOptions? options = null)
+    public MinecraftJar(ProviderOptions? options = null)
     {
         ProviderOptions = options ?? new ProviderOptions();
         HttpClientFactory = new PluginHttpClientFactory(ProviderOptions.HttpClientFactory);
@@ -33,17 +33,11 @@ public class MinecraftJarManager
         _providers ??= Enumerable.Empty<IMinecraftProvider>();
     }
     
-    /// <summary>
-    /// Return a list of all providers (plugins)
-    /// </summary>    
     public IEnumerable<IMinecraftProvider> GetProviders()
     {
         return _providers;
     }
     
-    /// <summary>
-    /// Return a list of all providers offering a certain project group
-    /// </summary>    
     public IEnumerable<IMinecraftProvider> GetProviders(Group group)
     {
         var providers = new List<IMinecraftProvider>();
@@ -54,36 +48,24 @@ public class MinecraftJarManager
         return providers;
     }    
 
-    /// <summary>
-    /// Return a specific provider
-    /// </summary>    
     public IMinecraftProvider GetProvider(string provider)
     {
         return _providers
             .Single(p => p.Name.Equals(provider));
     }
     
-    /// <summary>
-    /// Return the provider for the provided Project
-    /// </summary>    
     public IMinecraftProvider GetProvider(IMinecraftProject project)
     {
         return _providers
             .Single(p => p.Projects.Contains(project));
     }    
 
-    /// <summary>
-    /// Return a list of all projects (e.g. Vanilla, Spigot, etc.)
-    /// </summary>       
     public IEnumerable<IMinecraftProject> GetProjects()
     {
         return GetProviders()
             .SelectMany(p => p.Projects);
     }
     
-    /// <summary>
-    /// Return a list of all projects for a certain type (e.g. all proxies)
-    /// </summary>       
     public IEnumerable<IMinecraftProject> GetProjects(Group group)
     {
         return GetProviders()
