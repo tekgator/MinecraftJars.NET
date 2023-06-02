@@ -73,9 +73,9 @@ Since getting the actual download link mostly involves another API query it is a
 ```CSharp
 using MinecraftJars;
 
-var jarManager = new MinecraftJar();
+var minecraftJar = new MinecraftJar();
 
-foreach (var provider in jarManager.GetProviders())
+foreach (var provider in minecraftJar.GetProviders())
 {
     Console.WriteLine($"{provider}");
 
