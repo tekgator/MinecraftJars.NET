@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.4.4] - 2023-06-03
+
+### Added
+- Implement GetProject on MinecraftJar to get a project by it's name
+
+### Changed
+- Renamed Group to ProjectGroup to prevent LINQ group keyword issues 
+- Renamed Runtime to ProjectRuntime to be consistent
+
+
 ## [1.4.3] - 2023-06-03
 
 ### Added
