@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.4.2] - 2023-06-03
+
+### Removed
+- Removed ProviderOptions as it had no use and created an unnecessary dependency
+
+### Added
+- Added MinecraftJarOptions so the optional IHttpClientFactory can be provided
+
+### Fixed
+- Removed unnecessary dependency of MinecraftJars.Core causing Nuget installation to fail
+
+
 ## [1.4.1] - 2023-06-03
 
 ### Changed

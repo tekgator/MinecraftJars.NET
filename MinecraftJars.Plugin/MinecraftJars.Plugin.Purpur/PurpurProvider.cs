@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Purpur;
 public class PurpurProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public PurpurProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public PurpurProvider(PluginHttpClientFactory httpClientFactory)
     {
         PurpurVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
     
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Purpur";
     public byte[] Logo => Properties.Resources.Purpur;
     public IEnumerable<IMinecraftProject> Projects => PurpurProjectFactory.Projects;

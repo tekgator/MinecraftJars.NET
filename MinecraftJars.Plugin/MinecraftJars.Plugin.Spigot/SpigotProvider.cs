@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Spigot;
 public class SpigotProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public SpigotProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public SpigotProvider(PluginHttpClientFactory httpClientFactory)
     {
         SpigotVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
     
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Spigot";
     public byte[] Logo => Properties.Resources.Spigot;
     public IEnumerable<IMinecraftProject> Projects => SpigotProjectFactory.Projects;

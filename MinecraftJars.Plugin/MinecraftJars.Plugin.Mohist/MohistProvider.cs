@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Mohist;
 public class MohistProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public MohistProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public MohistProvider(PluginHttpClientFactory httpClientFactory)
     {
         MohistVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
 
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Mohist";
     public byte[] Logo => Properties.Resources.Mohist;
     public IEnumerable<IMinecraftProject> Projects => MohistProjectFactory.Projects;

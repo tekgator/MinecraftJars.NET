@@ -24,7 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\MinecraftJars.Core\MinecraftJars.Core.csproj" />
       <ProjectReference Include="..\..\MinecraftJars\MinecraftJars.csproj" />
     </ItemGroup>
 

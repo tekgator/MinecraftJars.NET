@@ -13,15 +13,11 @@ public class MinecraftJar : IMinecraftJar
     private IEnumerable<IMinecraftProvider> _providers;
 
     [Export]
-    private ProviderOptions ProviderOptions { get; }
-    
-    [Export]
     private PluginHttpClientFactory HttpClientFactory { get; }
-    
-    public MinecraftJar(ProviderOptions? options = null)
+
+    public MinecraftJar(MinecraftJarOptions? options = null)
     {
-        ProviderOptions = options ?? new ProviderOptions();
-        HttpClientFactory = new PluginHttpClientFactory(ProviderOptions.HttpClientFactory);
+        HttpClientFactory = new PluginHttpClientFactory(options?.HttpClientFactory);
         
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".";
         var catalog = new AggregateCatalog();

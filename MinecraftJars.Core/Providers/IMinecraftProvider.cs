@@ -6,11 +6,6 @@ namespace MinecraftJars.Core.Providers;
 public interface IMinecraftProvider
 {
     /// <summary>
-    /// The options the provider manager has been provided with 
-    /// </summary>        
-    ProviderOptions ProviderOptions { get; }
-
-    /// <summary>
     /// Name of the provider e.g. Mojang, PaperMC, etc. 
     /// </summary>        
     string Name { get; }

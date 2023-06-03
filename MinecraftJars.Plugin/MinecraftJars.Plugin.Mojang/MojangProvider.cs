@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Mojang;
 public class MojangProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public MojangProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public MojangProvider(PluginHttpClientFactory httpClientFactory)
     {
         MojangVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
 
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Mojang";
     public byte[] Logo => Properties.Resources.Mojang;
     public IEnumerable<IMinecraftProject> Projects => MojangProjectFactory.Projects;

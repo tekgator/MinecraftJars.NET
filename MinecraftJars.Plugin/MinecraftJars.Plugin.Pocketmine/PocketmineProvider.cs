@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Pocketmine;
 public class PocketmineProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public PocketmineProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public PocketmineProvider(PluginHttpClientFactory httpClientFactory)
     {
         PocketmineVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
     
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Pocketmine";
     public byte[] Logo => Properties.Resources.Pocketmine;
     public IEnumerable<IMinecraftProject> Projects => PocketmineProjectFactory.Projects;

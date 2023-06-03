@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Paper;
 public class PaperProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public PaperProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public PaperProvider(PluginHttpClientFactory httpClientFactory)
     {
         PaperVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
 
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Paper";
     public byte[] Logo => Properties.Resources.Paper;
     public IEnumerable<IMinecraftProject> Projects => PaperProjectFactory.Projects;

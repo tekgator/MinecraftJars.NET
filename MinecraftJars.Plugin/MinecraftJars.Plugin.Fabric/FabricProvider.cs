@@ -10,15 +10,11 @@ namespace MinecraftJars.Plugin.Fabric;
 public class FabricProvider : IMinecraftProvider
 {
     [ImportingConstructor]
-    public FabricProvider(
-        PluginHttpClientFactory httpClientFactory, 
-        ProviderOptions? options)
+    public FabricProvider(PluginHttpClientFactory httpClientFactory)
     {
         FabricVersionFactory.HttpClientFactory = httpClientFactory;
-        ProviderOptions = options ?? new ProviderOptions();
     }
 
-    public ProviderOptions ProviderOptions { get; }
     public string Name => "Fabric";
     public byte[] Logo => Properties.Resources.Fabric;
     public IEnumerable<IMinecraftProject> Projects => FabricProjectFactory.Projects;
