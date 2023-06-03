@@ -11,6 +11,7 @@ internal static class PocketmineProjectFactory
             Name: "Pocketmine",
             Description: "A highly customizable, open source server software for Minecraft: Bedrock Edition written in PHP.",
             Url:  "https://www.pocketmine.net",
+            Runtime.Php,
             Logo: Properties.Resources.Pocketmine)
     };
 }

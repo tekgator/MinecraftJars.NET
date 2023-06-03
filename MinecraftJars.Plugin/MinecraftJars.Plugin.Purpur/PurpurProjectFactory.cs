@@ -11,6 +11,7 @@ internal static class PurpurProjectFactory
             Name: "Purpur",
             Description: "Purpur is a drop-in replacement for Paper servers designed for configurability, new fun and exciting gameplay features, and performance built on top of Paper.",
             Url:  "https://purpurmc.org",
+            Runtime: Runtime.Java,
             Logo: Properties.Resources.Purpur)
     };
 }

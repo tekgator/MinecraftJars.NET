@@ -8,6 +8,7 @@ public record SpigotProject(
     string Name,
     string Description,
     string Url,
+    Runtime Runtime,
     byte[] Logo) : IMinecraftProject
 {
     public async Task<IEnumerable<IMinecraftVersion>> GetVersions(

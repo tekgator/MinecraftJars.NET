@@ -25,6 +25,11 @@ public interface IMinecraftProject
     string Url { get; }
 
     /// <summary>
+    /// Required runtime for the project
+    /// </summary>
+    Runtime Runtime { get; }
+    
+    /// <summary>
     /// PNG logo of the project 
     /// </summary>    
     byte[] Logo { get; }
