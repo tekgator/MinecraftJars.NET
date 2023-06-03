@@ -90,6 +90,7 @@ internal static partial class MojangVersionFactory
             where options.IncludeSnapshotBuilds || !isPreview
             let url = match.Value
             let platform = match.Groups["platform"].Value.Equals("linux", StringComparison.OrdinalIgnoreCase) ? Os.Linux : Os.Windows
+            orderby version descending 
             select new MojangVersion(
                 Project: project, 
                 Version: version, 
@@ -98,7 +99,7 @@ internal static partial class MojangVersionFactory
             {
                 DetailUrl = url
             }).ToList();
-
+        
         return options.MaxRecords.HasValue 
             ? versions.Take(options.MaxRecords.Value).ToList() 
             : versions;

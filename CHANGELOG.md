@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Mojang Bedrock versions are now sorted newest to oldest
+
 
 ## [1.4.4] - 2023-06-03
 
