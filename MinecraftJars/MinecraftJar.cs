@@ -34,37 +34,48 @@ public class MinecraftJar : IMinecraftJar
         return _providers;
     }
     
-    public IEnumerable<IMinecraftProvider> GetProviders(Group group)
+    public IEnumerable<IMinecraftProvider> GetProviders(ProjectGroup projectGroup)
     {
-        var providers = new List<IMinecraftProvider>();
-
-        providers.AddRange(GetProviders()
-            .Where(p => p.Projects.Any(t => t.Group == group)));
-        
-        return providers;
+        return from provider in GetProviders()
+            from project in provider.Projects
+            where project.ProjectGroup == projectGroup
+            select provider;
     }    
 
-    public IMinecraftProvider GetProvider(string provider)
+    public IMinecraftProvider GetProvider(string providerName)
     {
-        return _providers
-            .Single(p => p.Name.Equals(provider));
+        return (from provider in GetProviders()
+            where provider.Name.Equals(providerName)
+            select provider).Single();
     }
     
     public IMinecraftProvider GetProvider(IMinecraftProject project)
     {
-        return _providers
-            .Single(p => p.Projects.Contains(project));
+        return (from provider in GetProviders()
+            where provider.Projects.Contains(project)
+            select provider).Single();
     }    
 
     public IEnumerable<IMinecraftProject> GetProjects()
     {
-        return GetProviders()
-            .SelectMany(p => p.Projects);
+        return from provider in GetProviders()
+            from project in provider.Projects
+            select project;
     }
     
-    public IEnumerable<IMinecraftProject> GetProjects(Group group)
+    public IEnumerable<IMinecraftProject> GetProjects(ProjectGroup projectGroup)
     {
-        return GetProviders()
-            .SelectMany(p => p.Projects.Where(t => t.Group == group));
+        return from provider in GetProviders()
+            from project in provider.Projects
+            where project.ProjectGroup == projectGroup
+            select project;
+    }
+
+    public IMinecraftProject GetProject(string projectName)
+    {
+        return (from provider in GetProviders()
+            from project in provider.Projects
+            where project.Name.Equals(projectName)
+            select project).Single();
     }
 }

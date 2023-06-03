@@ -9,8 +9,16 @@ public class VersionTests
     private static readonly MinecraftJar MinecraftJar = new();
     private static IEnumerable<string> Projects() => 
         MinecraftJar.GetProviders().SelectMany(p => p.Projects.Select(t => t.Name));
-    
+
     [TestCaseSource(nameof(Projects)), Order(1)]
+    public void GetProjectsByName_Success(string projectName)
+    {
+        Assert.DoesNotThrow(() => MinecraftJar.GetProject(projectName));
+        TestContext.Progress.WriteLine("{0}: Project found by name {1}", 
+            nameof(GetProjectsByName_Success), projectName);
+    }     
+    
+    [TestCaseSource(nameof(Projects)), Order(2)]
     public async Task GetVersions_Success(string projectName)
     {
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
@@ -23,7 +31,7 @@ public class VersionTests
             nameof(GetVersions_Success), versions.Count, project.Name);
     }
     
-    [Test, Order(2)]
+    [Test, Order(3)]
     public async Task GetVersions_MaxRecordsMax(
         [ValueSource(nameof(Projects))] string projectName, 
         [Values(5, 10)] int maxRecords)
@@ -40,7 +48,7 @@ public class VersionTests
             nameof(GetVersions_MaxRecordsMax), versions.Count, project.Name, maxRecords);
     }    
 
-    [TestCaseSource(nameof(Projects)), Order(3)]
+    [TestCaseSource(nameof(Projects)), Order(4)]
     public async Task GetVersions_SpecificVersion(string projectName)
     {
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
@@ -66,7 +74,7 @@ public class VersionTests
     [TestCase("Spigot")]
     [TestCase("Paper")]
     [TestCase("Velocity")]
-    [Order(4)]
+    [Order(5)]
     public async Task GetVersions_ContainsSnapshot(string projectName)
     {
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
@@ -89,7 +97,7 @@ public class VersionTests
     [TestCase("Spigot")]
     [TestCase("Paper")]
     [TestCase("Velocity")]
-    [Order(5)]
+    [Order(6)]
     public async Task GetVersions_ContainsNoSnapshot(string projectName)
     {
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));

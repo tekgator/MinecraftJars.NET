@@ -13,12 +13,12 @@ public interface IMinecraftJar
     /// <summary>
     /// Return a list of all providers offering a certain project group
     /// </summary>    
-    IEnumerable<IMinecraftProvider> GetProviders(Group group);
+    IEnumerable<IMinecraftProvider> GetProviders(ProjectGroup projectGroup);
 
     /// <summary>
     /// Return a specific provider
     /// </summary>    
-    IMinecraftProvider GetProvider(string provider);
+    IMinecraftProvider GetProvider(string providerName);
 
     /// <summary>
     /// Return the provider for the provided Project
@@ -33,5 +33,10 @@ public interface IMinecraftJar
     /// <summary>
     /// Return a list of all projects for a certain type (e.g. all proxies)
     /// </summary>       
-    IEnumerable<IMinecraftProject> GetProjects(Group group);
+    IEnumerable<IMinecraftProject> GetProjects(ProjectGroup projectGroup);
+
+    /// <summary>
+    /// Return project by it's name
+    /// </summary>       
+    IMinecraftProject GetProject(string projectName);
 }
