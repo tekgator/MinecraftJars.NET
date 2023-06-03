@@ -7,17 +7,17 @@ internal class MojangProjectFactory
 {
     public static readonly IEnumerable<MojangProject> Projects = new List<MojangProject>
     {
-        new(Group: Group.Server,
+        new(ProjectGroup: ProjectGroup.Server,
             Name: "Vanilla",
             Description: "The Mojang vanilla Minecraft experience without mod support.",
             Url: "https://www.minecraft.net/download/server",
-            Runtime: Runtime.Java,
+            ProjectRuntime: ProjectRuntime.Java,
             Logo: Properties.Resources.Vanilla),
-        new(Group: Group.Bedrock,
+        new(ProjectGroup: ProjectGroup.Bedrock,
             Name: "Bedrock",
             Description: "Minecraft: Bedrock Edition refers to the multi-platform versions of Minecraft based on the Bedrock codebase.",
             Url: "https://www.minecraft.net/download/server/bedrock",
-            Runtime: Runtime.None,
+            ProjectRuntime: ProjectRuntime.None,
             Logo: Properties.Resources.Bedrock)
     };
 }

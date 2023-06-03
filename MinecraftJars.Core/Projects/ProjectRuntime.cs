@@ -1,6 +1,6 @@
 namespace MinecraftJars.Core.Projects;
 
-public enum Runtime
+public enum ProjectRuntime
 {
     /// <summary>
     /// No special runtime required e.g. compiled executable for this os (e.g. Mojang Bedrock)

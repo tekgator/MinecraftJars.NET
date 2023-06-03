@@ -4,11 +4,11 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Mohist.Model;
 
 public record MohistProject(
-    Group Group,
+    ProjectGroup ProjectGroup,
     string Name,
     string Description,
     string Url,
-    Runtime Runtime,
+    ProjectRuntime ProjectRuntime,
     byte[] Logo) : IMinecraftProject
 {
     public async Task<IEnumerable<IMinecraftVersion>> GetVersions(

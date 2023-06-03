@@ -4,11 +4,11 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Paper.Model;
 
 public record PaperProject(
-    Group Group,
+    ProjectGroup ProjectGroup,
     string Name,
     string Description,
     string Url,
-    Runtime Runtime,
+    ProjectRuntime ProjectRuntime,
     byte[] Logo) : IMinecraftProject
 {
     public async Task<IEnumerable<IMinecraftVersion>> GetVersions(

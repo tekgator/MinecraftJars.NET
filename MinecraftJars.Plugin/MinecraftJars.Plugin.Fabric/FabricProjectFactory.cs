@@ -7,11 +7,11 @@ internal static class FabricProjectFactory
 {
     public static readonly IEnumerable<FabricProject> Projects = new List<FabricProject>
     {
-        new(Group: Group.Server,
+        new(ProjectGroup: ProjectGroup.Server,
             Name: "Fabric",
             Description: "Fabric is a lightweight, experimental modding toolchain for Minecraft.",
             Url: "https://fabricmc.net",
-            Runtime: Runtime.Java,
+            ProjectRuntime: ProjectRuntime.Java,
             Logo: Properties.Resources.Fabric)
     };
 }

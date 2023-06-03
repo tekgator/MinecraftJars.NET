@@ -7,7 +7,7 @@ public class ProjectTests
 {
     private static readonly MinecraftJar MinecraftJar = new();
     private static IEnumerable<string> Providers() => MinecraftJar.GetProviders().Select(p => p.Name);
-    private static IEnumerable<Group> Groups() => Enum.GetValues<Group>();
+    private static IEnumerable<ProjectGroup> Groups() => Enum.GetValues<ProjectGroup>();
     
     [TestCaseSource(nameof(Providers)), Order(1)]
     public void GetProviderByProject_Success(string providerName)
@@ -34,11 +34,11 @@ public class ProjectTests
     }
     
     [TestCaseSource(nameof(Groups)), Order(3)]
-    public void GetProjectsByGroup_Success(Group group)
+    public void GetProjectsByGroup_Success(ProjectGroup projectGroup)
     {
-        var projects = MinecraftJar.GetProjects(group).ToList();
-        Assert.That(projects.All(p => p.Group == group), Is.True);
+        var projects = MinecraftJar.GetProjects(projectGroup).ToList();
+        Assert.That(projects.All(p => p.ProjectGroup == projectGroup), Is.True);
         
-        TestContext.Progress.WriteLine("{0}: {1} projects found for {2}", nameof(GetProjectsByGroup_Success), projects.Count, group);
+        TestContext.Progress.WriteLine("{0}: {1} projects found for {2}", nameof(GetProjectsByGroup_Success), projects.Count, projectGroup);
     }    
 }

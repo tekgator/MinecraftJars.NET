@@ -6,7 +6,7 @@ namespace MinecraftJars.Tests;
 public class ProviderTests
 {
     private static readonly MinecraftJar MinecraftJar = new();
-    private static IEnumerable<Group> Groups() => Enum.GetValues<Group>();
+    private static IEnumerable<ProjectGroup> Groups() => Enum.GetValues<ProjectGroup>();
 
     [TestCase, Order(1)]
     public void GetProviders_Success()
@@ -18,19 +18,19 @@ public class ProviderTests
     }
 
     [TestCaseSource(nameof(Groups)), Order(2)]
-    public void GetProvidersByGroup_Success(Group group) 
+    public void GetProvidersByGroup_Success(ProjectGroup projectGroup) 
     {
-         var providers = MinecraftJar.GetProviders(group).ToList();
+         var providers = MinecraftJar.GetProviders(projectGroup).ToList();
          Assert.That(providers, Is.Not.Empty);
          
-         TestContext.Progress.WriteLine("{0}: {1} providers found for {2}", nameof(GetProvidersByGroup_Success), providers.Count, group);
+         TestContext.Progress.WriteLine("{0}: {1} providers found for {2}", nameof(GetProvidersByGroup_Success), providers.Count, projectGroup);
     } 
     
     [TestCase(100), Order(3)]
-    public void GetProvidersByGroup_InvalidGroup(Group group)
+    public void GetProvidersByGroup_InvalidGroup(ProjectGroup projectGroup)
     {
-        Assert.That(MinecraftJar.GetProviders(group), Is.Empty);
-        TestContext.Progress.WriteLine("{0}: Group {1} is invalid", nameof(GetProvidersByGroup_InvalidGroup), group);
+        Assert.That(MinecraftJar.GetProviders(projectGroup), Is.Empty);
+        TestContext.Progress.WriteLine("{0}: Group {1} is invalid", nameof(GetProvidersByGroup_InvalidGroup), projectGroup);
     }     
     
     [TestCase, Order(4)]

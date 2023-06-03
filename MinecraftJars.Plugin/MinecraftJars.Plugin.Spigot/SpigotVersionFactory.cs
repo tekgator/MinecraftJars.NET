@@ -5,11 +5,11 @@ using System.Net.Mime;
 using System.Text.RegularExpressions;
 using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Spigot.Model;
 using MinecraftJars.Plugin.Spigot.Model.JenkinsApi;
 using MinecraftJars.Plugin.Spigot.Model.SpigotApi;
-using Group = MinecraftJars.Core.Projects.Group;
 
 namespace MinecraftJars.Plugin.Spigot;
 
@@ -29,10 +29,10 @@ internal static partial class SpigotVersionFactory
         VersionOptions options, 
         CancellationToken cancellationToken = default!)
     {
-        return SpigotProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.Group switch
+        return SpigotProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.ProjectGroup switch
         {
-            Group.Server => GetVersionSpigot(projectName, options, cancellationToken),
-            Group.Proxy => GetVersionBungeeCoord(projectName, options, cancellationToken),
+            ProjectGroup.Server => GetVersionSpigot(projectName, options, cancellationToken),
+            ProjectGroup.Proxy => GetVersionBungeeCoord(projectName, options, cancellationToken),
             _ => throw new InvalidOperationException("Could not acquire version details.")
         };
     }
@@ -118,7 +118,7 @@ internal static partial class SpigotVersionFactory
         SpigotVersion version,
         CancellationToken cancellationToken)
     {
-        return version.Project.Group == Group.Server 
+        return version.Project.ProjectGroup == ProjectGroup.Server 
             ? GetDownloadSpigot(options, version, cancellationToken) 
             : GetDownloadBungeeCord(options, version, cancellationToken);
     }

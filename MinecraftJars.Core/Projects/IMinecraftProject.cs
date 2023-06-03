@@ -7,7 +7,7 @@ public interface IMinecraftProject
     /// <summary>
     /// Group of the project e.g. Server, Bedrock or Proxy 
     /// </summary>        
-    Group Group { get; }
+    ProjectGroup ProjectGroup { get; }
     
     /// <summary>
     /// Name of the project e.g. Vanilla, Spigot, etc. 
@@ -27,7 +27,7 @@ public interface IMinecraftProject
     /// <summary>
     /// Required runtime for the project
     /// </summary>
-    Runtime Runtime { get; }
+    ProjectRuntime ProjectRuntime { get; }
     
     /// <summary>
     /// PNG logo of the project 

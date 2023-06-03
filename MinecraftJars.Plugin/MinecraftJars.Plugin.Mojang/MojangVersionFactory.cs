@@ -4,10 +4,10 @@ using System.Net.Mime;
 using System.Text.RegularExpressions;
 using MinecraftJars.Core;
 using MinecraftJars.Core.Downloads;
+using MinecraftJars.Core.Projects;
 using MinecraftJars.Core.Versions;
 using MinecraftJars.Plugin.Mojang.Models;
 using MinecraftJars.Plugin.Mojang.Models.MojangApi;
-using Group = MinecraftJars.Core.Projects.Group;
 
 namespace MinecraftJars.Plugin.Mojang;
 
@@ -26,10 +26,10 @@ internal static partial class MojangVersionFactory
         VersionOptions options, 
         CancellationToken cancellationToken)
     {
-        return MojangProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.Group switch
+        return MojangProjectFactory.Projects.SingleOrDefault(p => p.Name.Equals(projectName))?.ProjectGroup switch
         {
-            Group.Bedrock => GetVersionBedrock(projectName, options, cancellationToken),
-            Group.Server => GetVersionVanilla(projectName, options, cancellationToken),
+            ProjectGroup.Bedrock => GetVersionBedrock(projectName, options, cancellationToken),
+            ProjectGroup.Server => GetVersionVanilla(projectName, options, cancellationToken),
             _ => throw new InvalidOperationException("Could not acquire version details.")
         };
     }
@@ -109,10 +109,10 @@ internal static partial class MojangVersionFactory
         MojangVersion version, 
         CancellationToken cancellationToken)
     {
-        return version.Project.Group switch
+        return version.Project.ProjectGroup switch
         {
-            Group.Bedrock => GetDownloadBedrock(options, version, cancellationToken),
-            Group.Server => GetDownloadVanilla(options, version, cancellationToken),
+            ProjectGroup.Bedrock => GetDownloadBedrock(options, version, cancellationToken),
+            ProjectGroup.Server => GetDownloadVanilla(options, version, cancellationToken),
             _ => throw new InvalidOperationException("Could not acquire download details.")
         };
     }

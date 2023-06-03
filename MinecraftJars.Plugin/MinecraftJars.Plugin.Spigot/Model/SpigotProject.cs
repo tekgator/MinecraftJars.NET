@@ -4,11 +4,11 @@ using MinecraftJars.Core.Versions;
 namespace MinecraftJars.Plugin.Spigot.Model;
 
 public record SpigotProject(
-    Group Group,
+    ProjectGroup ProjectGroup,
     string Name,
     string Description,
     string Url,
-    Runtime Runtime,
+    ProjectRuntime ProjectRuntime,
     byte[] Logo) : IMinecraftProject
 {
     public async Task<IEnumerable<IMinecraftVersion>> GetVersions(
