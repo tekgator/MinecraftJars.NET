@@ -13,6 +13,12 @@ public class VersionOptions
     /// Indicates to return snapshot / experimental / preview / beta / alpha builds as well 
     /// </summary>       
     public bool IncludeSnapshotBuilds { get; set; }
+
+    /// <summary>
+    /// Only return versions Valid for this system e.g. if Windows is specified all
+    /// versions with NONE or WINDOWS are returned 
+    /// </summary>       
+    public VersionOs VersionOs { get; set; } = VersionOs.None;
     
     /// <summary>
     /// Limit the amount of records returned by the plugin API. Useful if only

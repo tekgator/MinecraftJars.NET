@@ -1,5 +1,4 @@
 using MinecraftJars.Core.Versions;
-using MinecraftJars.Plugin.Mojang.Models;
 
 namespace MinecraftJars.Tests;
 
@@ -51,21 +50,50 @@ public class VersionTests
     [TestCaseSource(nameof(Projects)), Order(4)]
     public async Task GetVersions_SpecificVersion(string projectName)
     {
+        
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
-        var version = (await project.GetVersions()).First();
+        var platform = OperatingSystem.IsWindows() ? VersionOs.Windows : VersionOs.Linux;
+        
+        var version = (await project.GetVersions(new VersionOptions
+        {
+            VersionOs = platform
+        })).First();
+
         var versions = (await project.GetVersions(new VersionOptions
         {
-            Version = version.Version
+            Version = version.Version,
+            VersionOs = platform
         })).ToList();
 
-        var count = version is MojangVersion { Os: not null } ? 2 : 1; 
-
-        Assert.That(versions, Has.Count.EqualTo(count));
+        Assert.That(versions, Has.Count.EqualTo(1));
         Assert.That(versions.First(), Is.EqualTo(version));
         
         TestContext.Progress.WriteLine("{0}: Specific version {1} found", 
             nameof(GetVersions_SpecificVersion), version.Version);
     }  
+    
+    [TestCase("Bedrock"), Order(5)]
+    public async Task GetVersions_SpecificOs(string projectName)
+    {
+        var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
+
+        foreach (var versionOs in Enum.GetValues<VersionOs>().Where(e => e != VersionOs.None))
+        {
+            var versions = (await project.GetVersions(new VersionOptions
+            {
+                VersionOs = versionOs
+            })).ToList();
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(versions.Any(v => v.Os != versionOs), Is.False);
+                Assert.That(versions.Any(), Is.True);
+            });
+            
+            TestContext.Progress.WriteLine("{0}: Search for {1} successful, no other Os found", 
+                nameof(GetVersions_SpecificOs), versionOs);
+        }
+    }    
     
     [TestCase("Vanilla")]
     [TestCase("Bedrock")]
@@ -74,7 +102,7 @@ public class VersionTests
     [TestCase("Spigot")]
     [TestCase("Paper")]
     [TestCase("Velocity")]
-    [Order(5)]
+    [Order(6)]
     public async Task GetVersions_ContainsSnapshot(string projectName)
     {
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));
@@ -97,7 +125,7 @@ public class VersionTests
     [TestCase("Spigot")]
     [TestCase("Paper")]
     [TestCase("Velocity")]
-    [Order(6)]
+    [Order(7)]
     public async Task GetVersions_ContainsNoSnapshot(string projectName)
     {
         var project = MinecraftJar.GetProjects().Single(p => p.Name.Equals(projectName));

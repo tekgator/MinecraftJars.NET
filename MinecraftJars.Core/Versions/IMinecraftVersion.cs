@@ -19,6 +19,11 @@ public interface IMinecraftVersion
     /// Indicates whether this version experimental 
     /// </summary>      
     bool IsSnapShot { get; }
+
+    /// <summary>
+    /// Indicates whether this version requires a specific operating system
+    /// </summary>      
+    VersionOs Os => VersionOs.None;
     
     /// <summary>
     /// Indicates TRUE in case the plugin needs to build the JAR file instead of providing download information

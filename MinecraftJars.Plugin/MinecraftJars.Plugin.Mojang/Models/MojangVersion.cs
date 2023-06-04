@@ -8,7 +8,7 @@ public record MojangVersion(
     IMinecraftProject Project,
     string Version,
     bool IsSnapShot,
-    Os? Os = null) : IMinecraftVersion
+    VersionOs Os = VersionOs.None) : IMinecraftVersion
 {
     internal DateTime? ReleaseTime { get; init; }
     internal string DetailUrl { get; init; } = string.Empty;

@@ -89,7 +89,10 @@ internal static partial class MojangVersionFactory
             let isPreview = !string.IsNullOrWhiteSpace(match.Groups["preview"].Value)
             where options.IncludeSnapshotBuilds || !isPreview
             let url = match.Value
-            let platform = match.Groups["platform"].Value.Equals("linux", StringComparison.OrdinalIgnoreCase) ? Os.Linux : Os.Windows
+            let platform = match.Groups["platform"].Value.Equals("linux", StringComparison.OrdinalIgnoreCase) 
+                ? VersionOs.Linux 
+                : VersionOs.Windows
+            where options.VersionOs == VersionOs.None || platform == options.VersionOs
             orderby version descending 
             select new MojangVersion(
                 Project: project, 

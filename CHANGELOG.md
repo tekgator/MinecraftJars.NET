@@ -3,8 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+
+## [1.4.5] - 2023-06-04
+
 ### Fixed
 - Mojang Bedrock versions are now sorted newest to oldest
+
+### Added
+- Add property OS to VersionOptions in case a project is for a certain OS only (currently Mojang Bedrock only)
 
 
 ## [1.4.4] - 2023-06-03
