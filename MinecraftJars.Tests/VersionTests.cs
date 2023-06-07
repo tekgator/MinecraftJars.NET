@@ -12,7 +12,7 @@ public class VersionTests
     [TestCaseSource(nameof(Projects)), Order(1)]
     public void GetProjectsByName_Success(string projectName)
     {
-        Assert.DoesNotThrow(() => MinecraftJar.GetProject(projectName));
+        Assert.That(MinecraftJar.GetProject(projectName), Is.Not.Null);
         TestContext.Progress.WriteLine("{0}: Project found by name {1}", 
             nameof(GetProjectsByName_Success), projectName);
     }     

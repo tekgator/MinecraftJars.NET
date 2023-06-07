@@ -16,14 +16,14 @@ public interface IMinecraftJar
     IEnumerable<IMinecraftProvider> GetProviders(ProjectGroup projectGroup);
 
     /// <summary>
-    /// Return a specific provider
+    /// Return a specific provider, null if not found
     /// </summary>    
-    IMinecraftProvider GetProvider(string providerName);
+    IMinecraftProvider? GetProvider(string providerName);
 
     /// <summary>
-    /// Return the provider for the provided Project
+    /// Return the provider for the provided Project, null if not found
     /// </summary>    
-    IMinecraftProvider GetProvider(IMinecraftProject project);
+    IMinecraftProvider? GetProvider(IMinecraftProject project);
 
     /// <summary>
     /// Return a list of all projects (e.g. Vanilla, Spigot, etc.)
@@ -36,7 +36,7 @@ public interface IMinecraftJar
     IEnumerable<IMinecraftProject> GetProjects(ProjectGroup projectGroup);
 
     /// <summary>
-    /// Return project by it's name
+    /// Return project by it's name, null if not found
     /// </summary>       
-    IMinecraftProject GetProject(string projectName);
+    IMinecraftProject? GetProject(string projectName);
 }

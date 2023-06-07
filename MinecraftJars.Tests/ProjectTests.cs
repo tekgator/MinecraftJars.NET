@@ -13,14 +13,15 @@ public class ProjectTests
     public void GetProviderByProject_Success(string providerName)
     {
         var provider = MinecraftJar.GetProvider(providerName);
+        Assert.That(provider, Is.Not.Null);
         
-        foreach (var project in provider.Projects)
+        foreach (var project in provider!.Projects)
         {
             var providerByProject = MinecraftJar.GetProvider(project);
             Assert.That(providerByProject, Is.SameAs(provider));
             
             TestContext.Progress.WriteLine("{0}: Provider for project {1} is {2}", 
-                nameof(GetProviderByProject_Success), providerByProject.Name, project.Name);
+                nameof(GetProviderByProject_Success), providerByProject!.Name, project.Name);
         }
     }
     

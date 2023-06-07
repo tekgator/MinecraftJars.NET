@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+## [1.4.6] - 2023-06-07
+
+### Changed
+- Do not throw for returning single record methods in MinecraftJar, instead return NULL
+
+
 ## [1.4.5] - 2023-06-04
 
 ### Fixed

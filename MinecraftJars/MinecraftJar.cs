@@ -42,18 +42,18 @@ public class MinecraftJar : IMinecraftJar
             select provider;
     }    
 
-    public IMinecraftProvider GetProvider(string providerName)
+    public IMinecraftProvider? GetProvider(string providerName)
     {
         return (from provider in GetProviders()
             where provider.Name.Equals(providerName)
-            select provider).Single();
+            select provider).SingleOrDefault();
     }
     
-    public IMinecraftProvider GetProvider(IMinecraftProject project)
+    public IMinecraftProvider? GetProvider(IMinecraftProject project)
     {
         return (from provider in GetProviders()
             where provider.Projects.Contains(project)
-            select provider).Single();
+            select provider).SingleOrDefault();
     }    
 
     public IEnumerable<IMinecraftProject> GetProjects()
@@ -71,11 +71,11 @@ public class MinecraftJar : IMinecraftJar
             select project;
     }
 
-    public IMinecraftProject GetProject(string projectName)
+    public IMinecraftProject? GetProject(string projectName)
     {
         return (from provider in GetProviders()
             from project in provider.Projects
             where project.Name.Equals(projectName)
-            select project).Single();
+            select project).SingleOrDefault();
     }
 }

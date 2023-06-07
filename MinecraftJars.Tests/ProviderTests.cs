@@ -48,7 +48,7 @@ public class ProviderTests
     [TestCase("InvalidProviderName"), Order(5)]
     public void GetProviderByName_InvalidProvider(string name)
     {
-        Assert.Throws<InvalidOperationException>(() => MinecraftJar.GetProvider(name));
+        Assert.That(MinecraftJar.GetProvider(name), Is.Null);
         TestContext.Progress.WriteLine("{0}: Provider name {1} invalid", nameof(GetProviderByName_InvalidProvider), name);
     }
 }
